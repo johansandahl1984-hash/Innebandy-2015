@@ -8,15 +8,20 @@
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
   :root{
-    --ink:#12140F;
-    --pine:#1F4D3A;
-    --pine-dark:#132F24;
-    --pine-light:#3F8F5F;
-    --ice:#F4F6F1;
+    /* Höllviken IBF:s klubbfärger (verifierat: statistik.innebandy.se + Wikipedia) —
+       orange är primärfärgen (bytt från blått vid ombildningen 2008), svart sekundärfärg,
+       vitt är den bekräftade reservfärgen. --pine/--pine-dark/--pine-light/--gold behåller
+       sina gamla variabelnamn (för att inte behöva ändra hundratals referenser i filen) men
+       bär nu klubbens riktiga färger istället för Trelleborgs grönt/guld. */
+    --ink:#1A1508;
+    --pine:#E8621A;
+    --pine-dark:#1A1A1A;
+    --pine-light:#F2934F;
+    --ice:#F7F5F1;
     --ice-card:#FFFFFF;
-    --gold:#C9A24B;
-    --line:#DCE3D9;
-    --muted:#5B6459;
+    --gold:#FFFFFF;
+    --line:#E3DED8;
+    --muted:#6B5F54;
     --red:#C24A3A;
     --blue:#2E6C9E;
     --purple:#8A6BAF;
@@ -48,8 +53,8 @@
   }
   .crest span{font-family:'Oswald'; font-weight:700; color:var(--pine-dark); font-size:18px;}
   .brand h1{font-size:22px; font-weight:700; text-transform:uppercase;}
-  .brand .sub{font-size:12.5px; color:#DCEAE0; margin-top:2px; font-family:'IBM Plex Mono',monospace;}
-  .headnote{font-size:11.5px; color:#B9D3C4; max-width:230px; text-align:right; line-height:1.4;}
+  .brand .sub{font-size:12.5px; color:#FBDFC8; margin-top:2px; font-family:'IBM Plex Mono',monospace;}
+  .headnote{font-size:11.5px; color:#FCEADB; max-width:230px; text-align:right; line-height:1.4;}
 
   /* Kompaktare header på mobil — den är sticky, så varje sparad pixel syns hela tiden */
   @media(max-width:640px){
@@ -74,7 +79,7 @@
   }
   nav.tabs::-webkit-scrollbar{display:none;}
   nav.tabs button{
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#EAF2EC;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#FCEADB;
     padding:9px 16px; border-radius:999px; font-family:'Oswald'; font-size:13.5px;
     letter-spacing:.03em; cursor:pointer; white-space:nowrap; transition:all .15s;
   }
@@ -345,7 +350,7 @@
 
     <div class="timeline-wrap">
       <svg id="tl-svg" viewBox="0 0 920 92" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="tl-caption">Varje segment = en vecka · färg = fokusblock · guldprick = specialhändelse (match/cup/Vikingadagen)</div>
+      <div class="tl-caption">Varje segment = en vecka · färg = fokusblock · guldprick = specialhändelse (match/cup)</div>
     </div>
 
     <div class="toolbar" style="margin:12px 0 4px;"><button class="btn" onclick="openPeriodModal(null)">+ Ny period</button></div>
@@ -366,7 +371,6 @@
     <div class="toolbar">
       <button class="btn" onclick="openSessionModal()">+ Ny händelse</button>
       <button class="btn ghost" onclick="fetchLagetCalendar()" id="ics-fetch-btn">📅 Hämta nya händelser</button>
-      <span class="hint" style="margin-left:auto;">Källa för augusti: laget.se — resten fylls i av er</span>
     </div>
     <div id="ics-import-panel" style="display:none;"></div>
 
@@ -658,7 +662,7 @@
 
 <script>
 /* =========================================================================
-   STATIC DATA — säsongsramverk tolkat från uppladdad Excel + laget.se
+   STATIC DATA
    ========================================================================= */
 
 const DEFAULT_PERIODS = [
@@ -668,7 +672,7 @@ const DEFAULT_PERIODS = [
 
 function periodForWeek(w){ return (DATA.periods||[]).find(p=>w>=p.weekStart && w<=p.weekEnd); }
 
-// Vecka -> {månad}. Från laget.se-kalendern (2026): v.32=3-9 aug, v.33=10-16 aug, v.34=17-23 aug, v.35=24-30 aug, v.36=31aug-6sep...
+// Vecka -> {månad}, för allmän veckonumrering (2026).
 const WEEK_MONTH = {32:"Aug",33:"Aug",34:"Aug",35:"Aug",36:"Sep",37:"Sep",38:"Sep",39:"Sep",40:"Sep/Okt",
   41:"Okt",42:"Okt",43:"Okt",44:"Okt",45:"Nov",46:"Nov",47:"Nov",48:"Nov",49:"Nov/Dec",50:"Dec",51:"Dec",52:"Dec"};
 
@@ -1278,13 +1282,13 @@ function seedSessions(){
       place: e.type==="Match" ? "Söderslättshallen" : "",
       week: weekMap[e.date] || "", pass:"", yta:"", istid:"",
       coaches: [], attendance: [], activeGroups: [], lineup: {}, archiveOverride: null,
-      notes: e.label + (e.type==="Match" ? " — kontrollera tid/plats i laget.se." : "")
+      notes: e.label + (e.type==="Match" ? " — kontrollera tid/plats i kalendern." : "")
     };
   });
 }
 
 /* =========================================================================
-   HÄMTA NYA HÄNDELSER — läser lagets .ics-kalenderflöde (laget.se "Prenumerera")
+   HÄMTA NYA HÄNDELSER — läser lagets .ics-kalenderflöde (SportAdmin "Prenumerera")
    och jämför mot redan sparade pass, så bara faktiskt nya händelser visas för
    granskning innan de läggs till. Rör aldrig något automatiskt/utan bekräftelse.
    ========================================================================= */
@@ -1348,7 +1352,7 @@ function parseICS(text){
 }
 let icsFoundEvents = [];
 async function fetchIcsText(url){
-  // Försök hämta direkt först — funkar om källan tillåter cross-origin-hämtning (t.ex. laget.se).
+  // Försök hämta direkt först — funkar om källan tillåter cross-origin-hämtning.
   // Om det failar (troligen CORS, "Failed to fetch") — försök igen via en Supabase Edge Function
   // som hämtar server-till-server istället, där CORS inte spelar någon roll.
   try{
@@ -1391,7 +1395,7 @@ async function fetchLagetCalendar(){
       <b>Kunde inte hämta kalendern.</b> ${String((e&&e.message)||e)}
       <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;">Både direkt hämtning och proxy-hämtning via Supabase misslyckades. Kontrollera att ics-proxy-funktionen är driftsatt i Supabase, och att kalenderadressen (DATA.icsCalendarUrl) är korrekt.</p>
     </div>`;
-    console.error("Kunde inte hämta laget.se-kalendern", e);
+    console.error("Kunde inte hämta kalendern", e);
   } finally {
     btn.disabled = false; btn.textContent = "📅 Hämta nya händelser";
   }
@@ -1494,7 +1498,7 @@ function renderTimeline(){
   monthsOrder.forEach(([m,ws,we])=>{
     const i0 = weeks.indexOf(ws), i1=weeks.indexOf(we);
     const xm = x0 + (i0*(cw+gap)) + ((i1-i0)*(cw+gap))/2 + cw/2;
-    html += `<text x="${xm}" y="20" font-size="11" fill="#EAF2EC" text-anchor="middle" font-family="Oswald" letter-spacing="1">${m.toUpperCase()}</text>`;
+    html += `<text x="${xm}" y="20" font-size="11" fill="#FCEADB" text-anchor="middle" font-family="Oswald" letter-spacing="1">${m.toUpperCase()}</text>`;
   });
   svg.innerHTML = html;
 }
