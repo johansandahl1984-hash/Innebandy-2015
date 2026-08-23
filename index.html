@@ -1347,6 +1347,26 @@ function parseICS(text){
   return events.filter(e=>e.summary && e.dtstart && e.dtstart.time); // hoppa heldagshändelser utan klockslag
 }
 let icsFoundEvents = [];
+async function fetchIcsText(url){
+  // Försök hämta direkt först — funkar om källan tillåter cross-origin-hämtning (t.ex. laget.se).
+  // Om det failar (troligen CORS, "Failed to fetch") — försök igen via en Supabase Edge Function
+  // som hämtar server-till-server istället, där CORS inte spelar någon roll.
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    return await res.text();
+  }catch(directErr){
+    const proxyUrl = `${SUPABASE_URL}/functions/v1/ics-proxy?url=${encodeURIComponent(url)}`;
+    const res2 = await fetch(proxyUrl, {
+      headers: { "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if(!res2.ok){
+      const detail = await res2.text().catch(()=> "");
+      throw new Error(`Direkt: ${directErr.message}. Proxy: HTTP ${res2.status}${detail?" — "+detail.slice(0,200):""}`);
+    }
+    return await res2.text();
+  }
+}
 async function fetchLagetCalendar(){
   const url = DATA.icsCalendarUrl;
   if(!url){ alert("Ingen kalenderadress inställd (DATA.icsCalendarUrl)."); return; }
@@ -1356,9 +1376,7 @@ async function fetchLagetCalendar(){
   panel.style.display = "block";
   panel.innerHTML = '<p style="font-size:12.5px;color:var(--muted);padding:8px 0;">Hämtar kalendern…</p>';
   try{
-    const res = await fetch(url);
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const text = await res.text();
+    const text = await fetchIcsText(url);
     const events = parseICS(text);
     const existingUids = new Set(DATA.sessions.map(s=>s.icsUid).filter(Boolean));
     const existingDateTime = new Set(DATA.sessions.map(s=>s.date+"|"+s.start));
@@ -1371,7 +1389,7 @@ async function fetchLagetCalendar(){
   }catch(e){
     panel.innerHTML = `<div class="note-box" style="border-color:#C24A3A;background:#FBE7E3;">
       <b>Kunde inte hämta kalendern.</b> ${String((e&&e.message)||e)}
-      <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;">Om detta är ett direkt nätverksfel kan laget.se blockera hämtning från appar utifrån (CORS). Hör av dig till Claude om felet står kvar — det finns en alternativ lösning via Supabase.</p>
+      <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;">Både direkt hämtning och proxy-hämtning via Supabase misslyckades. Kontrollera att ics-proxy-funktionen är driftsatt i Supabase, och att kalenderadressen (DATA.icsCalendarUrl) är korrekt.</p>
     </div>`;
     console.error("Kunde inte hämta laget.se-kalendern", e);
   } finally {
