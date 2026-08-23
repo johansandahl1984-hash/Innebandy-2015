@@ -672,6 +672,31 @@ const DEFAULT_PERIODS = [
 
 function periodForWeek(w){ return (DATA.periods||[]).find(p=>w>=p.weekStart && w<=p.weekEnd); }
 
+// Räknar ut det faktiska kalenderdatumet för måndagen i en given ISO-vecka+år. Behövs för att
+// kunna jämföra perioder korrekt när en säsong sträcker sig över ett årsskifte — ett rått
+// veckonummer (1–52) säger ingenting om VILKET år det gäller, så "vecka 3" kan vara antingen
+// redan passerad (om den gällde förra året) eller långt fram i tiden (om den gäller nästa år).
+function isoWeekToDate(year, week){
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const jan4Day = jan4.getUTCDay() || 7;
+  const week1Monday = new Date(jan4);
+  week1Monday.setUTCDate(jan4.getUTCDate() - jan4Day + 1);
+  const result = new Date(week1Monday);
+  result.setUTCDate(week1Monday.getUTCDate() + (week-1)*7);
+  return result;
+}
+// yearEnd saknas på perioder skapade innan detta fält fanns (t.ex. via "+ Ny period"-formuläret,
+// som bara hanterar en enkel säsong inom samma kalenderår) — default till innevarande år bevarar
+// deras befintliga, redan korrekta beteende exakt som förut.
+function periodEndDate(p){
+  const year = p.yearEnd || new Date().getFullYear();
+  return isoWeekToDate(year, p.weekEnd);
+}
+function periodStartDate(p){
+  const year = p.yearStart || p.yearEnd || new Date().getFullYear();
+  return isoWeekToDate(year, p.weekStart);
+}
+
 // Vecka -> {månad}, för allmän veckonumrering (2026).
 const WEEK_MONTH = {32:"Aug",33:"Aug",34:"Aug",35:"Aug",36:"Sep",37:"Sep",38:"Sep",39:"Sep",40:"Sep/Okt",
   41:"Okt",42:"Okt",43:"Okt",44:"Okt",45:"Nov",46:"Nov",47:"Nov",48:"Nov",49:"Nov/Dec",50:"Dec",51:"Dec",52:"Dec"};
@@ -998,6 +1023,7 @@ async function loadData(){
   migratePairHistoryCounting();
   migrateGoalieGroupFlag();
   const seasonContentChanged = migrateImportedSeasonContent();
+  const periodYearsChanged = migratePeriodYears();
   // Engångsmigreringar (flaggade i DATA, se importAugustLineups/mergeDuplicateGroups).
   // Transformen körs alltid i minnet (idempotent, behövs för korrekt vy), men sparningen
   // av flaggan sker EFTER att sidan redan visas och TYST — ingen "kunde inte spara"-ruta
@@ -1006,7 +1032,7 @@ async function loadData(){
   const augustChanged = importAugustLineups();
   const mergeChanged = mergeDuplicateGroups();
   renderAll();
-  if(augustChanged || mergeChanged || seasonContentChanged) trySaveOnce();
+  if(augustChanged || mergeChanged || seasonContentChanged || periodYearsChanged) trySaveOnce();
 }
 
 // Lokal säkerhetskopia av senast korrekt inlästa data, som nödutväg om lagringen
@@ -1059,17 +1085,36 @@ function migrateGoalieGroupFlag(){
 // Johan tog fram (arsplan-interaktiv.html, laddades upp 23 aug 2026). Perioder läggs bara in om
 // inga redan finns (rör inte en egenbyggd plan), övningar läggs till id-säkert (går att köra om
 // utan att duplicera om flaggan av någon anledning inte hann sparas).
+// Engångskorrigering: de sju importerade periodposterna (imp-block-*) hann sparas till Supabase
+// INNAN yearStart/yearEnd-fälten fanns (se periodEndDate/periodStartDate ovan) — utan explicit år
+// kan appen inte skilja "vecka 3 som redan passerat" från "vecka 3 nästa år, långt fram i tiden".
+// Lagar bara de period-id:n som faktiskt saknar fältet, rör ingenting annat.
+function migratePeriodYears(){
+  if(DATA.periodYearsFixedV1) return false;
+  const YEAR_MAP = {
+    "imp-block-1":2026, "imp-block-2":2026, "imp-block-3a":2026,
+    "imp-block-3b":2027, "imp-block-4":2027, "imp-block-5":2027, "imp-block-6":2027,
+  };
+  let changed = false;
+  (DATA.periods||[]).forEach(p=>{
+    if(YEAR_MAP[p.id] && (!p.yearStart || !p.yearEnd)){
+      p.yearStart = YEAR_MAP[p.id]; p.yearEnd = YEAR_MAP[p.id]; changed = true;
+    }
+  });
+  DATA.periodYearsFixedV1 = true;
+  return changed;
+}
 function migrateImportedSeasonContent(){
   if(DATA.importedSeasonContentV1) return false;
   let changed = false;
   const newPeriods = [
-  {"id":"imp-block-1","label":"Etablerat försvarsspel & grundläggande speluppbyggnad","weekStart":39,"weekEnd":43,"color":"#E8621A","description":"25 sep–29 okt","focus":["Spel"],"goal":"Trygg grundposition i försvar, enkel speluppbyggnad ut från egen zon.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-2","label":"Duellspel – övertal/undertal, 2mot1 & 3mot2","weekStart":44,"weekEnd":48,"color":"#2E6C9E","description":"2 nov–3 dec","focus":["Spel"],"goal":"Läsa och lösa numerärt över-/underläge, både anfalls- och försvarsperspektiv.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-3a","label":"Speluppbyggnad – ta sig ur eget försvar","weekStart":49,"weekEnd":52,"color":"#8A6BAF","description":"7 dec–21 jan (juluppehåll v.52–1) (del 1)","focus":["Spel"],"goal":"Kontrollerad speluppbyggnad ut från egen zon under press, samspel bak–fram.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-3b","label":"Speluppbyggnad – ta sig ur eget försvar","weekStart":1,"weekEnd":3,"color":"#8A6BAF","description":"7 dec–21 jan (juluppehåll v.52–1) (del 2, efter juluppehåll)","focus":["Spel"],"goal":"Kontrollerad speluppbyggnad ut från egen zon under press, samspel bak–fram.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-4","label":"Etablerat anfallsspel – komma till avslut","weekStart":4,"weekEnd":8,"color":"#B57A3F","description":"25 jan–26 feb","focus":["Spel","Skott"],"goal":"Skapa utrymme framåt, kombinationsspel och avslutseffektivitet.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-5","label":"Offensiv & defensiv omställning","weekStart":9,"weekEnd":13,"color":"#2E8B95","description":"1 mar–2 apr","focus":["Spel"],"goal":"Snabb mental och taktisk växling vid bollvinst/bollförlust – kopplar ihop block 1–4.","goalStatus":"","goalNotes":""},
-  {"id":"imp-block-6","label":"Matchspel, taktik & sammanfattning","weekStart":14,"weekEnd":18,"color":"#C24A3A","description":"6 apr–7 maj","focus":["Spel"],"goal":"Knyta ihop alla spelfaser till helhet, utvärdera säsongens utveckling.","goalStatus":"","goalNotes":""}
+  {"id":"imp-block-1","label":"Etablerat försvarsspel & grundläggande speluppbyggnad","weekStart":39,"weekEnd":43,"yearStart":2026,"yearEnd":2026,"color":"#E8621A","description":"25 sep–29 okt","focus":["Spel"],"goal":"Trygg grundposition i försvar, enkel speluppbyggnad ut från egen zon.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-2","label":"Duellspel – övertal/undertal, 2mot1 & 3mot2","weekStart":44,"weekEnd":48,"yearStart":2026,"yearEnd":2026,"color":"#2E6C9E","description":"2 nov–3 dec","focus":["Spel"],"goal":"Läsa och lösa numerärt över-/underläge, både anfalls- och försvarsperspektiv.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-3a","label":"Speluppbyggnad – ta sig ur eget försvar","weekStart":49,"weekEnd":52,"yearStart":2026,"yearEnd":2026,"color":"#8A6BAF","description":"7 dec–21 jan (juluppehåll v.52–1) (del 1)","focus":["Spel"],"goal":"Kontrollerad speluppbyggnad ut från egen zon under press, samspel bak–fram.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-3b","label":"Speluppbyggnad – ta sig ur eget försvar","weekStart":1,"weekEnd":3,"yearStart":2027,"yearEnd":2027,"color":"#8A6BAF","description":"7 dec–21 jan (juluppehåll v.52–1) (del 2, efter juluppehåll)","focus":["Spel"],"goal":"Kontrollerad speluppbyggnad ut från egen zon under press, samspel bak–fram.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-4","label":"Etablerat anfallsspel – komma till avslut","weekStart":4,"weekEnd":8,"yearStart":2027,"yearEnd":2027,"color":"#B57A3F","description":"25 jan–26 feb","focus":["Spel","Skott"],"goal":"Skapa utrymme framåt, kombinationsspel och avslutseffektivitet.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-5","label":"Offensiv & defensiv omställning","weekStart":9,"weekEnd":13,"yearStart":2027,"yearEnd":2027,"color":"#2E8B95","description":"1 mar–2 apr","focus":["Spel"],"goal":"Snabb mental och taktisk växling vid bollvinst/bollförlust – kopplar ihop block 1–4.","goalStatus":"","goalNotes":""},
+  {"id":"imp-block-6","label":"Matchspel, taktik & sammanfattning","weekStart":14,"weekEnd":18,"yearStart":2027,"yearEnd":2027,"color":"#C24A3A","description":"6 apr–7 maj","focus":["Spel"],"goal":"Knyta ihop alla spelfaser till helhet, utvärdera säsongens utveckling.","goalStatus":"","goalNotes":""}
 ];
   const newExercises = [
   {"id":"imp-ex-1","cat":"spel","namn":"Duellspel – bollbehandling under press","syfte":"Spelare i par, en jagar passivt→aktivt, den andra ska behålla bollen och vända bort från press i en 5x5m ruta.","material":"Koner för avgränsad yta, boll per par.","steg":["Vecka 1: Jagare helt passiv, bara skugga","Vecka 2: Jagare aktiv men långsam","Vecka 3: Jagare full fart","Vecka 4: Lägg till tidsgräns (3 sek att vända)","Vecka 5: Tävling: flest lyckade vändningar på 30 sek"],"coaching":"Fokusera på beslutsfattande och tajming, inte bara teknisk utförande — låt spelarna läsa situationen.","latt":"Jagare helt passiv, bara skugga","svar":"Tävling: flest lyckade vändningar på 30 sek","link":"https://www.innebandy.se/ovningsbanken"},
@@ -1576,11 +1621,10 @@ function renderTimeline(){
 
 function renderPeriods(){
   const grid = document.getElementById("period-grid");
-  const today = todayStr();
-  const curWeek = isoWeekNumber(new Date());
-  const sorted = [...(DATA.periods||[])].sort((a,b)=>a.weekStart-b.weekStart);
+  const today = new Date(todayStr()+"T00:00:00");
+  const sorted = [...(DATA.periods||[])].sort((a,b)=>periodStartDate(a)-periodStartDate(b));
   grid.innerHTML = sorted.map(p=>{
-    const ended = curWeek > p.weekEnd;
+    const ended = today > periodEndDate(p);
     const needsGoalFill = ended && p.goal && !p.goalStatus;
     const focusTags = (p.focus||[]).map(f=>`<span class="focus-tag" style="margin:2px 4px 0 0;">${f}</span>`).join("");
     const statusColor = p.goalStatus==="Uppnått" ? "var(--pine)" : p.goalStatus==="Delvis uppnått" ? "var(--gold)" : p.goalStatus==="Ej uppnått" ? "var(--red)" : "var(--muted)";
