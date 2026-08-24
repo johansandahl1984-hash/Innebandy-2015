@@ -3321,10 +3321,20 @@ async function deleteCustomExercise(id){
    till valfri övning (inbyggd eller egen), lagras i DATA.exerciseDiagrams
    ========================================================================= */
 const RINK_BACKGROUND_SVG = `
-  <rect x="10" y="10" width="580" height="320" rx="30" fill="none" stroke="#8A8F86" stroke-width="2"></rect>
+  <rect x="10" y="10" width="580" height="320" rx="52" fill="none" stroke="#8A8F86" stroke-width="2.5"></rect>
   <line x1="300" y1="10" x2="300" y2="330" stroke="#8A8F86" stroke-width="2"></line>
-  <line x1="70" y1="10" x2="70" y2="330" stroke="#8A8F86" stroke-width="1" stroke-dasharray="4 4"></line>
-  <line x1="530" y1="10" x2="530" y2="330" stroke="#8A8F86" stroke-width="1" stroke-dasharray="4 4"></line>
+  <circle cx="300" cy="170" r="5.5" fill="#8A8F86"></circle>
+  <rect x="62" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <rect x="62" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <rect x="50" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <rect x="452" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <rect x="504" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <rect x="538" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>
+  <path d="M78,54 h14 M85,47 v14" stroke="#8A8F86" stroke-width="1.5"></path>
+  <path d="M78,286 h14 M85,279 v14" stroke="#8A8F86" stroke-width="1.5"></path>
+  <path d="M508,54 h14 M515,47 v14" stroke="#8A8F86" stroke-width="1.5"></path>
+  <path d="M508,286 h14 M515,279 v14" stroke="#8A8F86" stroke-width="1.5"></path>
+  <path d="M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5"></path>
 `;
 const DIAGRAM_TOOL_HINTS = {
   player: "Klicka på planen för att placera en spelare.",
