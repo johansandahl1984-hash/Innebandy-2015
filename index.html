@@ -467,11 +467,19 @@
     <div class="field-row">
       <div class="field"><label>Datum</label><input type="date" id="sess-date"></div>
       <div class="field"><label>Typ</label>
-        <select id="sess-type">
+        <select id="sess-type" onchange="onSessTypeChange()">
           <option value="Träning">Träning</option>
           <option value="Match">Match</option>
         </select>
       </div>
+    </div>
+    <div class="field" id="sess-matchformat-field" style="display:none;">
+      <label>Matchformat</label>
+      <select id="sess-matchformat">
+        <option value="poolspel">Poolspel / Blå serie</option>
+        <option value="serie5mot5">Serie (röd) 5 mot 5</option>
+      </select>
+      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Styr vilken sorts laguppställning som visas för matchen — enkel laguppställning för poolspel, formationsuppställning (målvakter + 3 femmor med fasta positioner) för seriematcher.</p>
     </div>
     <div class="field-row">
       <div class="field"><label>Starttid</label><input type="time" id="sess-start"></div>
@@ -3153,6 +3161,10 @@ function currentSessionType(){
   if(lineupScope){ const s = DATA.sessions.find(x=>x.id===lineupScope); return s ? s.type : "Träning"; }
   const el = document.getElementById("sess-type"); return el ? el.value : "Träning";
 }
+function onSessTypeChange(){
+  const isMatch = document.getElementById("sess-type").value === "Match";
+  document.getElementById("sess-matchformat-field").style.display = isMatch ? "block" : "none";
+}
 function suggestMix(){
   // Målvaktsgruppen ska inte få slumpmässiga utespelare tilldelade — bara de grupper som faktiskt
   // är avsedda för utespelarfördelning blandas om.
@@ -3186,6 +3198,8 @@ function openSessionModal(){
   document.getElementById("sess-id").value = "";
   document.getElementById("sess-date").value = "";
   document.getElementById("sess-type").value = "Träning";
+  document.getElementById("sess-matchformat").value = "poolspel";
+  onSessTypeChange();
   document.getElementById("sess-start").value = "";
   document.getElementById("sess-end").value = "";
   document.getElementById("sess-place").value = "";
@@ -3196,7 +3210,6 @@ function openSessionModal(){
   document.getElementById("sess-delete-btn").style.display = "none";
   document.getElementById("sess-template-field").style.display = "block";
   document.getElementById("sess-template").value = "";
-  refreshPassOptions("");
   pendingArchiveOverride = null;
   updateArchiveButtonLabel(null);
   sessionDraft = { attendance: DATA.players.filter(p=>p.active!==false).map(p=>p.id), activeGroups: DATA.groups.slice(0,4).map(g=>g.id), lineup: {} };
@@ -3212,16 +3225,16 @@ function editSession(id){
   document.getElementById("sess-id").value = s.id;
   document.getElementById("sess-date").value = s.date;
   document.getElementById("sess-type").value = s.type;
+  document.getElementById("sess-matchformat").value = s.matchFormat || "poolspel";
+  onSessTypeChange();
   document.getElementById("sess-start").value = s.start||"";
   document.getElementById("sess-end").value = s.end||"";
   document.getElementById("sess-place").value = s.place||"";
   document.getElementById("sess-gathering").value = s.gathering||"";
-  document.getElementById("sess-week").value = s.week||"";
   document.getElementById("sess-yta").value = s.yta||"";
   document.getElementById("sess-istid").value = s.istid||"";
   document.getElementById("sess-notes").value = s.notes||"";
   document.getElementById("sess-template-field").style.display = "none";
-  refreshPassOptions(s.pass||"");
   pendingArchiveOverride = null;
   updateArchiveButtonLabel(s);
   (s.coaches||[]).forEach(cid=>{ const el=document.querySelector(`#sess-coaches [data-id="${cid}"]`); if(el) el.classList.add("on"); });
@@ -3246,10 +3259,11 @@ async function saveSession(){
   const oldSession = DATA.sessions.find(x=>x.id===id);
   const obj = {
     id, date: document.getElementById("sess-date").value, type: document.getElementById("sess-type").value,
+    matchFormat: document.getElementById("sess-type").value==="Match" ? document.getElementById("sess-matchformat").value : (oldSession ? oldSession.matchFormat : undefined),
     start: document.getElementById("sess-start").value, end: document.getElementById("sess-end").value,
-    place: document.getElementById("sess-place").value, week: document.getElementById("sess-week").value,
+    place: document.getElementById("sess-place").value, week: oldSession ? (oldSession.week||"") : "",
     gathering: document.getElementById("sess-gathering").value,
-    pass: document.getElementById("sess-pass").value,
+    pass: oldSession ? (oldSession.pass||"") : "",
     yta: document.getElementById("sess-yta").value, istid: document.getElementById("sess-istid").value,
     coaches, attendance: sessionDraft.attendance, activeGroups: sessionDraft.activeGroups, lineup: sessionDraft.lineup,
     notes: document.getElementById("sess-notes").value,
