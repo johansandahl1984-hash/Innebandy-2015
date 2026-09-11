@@ -2035,6 +2035,39 @@ function lineupTableHTML(s){
   }).join("");
   return `<div style="margin-top:10px;">${matchInfoRow}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${groupCards}</div></div>`;
 }
+// Delningsvy för formationsuppställningen (Serie 5mot5) — samma "läsbar, skärmdumpsvänlig"-princip
+// som lineupTableHTML(), men anpassad till positionsstrukturen (målvakter + tre femmor) istället
+// för fria gruppindelningar.
+function formationTableHTML(s){
+  const ml = s.matchLineup; if(!ml) return "";
+  const matchInfoRow = (s.gathering || s.place) ? `
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;background:#F4F6F1;padding:8px 12px;border-radius:8px;">
+      ${s.gathering ? `<span><b>Samling:</b> ${s.gathering}</span>` : ""}
+      ${s.place ? `<span><b>Plats:</b> ${s.place}</span>` : ""}
+    </div>` : "";
+  const nameOf = pid => { const p = pid && DATA.players.find(x=>x.id===pid); return p ? p.name : "—"; };
+  const goalieCards = `<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:140px;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
+      <div style="background:var(--pine-dark);color:#fff;padding:5px 10px;font-family:'Oswald';font-weight:700;font-size:12px;">Målvakt (primär)</div>
+      <div style="padding:8px 10px;font-size:12.5px;">${nameOf(ml.goalie1)}</div>
+    </div>
+    <div style="flex:1;min-width:140px;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
+      <div style="background:var(--pine-dark);color:#fff;padding:5px 10px;font-family:'Oswald';font-weight:700;font-size:12px;">Målvakt (reserv)</div>
+      <div style="padding:8px 10px;font-size:12.5px;">${nameOf(ml.goalie2)}</div>
+    </div>
+  </div>`;
+  const posOrder = ["back1","back2","center","fwd1","fwd2"];
+  const femmaCards = ml.formations.map((f,fi)=>{
+    const rows = posOrder.map(pos=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">
+      <span style="color:#777;">${FORMATION_SLOT_LABELS[pos]}</span><span>${nameOf(f[pos])}</span>
+    </div>`).join("");
+    return `<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
+      <div style="background:var(--pine);color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;">Femma ${fi+1}</div>
+      <div style="padding:4px 10px 8px;">${rows}</div>
+    </div>`;
+  }).join("");
+  return `<div style="margin-top:10px;">${matchInfoRow}${goalieCards}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${femmaCards}</div></div>`;
+}
 
 function renderSessions(){
   if(reconcileAutoArchivedPairHistory()) saveData(); // fångar upp pass som blev "Genomförda" enbart pga att datumet passerat
@@ -2096,6 +2129,7 @@ function renderSessions(){
       <div id="training-summary-container-${s.id}" style="display:none;"></div>
       <div id="inline-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="formation-lineup-container-${s.id}" style="overflow-x:auto;"></div>
+      <div id="fl-shared-table-${s.id}">${(s.matchFormat==="serie5mot5" && s.matchLineup) ? formationTableHTML(s) : ""}</div>
     </div>`;
   }).join("");
 }
@@ -3019,8 +3053,11 @@ async function saveFormationLineup(){
   const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
   await guard(async ()=>{
     s.matchLineup = formationDraft;
-    closeFormationLineup(sid);
-    renderSessions();
+    closeFormationLineup(sid); // sätter redan rätt knapptext via resetFormationToggleLabel
+    // Riktad uppdatering istället för att bygga om hela sessionslistan (samma resonemang som
+    // saveInlineLineup) — undviker att scrollpositionen hoppar vid spara.
+    const tableEl = document.getElementById("fl-shared-table-"+sid);
+    if(tableEl) tableEl.innerHTML = formationTableHTML(s);
     await saveData();
   });
 }
