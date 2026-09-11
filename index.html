@@ -274,6 +274,19 @@
   .lineup-zone, .lineup-pool{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none;}
   .lineup-zone input, .lineup-zone select, .lineup-pool input, .lineup-pool select{-webkit-user-select:auto; user-select:auto;}
   .lineup-chip-ghost{box-shadow:0 6px 16px rgba(0,0,0,.25); transform:scale(1.05);}
+
+  /* ---------- Formationsuppställning (Serie 5mot5) ---------- */
+  .formation-card{border:1px solid var(--line); border-radius:14px; background:#fff; padding:14px; margin-bottom:14px;}
+  .formation-card h4{font-family:'Oswald'; font-size:13px; margin:0 0 10px; color:var(--pine-dark);}
+  .fslot-row{display:flex; justify-content:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .fslot{width:104px; min-height:52px; border:1.5px dashed var(--line); border-radius:10px; padding:6px 8px; text-align:center; background:var(--ice); transition:background .15s;}
+  .fslot.filled{border-style:solid; background:#fff; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;}
+  .fslot.dragover{background:#E4F1E8; border-color:var(--pine-light);}
+  .fslot .fslot-label{font-size:9.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); display:block; margin-bottom:3px;}
+  .fslot .fslot-name{font-size:12.5px; font-weight:600;}
+  .fgoalie-row{display:flex; justify-content:center; gap:14px; margin-bottom:16px;}
+  .fgoalie-row .fslot{width:130px;}
+  .formation-pool{border:1.5px dashed var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px; background:var(--ice); min-height:44px;}
   .lineup-chip:active{cursor:grabbing;}
 
   .blk-table{border-collapse:collapse; width:100%; min-width:560px;}
@@ -2070,7 +2083,9 @@ function renderSessions(){
           <div class="chip-group" id="chip-group-${s.id}" style="margin-top:6px;">${coachChips}${groupChips}</div>
         </div>
         <div class="sess-actions">
-          <button class="btn ghost small" onclick="toggleInlineLineup('${s.id}')" id="lu-toggle-${s.id}">${groupsUsed.length?'Redigera laguppställning':'Lägg till laguppställning'}</button>
+          ${(s.type==="Match" && s.matchFormat==="serie5mot5")
+            ? `<button class="btn ghost small" onclick="toggleFormationLineup('${s.id}')" id="fl-toggle-${s.id}">${s.matchLineup?'Redigera formationsuppställning':'Lägg till formationsuppställning'}</button>`
+            : `<button class="btn ghost small" onclick="toggleInlineLineup('${s.id}')" id="lu-toggle-${s.id}">${groupsUsed.length?'Redigera laguppställning':'Lägg till laguppställning'}</button>`}
           ${s.type!=="Match" ? `<button class="btn ghost small" onclick="toggleBlocksPanel('${s.id}')" id="blk-toggle-${s.id}">${(s.blocks&&s.blocks.length)?`Bygg pass (${s.blocks.length})`:'Bygg pass'}</button>` : ""}
           ${(s.type!=="Match" && s.blocks && s.blocks.length>0) ? `<button class="btn ghost small" onclick="toggleTrainingSummary('${s.id}')" id="ts-toggle-${s.id}">📋 Träningsöversikt</button>` : ""}
           <button class="btn ghost small" onclick="editSession('${s.id}')">Redigera</button>
@@ -2080,6 +2095,7 @@ function renderSessions(){
       ${s.type!=="Match" ? `<div id="blocks-panel-${s.id}" style="display:none;"></div>` : ""}
       <div id="training-summary-container-${s.id}" style="display:none;"></div>
       <div id="inline-lineup-container-${s.id}" style="overflow-x:auto;"></div>
+      <div id="formation-lineup-container-${s.id}" style="overflow-x:auto;"></div>
     </div>`;
   }).join("");
 }
@@ -2777,6 +2793,236 @@ function closeInlineLineup(sid){
   if(container) container.innerHTML = "";
   if(lineupScope===sid) lineupScope = null;
   resetLineupToggleLabel(sid);
+}
+
+/* =========================================================================
+   FORMATIONSUPPSTÄLLNING (Serie 5mot5) — separat från den vanliga Blå/Grön-
+   gruppindelningen. 2 målvakter (primär/reserv) + 3 femmor, varje femma med
+   fasta positioner (2 back, 1 center, 2 forward). En spelare kan bara stå på
+   EN position åt gången — att placera hen någon annanstans flyttar bort
+   henne från sin gamla plats automatiskt.
+   ========================================================================= */
+let formationScope = null;
+let formationDraft = null; // {goalie1, goalie2, formations:[{back1,back2,center,fwd1,fwd2}, ...]}
+let formationSelectedPlayer = null;
+const FORMATION_SLOT_LABELS = {back1:"Back",back2:"Back",center:"Center",fwd1:"Forward",fwd2:"Forward"};
+
+function emptyMatchLineup(){
+  return { goalie1:"", goalie2:"", formations:[
+    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
+    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
+    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
+  ]};
+}
+function getSlotValue(slotKey){
+  if(slotKey==="goalie1"||slotKey==="goalie2") return formationDraft[slotKey];
+  const [f,pos] = slotKey.split("-");
+  return formationDraft.formations[+f.slice(1)][pos];
+}
+function setSlotValue(slotKey, pid){
+  if(slotKey==="goalie1"||slotKey==="goalie2"){ formationDraft[slotKey] = pid; return; }
+  const [f,pos] = slotKey.split("-");
+  formationDraft.formations[+f.slice(1)][pos] = pid;
+}
+function clearPlayerFromAllSlots(pid){
+  if(formationDraft.goalie1===pid) formationDraft.goalie1="";
+  if(formationDraft.goalie2===pid) formationDraft.goalie2="";
+  formationDraft.formations.forEach(f=>{ Object.keys(f).forEach(k=>{ if(f[k]===pid) f[k]=""; }); });
+}
+function assignPlayerToSlot(pid, slotKey){
+  clearPlayerFromAllSlots(pid); // en spelare kan bara stå på en position åt gången
+  setSlotValue(slotKey, pid);
+}
+
+function toggleFormationLineup(sid){
+  const container = document.getElementById("formation-lineup-container-"+sid);
+  const isOpen = container && container.innerHTML.trim() !== "";
+  if(isOpen) closeFormationLineup(sid); else openFormationLineup(sid);
+}
+function openFormationLineup(sid){
+  document.querySelectorAll('[id^="formation-lineup-container-"]').forEach(el=>{
+    if(el.id !== "formation-lineup-container-"+sid && el.innerHTML.trim() !== ""){
+      const otherSid = el.id.replace("formation-lineup-container-","");
+      el.innerHTML = "";
+      resetFormationToggleLabel(otherSid);
+    }
+  });
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  formationScope = sid;
+  formationDraft = s.matchLineup ? JSON.parse(JSON.stringify(s.matchLineup)) : emptyMatchLineup();
+  formationSelectedPlayer = null;
+  const container = document.getElementById("formation-lineup-container-"+sid);
+  container.innerHTML = formationShellHTML();
+  renderFormationBoard();
+  const btn = document.getElementById("fl-toggle-"+sid);
+  if(btn) btn.textContent = "Dölj formationsuppställning";
+}
+function resetFormationToggleLabel(sid){
+  const s = DATA.sessions.find(x=>x.id===sid);
+  const btn = document.getElementById("fl-toggle-"+sid);
+  if(btn) btn.textContent = (s && s.matchLineup) ? "Redigera formationsuppställning" : "Lägg till formationsuppställning";
+}
+function closeFormationLineup(sid){
+  const container = document.getElementById("formation-lineup-container-"+sid);
+  if(container) container.innerHTML = "";
+  if(formationScope===sid){ formationScope = null; formationDraft = null; }
+  resetFormationToggleLabel(sid);
+}
+function formationShellHTML(){
+  return `
+    <div class="card" style="margin-top:8px;">
+      <p style="font-size:11.5px;color:var(--muted);margin:0 0 10px;">Dra en spelare till en position, eller tryck på spelaren och sedan på positionen. Tryck på en ifylld position för att ta bort spelaren igen.</p>
+      <div id="formation-pool"></div>
+      <div class="fgoalie-row">
+        <div class="fslot" data-slot="goalie1" onclick="onFormationSlotClick(event,'goalie1')"><span class="fslot-label">Målvakt (primär)</span><span class="fslot-name"></span></div>
+        <div class="fslot" data-slot="goalie2" onclick="onFormationSlotClick(event,'goalie2')"><span class="fslot-label">Målvakt (reserv)</span><span class="fslot-name"></span></div>
+      </div>
+      <div id="formation-femmor"></div>
+      <div class="modal-actions" style="margin-top:6px;">
+        <button class="btn" onclick="saveFormationLineup()">Spara formationsuppställning</button>
+      </div>
+    </div>`;
+}
+function renderFormationBoard(){
+  if(!formationScope) return;
+  const poolEl = document.getElementById("formation-pool"); if(!poolEl) return;
+  const placedIds = new Set([formationDraft.goalie1, formationDraft.goalie2,
+    ...formationDraft.formations.flatMap(f=>Object.values(f))].filter(Boolean));
+  const poolPlayers = DATA.players.filter(p=>p.active!==false && !placedIds.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name,"sv"));
+  poolEl.innerHTML = `<div class="formation-pool">${poolPlayers.length===0
+    ? '<span style="font-size:12px;color:var(--muted);">Alla aktiva spelare är placerade.</span>'
+    : poolPlayers.map(p=>{
+        const sel = formationSelectedPlayer===p.id ? "selected" : "";
+        return `<span class="checkchip lineup-chip ${sel}" data-pid="${p.id}"
+          onpointerdown="onFormationChipPointerDown(event,'${p.id}')" onclick="onFormationChipClick(event,'${p.id}')">${p.name}</span>`;
+      }).join("")}</div>`;
+
+  document.querySelectorAll(".fslot[data-slot]").forEach(el=>{
+    const slotKey = el.dataset.slot;
+    const pid = getSlotValue(slotKey);
+    const p = pid ? DATA.players.find(x=>x.id===pid) : null;
+    el.classList.toggle("filled", !!p);
+    el.querySelector(".fslot-name").textContent = p ? p.name : "—";
+    if(p){
+      el.setAttribute("onpointerdown", `onFormationSlotPointerDown(event,'${slotKey}')`);
+    } else {
+      el.removeAttribute("onpointerdown");
+    }
+  });
+
+  const femmorEl = document.getElementById("formation-femmor"); if(!femmorEl) return;
+  femmorEl.innerHTML = formationDraft.formations.map((f,fi)=>{
+    const posOrder = ["back1","back2","center","fwd1","fwd2"];
+    const cellsHTML = posOrder.map(pos=>{
+      const slotKey = `f${fi}-${pos}`;
+      const pid = f[pos];
+      const p = pid ? DATA.players.find(x=>x.id===pid) : null;
+      return `<div class="fslot ${p?'filled':''}" data-slot="${slotKey}" onclick="onFormationSlotClick(event,'${slotKey}')" ${p?`onpointerdown="onFormationSlotPointerDown(event,'${slotKey}')"`:""}>
+        <span class="fslot-label">${FORMATION_SLOT_LABELS[pos]}</span><span class="fslot-name">${p?p.name:"—"}</span>
+      </div>`;
+    }).join("");
+    return `<div class="formation-card"><h4>Femma ${fi+1}</h4><div class="fslot-row">${cellsHTML}</div></div>`;
+  }).join("");
+}
+function onFormationChipClick(ev, pid){
+  ev.stopPropagation();
+  const el = ev.currentTarget;
+  if(el && el.dataset.dragHandled){ delete el.dataset.dragHandled; return; }
+  formationSelectedPlayer = (formationSelectedPlayer===pid) ? null : pid;
+  renderFormationBoard();
+}
+function onFormationSlotClick(ev, slotKey){
+  const el = ev.currentTarget;
+  if(el && el.dataset.dragHandled){ delete el.dataset.dragHandled; return; } // ett drag avslutades just nu på denna position, inte ett nytt klick
+  const current = getSlotValue(slotKey);
+  if(formationSelectedPlayer){
+    assignPlayerToSlot(formationSelectedPlayer, slotKey);
+    formationSelectedPlayer = null;
+    renderFormationBoard();
+    return;
+  }
+  if(current){ setSlotValue(slotKey, ""); renderFormationBoard(); } // tryck på en ifylld tom position -> ta bort
+}
+/* ---- Drag (Pointer Events, samma mönster som lagindelningen) ---- */
+let formationDragState = null;
+function onFormationChipPointerDown(ev, pid){
+  if(ev.pointerType==="mouse" && ev.button!==0) return;
+  const r = ev.currentTarget.getBoundingClientRect();
+  formationDragState = { pid, fromSlot:null, startX:ev.clientX, startY:ev.clientY, moved:false, ghostEl:null,
+    origEl:ev.currentTarget, grabDX:ev.clientX-r.left, grabDY:ev.clientY-r.top, elW:r.width, corrX:0, corrY:0 };
+  document.addEventListener("pointermove", onFormationDragPointerMove);
+  document.addEventListener("pointerup", onFormationDragPointerUp, {once:true});
+}
+function onFormationSlotPointerDown(ev, slotKey){
+  if(ev.pointerType==="mouse" && ev.button!==0) return;
+  ev.stopPropagation();
+  const pid = getSlotValue(slotKey); if(!pid) return;
+  const r = ev.currentTarget.getBoundingClientRect();
+  formationDragState = { pid, fromSlot:slotKey, startX:ev.clientX, startY:ev.clientY, moved:false, ghostEl:null,
+    origEl:ev.currentTarget, grabDX:ev.clientX-r.left, grabDY:ev.clientY-r.top, elW:r.width, corrX:0, corrY:0 };
+  document.addEventListener("pointermove", onFormationDragPointerMove);
+  document.addEventListener("pointerup", onFormationDragPointerUp, {once:true});
+}
+function onFormationDragPointerMove(ev){
+  if(!formationDragState) return;
+  const dx = ev.clientX-formationDragState.startX, dy = ev.clientY-formationDragState.startY;
+  if(!formationDragState.moved){
+    if(Math.hypot(dx,dy) < 6) return;
+    formationDragState.moved = true;
+    const sel = window.getSelection && window.getSelection();
+    if(sel && sel.removeAllRanges) sel.removeAllRanges();
+    const orig = formationDragState.origEl;
+    const ghost = orig.cloneNode(true);
+    ghost.classList.add("lineup-chip-ghost");
+    ghost.style.position="fixed"; ghost.style.margin="0"; ghost.style.pointerEvents="none"; ghost.style.zIndex="500";
+    ghost.style.width=formationDragState.elW+"px";
+    ghost.style.left="0px"; ghost.style.top="0px"; ghost.style.transform="translate(0px,0px)";
+    document.body.appendChild(ghost);
+    const gr = ghost.getBoundingClientRect();
+    formationDragState.corrX = -gr.left; formationDragState.corrY = -gr.top;
+    formationDragState.ghostEl = ghost;
+    orig.style.opacity = "0.35";
+  }
+  const st = formationDragState;
+  const ghost = st.ghostEl;
+  ghost.style.transform = `translate(${ev.clientX-st.grabDX+st.corrX}px,${ev.clientY-st.grabDY+st.corrY}px)`;
+  document.querySelectorAll(".fslot.dragover").forEach(z=>z.classList.remove("dragover"));
+  ghost.style.display="none";
+  const under = document.elementFromPoint(ev.clientX, ev.clientY);
+  ghost.style.display="";
+  const zone = under && under.closest(".fslot[data-slot], .formation-pool");
+  if(zone && zone.classList.contains("fslot")) zone.classList.add("dragover");
+}
+function onFormationDragPointerUp(ev){
+  document.removeEventListener("pointermove", onFormationDragPointerMove);
+  if(!formationDragState) return;
+  const state = formationDragState; formationDragState = null;
+  document.querySelectorAll(".fslot.dragover").forEach(z=>z.classList.remove("dragover"));
+  if(state.ghostEl) state.ghostEl.remove();
+  if(state.origEl) state.origEl.style.opacity = "";
+  if(!state.moved) return;
+  if(state.origEl) state.origEl.dataset.dragHandled = "1";
+  const under = document.elementFromPoint(ev.clientX, ev.clientY);
+  const slotEl = under && under.closest(".fslot[data-slot]");
+  if(slotEl){
+    assignPlayerToSlot(state.pid, slotEl.dataset.slot);
+  } else {
+    const poolEl = under && under.closest(".formation-pool");
+    if(poolEl && state.fromSlot) setSlotValue(state.fromSlot, ""); // släppt i poolen -> ta bort från positionen
+    else return; // släppt utanför allt giltigt -> ingen ändring
+  }
+  renderFormationBoard();
+}
+async function saveFormationLineup(){
+  if(!formationScope) return;
+  const sid = formationScope;
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  await guard(async ()=>{
+    s.matchLineup = formationDraft;
+    closeFormationLineup(sid);
+    renderSessions();
+    await saveData();
+  });
 }
 function refreshSessionCardSummary(sid){
   const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
