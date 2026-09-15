@@ -287,6 +287,7 @@
   .fgoalie-row{display:flex; justify-content:center; gap:14px; margin-bottom:16px;}
   .fgoalie-row .fslot{width:130px;}
   .formation-pool{border:1.5px dashed var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px; background:var(--ice); min-height:44px;}
+  .cup-match-card{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--ice);}
   .lineup-chip:active{cursor:grabbing;}
 
   .blk-table{border-collapse:collapse; width:100%; min-width:560px;}
@@ -2043,16 +2044,12 @@ function lineupTableHTML(s){
   }).join("");
   return `<div style="margin-top:10px;">${matchInfoRow}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${groupCards}</div></div>`;
 }
-// Delningsvy för formationsuppställningen (Serie 5mot5) — samma "läsbar, skärmdumpsvänlig"-princip
-// som lineupTableHTML(), men anpassad till positionsstrukturen (målvakter + tre femmor) istället
-// för fria gruppindelningar.
-function formationTableHTML(s){
-  const ml = s.matchLineup; if(!ml) return "";
-  const matchInfoRow = (s.gathering || s.place) ? `
-    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;background:#F4F6F1;padding:8px 12px;border-radius:8px;">
-      ${s.gathering ? `<span><b>Samling:</b> ${s.gathering}</span>` : ""}
-      ${s.place ? `<span><b>Plats:</b> ${s.place}</span>` : ""}
-    </div>` : "";
+// Delningsvy för en formationsuppställning (Serie 5mot5 ELLER en enskild cupmatch) — samma
+// "läsbar, skärmdumpsvänlig"-princip som lineupTableHTML(), men anpassad till positions-
+// strukturen (målvakter + tre femmor/fyror) istället för fria gruppindelningar. Tar emot
+// lineup-objektet direkt (inte sessionen) så den kan återanvändas för en enskild cupmatch också.
+function formationLineupTableHTML(ml, infoRowHTML){
+  if(!ml) return "";
   const nameOf = pid => { const p = pid && DATA.players.find(x=>x.id===pid); return p ? p.name : "—"; };
   const goalieCards = `<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
     <div style="flex:1;min-width:140px;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
@@ -2064,17 +2061,28 @@ function formationTableHTML(s){
       <div style="padding:8px 10px;font-size:12.5px;">${nameOf(ml.goalie2)}</div>
     </div>
   </div>`;
-  const posOrder = ["back1","back2","center","fwd1","fwd2"];
+  const pc = ml.playerCount || 5;
+  const posOrder = positionOrderFor(pc);
+  const cardLabel = pc===4 ? "Fyra" : "Femma";
   const femmaCards = ml.formations.map((f,fi)=>{
     const rows = posOrder.map(pos=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">
       <span style="color:#777;">${FORMATION_SLOT_LABELS[pos]}</span><span>${nameOf(f[pos])}</span>
     </div>`).join("");
     return `<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
-      <div style="background:var(--pine);color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;">Femma ${fi+1}</div>
+      <div style="background:var(--pine);color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;">${cardLabel} ${fi+1}</div>
       <div style="padding:4px 10px 8px;">${rows}</div>
     </div>`;
   }).join("");
-  return `<div style="margin-top:10px;">${matchInfoRow}${goalieCards}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${femmaCards}</div></div>`;
+  return `<div style="margin-top:10px;">${infoRowHTML||""}${goalieCards}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${femmaCards}</div></div>`;
+}
+function formationTableHTML(s){
+  if(!s.matchLineup) return "";
+  const matchInfoRow = (s.gathering || s.place) ? `
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;background:#F4F6F1;padding:8px 12px;border-radius:8px;">
+      ${s.gathering ? `<span><b>Samling:</b> ${s.gathering}</span>` : ""}
+      ${s.place ? `<span><b>Plats:</b> ${s.place}</span>` : ""}
+    </div>` : "";
+  return formationLineupTableHTML(s.matchLineup, matchInfoRow);
 }
 
 function renderSessions(){
@@ -2126,6 +2134,8 @@ function renderSessions(){
         <div class="sess-actions">
           ${(s.type==="Match" && s.matchFormat==="serie5mot5")
             ? `<button class="btn ghost small" onclick="toggleFormationLineup('${s.id}')" id="fl-toggle-${s.id}">${s.matchLineup?'Redigera formationsuppställning':'Lägg till formationsuppställning'}</button>`
+            : (s.type==="Match" && s.matchFormat==="cupflera")
+            ? `<button class="btn ghost small" onclick="toggleCupMatches('${s.id}')" id="cup-toggle-${s.id}">${(s.matches&&s.matches.length)?`Cupmatcher (${s.matches.length})`:'Lägg till cupmatcher'}</button>`
             : `<button class="btn ghost small" onclick="toggleInlineLineup('${s.id}')" id="lu-toggle-${s.id}">${groupsUsed.length?'Redigera laguppställning':'Lägg till laguppställning'}</button>`}
           ${s.type!=="Match" ? `<button class="btn ghost small" onclick="toggleBlocksPanel('${s.id}')" id="blk-toggle-${s.id}">${(s.blocks&&s.blocks.length)?`Bygg pass (${s.blocks.length})`:'Bygg pass'}</button>` : ""}
           ${(s.type!=="Match" && s.blocks && s.blocks.length>0) ? `<button class="btn ghost small" onclick="toggleTrainingSummary('${s.id}')" id="ts-toggle-${s.id}">📋 Träningsöversikt</button>` : ""}
@@ -2138,6 +2148,7 @@ function renderSessions(){
       <div id="inline-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="formation-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="fl-shared-table-${s.id}">${(s.matchFormat==="serie5mot5" && s.matchLineup) ? formationTableHTML(s) : ""}</div>
+      <div id="cup-matches-container-${s.id}" style="overflow-x:auto;display:none;"></div>
     </div>`;
   }).join("");
 }
@@ -3107,6 +3118,95 @@ async function saveFormationLineup(){
     await saveData();
   });
 }
+
+/* =========================================================================
+   CUPMATCHER — flera matcher (motstånd + starttid) samma dag/tillfälle, var
+   och en med egen formationsuppställning (eller kopierad från föregående
+   match). Återanvänder formationsmotorn ovan via formationSubMatchId.
+   ========================================================================= */
+function toggleCupMatches(sid){
+  const container = document.getElementById("cup-matches-container-"+sid); if(!container) return;
+  const isOpen = container.style.display !== "none";
+  if(isOpen){ container.style.display = "none"; container.innerHTML = ""; }
+  else { container.style.display = "block"; renderCupMatches(sid); }
+}
+function updateCupToggleLabel(sid){
+  const s = DATA.sessions.find(x=>x.id===sid);
+  const btn = document.getElementById("cup-toggle-"+sid);
+  if(btn) btn.textContent = (s && s.matches && s.matches.length) ? `Cupmatcher (${s.matches.length})` : "Lägg till cupmatcher";
+}
+function renderCupMatches(sid){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  const container = document.getElementById("cup-matches-container-"+sid); if(!container) return;
+  if(!s.matches) s.matches = [];
+  const matchesHTML = s.matches.map((m,mi)=>{
+    const hasLineup = !!m.matchLineup;
+    const matchInfoRow = m.startTime ? `<div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">Starttid ${m.startTime}</div>` : "";
+    return `<div class="cup-match-card">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:'Oswald';font-weight:700;color:var(--pine-dark);min-width:18px;">${mi+1}.</span>
+        <input type="text" value="${(m.opponent||'').replace(/"/g,'&quot;')}" placeholder="Motstånd" onchange="updateCupMatchField('${sid}','${m.id}','opponent',this.value)" style="flex:1;min-width:120px;">
+        <input type="time" value="${m.startTime||''}" onchange="updateCupMatchField('${sid}','${m.id}','startTime',this.value)" style="width:110px;">
+        <button class="btn ghost small" onclick="removeCupMatch('${sid}','${m.id}')" title="Ta bort matchen">✕</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn ghost small" onclick="toggleFormationLineup('${sid}','${m.id}')" id="fl-toggle-${sid}-${m.id}">${hasLineup?'Redigera formation':'Bygg formation'}</button>
+        ${mi>0 ? `<button class="btn ghost small" onclick="copyCupMatchFromPrevious('${sid}','${m.id}')">Kopiera föregående match</button>` : ""}
+      </div>
+      <div id="formation-editor-${sid}-${m.id}" style="overflow-x:auto;"></div>
+      <div id="cup-match-table-${sid}-${m.id}">${hasLineup ? formationLineupTableHTML(m.matchLineup, matchInfoRow) : ""}</div>
+    </div>`;
+  }).join("") || '<p style="font-size:12px;color:var(--muted);margin:0 0 10px;">Inga matcher inlagda än.</p>';
+  container.innerHTML = `<div class="card" style="margin-top:8px;">
+    <h4 style="margin:0 0 4px;font-family:'Oswald';font-size:13px;color:var(--pine-dark);">Cupmatcher (${s.cupPlayerCount||5} mot ${s.cupPlayerCount||5})</h4>
+    <p style="font-size:11px;color:var(--muted);margin:0 0 12px;">Lägg till en match i taget med motstånd och starttid. Bygg en ny formation, eller kopiera formationen från föregående match och justera vid behov.</p>
+    ${matchesHTML}
+    <button class="btn ghost small" onclick="addCupMatch('${sid}')">+ Ny match</button>
+  </div>`;
+}
+async function addCupMatch(sid){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  await guard(async ()=>{
+    if(!s.matches) s.matches = [];
+    s.matches.push({ id: "cm-"+Date.now()+"-"+Math.random().toString(36).slice(2,6), opponent:"", startTime:"", matchLineup:null });
+    renderCupMatches(sid);
+    updateCupToggleLabel(sid);
+    await saveData();
+  });
+}
+async function removeCupMatch(sid, matchId){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  const yes = await confirmDialog("Ta bort matchen? En ev. sparad formation för den försvinner också.", "Ta bort match");
+  if(!yes) return;
+  await guard(async ()=>{
+    s.matches = (s.matches||[]).filter(m=>m.id!==matchId);
+    if(formationScope===sid && formationSubMatchId===matchId){ formationScope=null; formationSubMatchId=null; formationDraft=null; }
+    renderCupMatches(sid);
+    updateCupToggleLabel(sid);
+    await saveData();
+  });
+}
+function updateCupMatchField(sid, matchId, field, value){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  const m = (s.matches||[]).find(x=>x.id===matchId); if(!m) return;
+  m[field] = value;
+  saveData(); // ingen omritning — samma resonemang som andra fritext/tidsfält (onchange, ingen risk för fokusförlust)
+}
+async function copyCupMatchFromPrevious(sid, matchId){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  const idx = (s.matches||[]).findIndex(x=>x.id===matchId);
+  if(idx<=0) return;
+  const prev = s.matches[idx-1];
+  if(!prev.matchLineup){ alert("Föregående match har ingen formation sparad ännu."); return; }
+  const yes = await confirmDialog(`Kopiera formationen från match ${idx} (${prev.opponent||"namnlöst motstånd"})? Ersätter en ev. formation som redan finns på den här matchen.`, "Kopiera formation");
+  if(!yes) return;
+  await guard(async ()=>{
+    s.matches[idx].matchLineup = JSON.parse(JSON.stringify(prev.matchLineup));
+    renderCupMatches(sid);
+    await saveData();
+  });
+}
+
 function refreshSessionCardSummary(sid){
   const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
   const el = document.getElementById("chip-group-"+sid); if(!el) return;
