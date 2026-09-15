@@ -488,11 +488,19 @@
     </div>
     <div class="field" id="sess-matchformat-field" style="display:none;">
       <label>Matchformat</label>
-      <select id="sess-matchformat">
+      <select id="sess-matchformat" onchange="onMatchFormatChange()">
         <option value="poolspel">Poolspel / Blå serie</option>
         <option value="serie5mot5">Serie (röd) 5 mot 5</option>
+        <option value="cupflera">Cup / flera matcher samma dag</option>
       </select>
-      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Styr vilken sorts laguppställning som visas för matchen — enkel laguppställning för poolspel, formationsuppställning (målvakter + 3 femmor med fasta positioner) för seriematcher.</p>
+      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Styr vilken sorts laguppställning som visas för matchen — enkel laguppställning för poolspel, formationsuppställning (målvakter + 3 femmor med fasta positioner) för seriematcher, en lista av flera matcher (var och en med egen formation) för cupdagar.</p>
+      <div id="sess-cupcount-field" style="display:none;margin-top:8px;">
+        <label>Spelform för dagens matcher</label>
+        <select id="sess-cupcount">
+          <option value="5">5 mot 5</option>
+          <option value="4">4 mot 4</option>
+        </select>
+      </div>
     </div>
     <div class="field-row">
       <div class="field"><label>Starttid</label><input type="time" id="sess-start"></div>
@@ -2837,15 +2845,21 @@ function closeInlineLineup(sid){
    henne från sin gamla plats automatiskt.
    ========================================================================= */
 let formationScope = null;
-let formationDraft = null; // {goalie1, goalie2, formations:[{back1,back2,center,fwd1,fwd2}, ...]}
+let formationSubMatchId = null; // satt när man redigerar EN specifik match inom en cup-dag (session.matches[i]), annars null (redigerar session.matchLineup direkt)
+let formationDraft = null; // {goalie1, goalie2, playerCount, formations:[{back1,back2,[center,]fwd1,fwd2}, ...]}
 let formationSelectedPlayer = null;
 const FORMATION_SLOT_LABELS = {back1:"Back",back2:"Back",center:"Center",fwd1:"Forward",fwd2:"Forward"};
 
-function emptyMatchLineup(){
-  return { goalie1:"", goalie2:"", formations:[
-    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
-    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
-    {back1:"",back2:"",center:"",fwd1:"",fwd2:""},
+function positionOrderFor(playerCount){
+  return playerCount===4 ? ["back1","back2","fwd1","fwd2"] : ["back1","back2","center","fwd1","fwd2"];
+}
+function emptyFormation(playerCount){
+  const f = {}; positionOrderFor(playerCount).forEach(pos=>f[pos]=""); return f;
+}
+function emptyMatchLineup(playerCount){
+  const pc = playerCount || 5;
+  return { goalie1:"", goalie2:"", playerCount: pc, formations:[
+    emptyFormation(pc), emptyFormation(pc), emptyFormation(pc),
   ]};
 }
 function getSlotValue(slotKey){
@@ -2868,39 +2882,53 @@ function assignPlayerToSlot(pid, slotKey){
   setSlotValue(slotKey, pid);
 }
 
-function toggleFormationLineup(sid){
-  const container = document.getElementById("formation-lineup-container-"+sid);
-  const isOpen = container && container.innerHTML.trim() !== "";
-  if(isOpen) closeFormationLineup(sid); else openFormationLineup(sid);
+function toggleFormationLineup(sid, subMatchId){
+  const isThisOpen = formationScope===sid && formationSubMatchId===(subMatchId||null);
+  if(isThisOpen){ closeFormationLineup(); return; }
+  if(formationScope){ closeFormationLineup(); } // stäng ev. annan öppen redigerare (session- eller cup-match-nivå) först
+  openFormationLineup(sid, subMatchId);
 }
-function openFormationLineup(sid){
-  document.querySelectorAll('[id^="formation-lineup-container-"]').forEach(el=>{
-    if(el.id !== "formation-lineup-container-"+sid && el.innerHTML.trim() !== ""){
-      const otherSid = el.id.replace("formation-lineup-container-","");
-      el.innerHTML = "";
-      resetFormationToggleLabel(otherSid);
-    }
-  });
+function openFormationLineup(sid, subMatchId){
   const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
   formationScope = sid;
-  formationDraft = s.matchLineup ? JSON.parse(JSON.stringify(s.matchLineup)) : emptyMatchLineup();
+  formationSubMatchId = subMatchId || null;
+  let source, playerCount;
+  if(formationSubMatchId){
+    const m = (s.matches||[]).find(x=>x.id===formationSubMatchId);
+    source = m ? m.matchLineup : null;
+    playerCount = s.cupPlayerCount || 5;
+  } else {
+    source = s.matchLineup;
+    playerCount = 5;
+  }
+  formationDraft = source ? JSON.parse(JSON.stringify(source)) : emptyMatchLineup(playerCount);
+  if(!formationDraft.playerCount) formationDraft.playerCount = playerCount; // bakåtkompatibilitet — äldre sparade formationer saknar fältet, de var alltid 5mot5
   formationSelectedPlayer = null;
-  const container = document.getElementById("formation-lineup-container-"+sid);
+  const containerId = formationSubMatchId ? `formation-editor-${sid}-${formationSubMatchId}` : `formation-lineup-container-${sid}`;
+  const container = document.getElementById(containerId); if(!container) return;
   container.innerHTML = formationShellHTML();
   renderFormationBoard();
-  const btn = document.getElementById("fl-toggle-"+sid);
-  if(btn) btn.textContent = "Dölj formationsuppställning";
+  updateFormationToggleLabel(sid, formationSubMatchId, true);
 }
-function resetFormationToggleLabel(sid){
+function updateFormationToggleLabel(sid, subMatchId, isOpen){
   const s = DATA.sessions.find(x=>x.id===sid);
-  const btn = document.getElementById("fl-toggle-"+sid);
-  if(btn) btn.textContent = (s && s.matchLineup) ? "Redigera formationsuppställning" : "Lägg till formationsuppställning";
+  if(subMatchId){
+    const m = s && (s.matches||[]).find(x=>x.id===subMatchId);
+    const btn = document.getElementById(`fl-toggle-${sid}-${subMatchId}`);
+    if(btn) btn.textContent = isOpen ? "Dölj formation" : ((m && m.matchLineup) ? "Redigera formation" : "Bygg formation");
+  } else {
+    const btn = document.getElementById("fl-toggle-"+sid);
+    if(btn) btn.textContent = isOpen ? "Dölj formationsuppställning" : ((s && s.matchLineup) ? "Redigera formationsuppställning" : "Lägg till formationsuppställning");
+  }
 }
-function closeFormationLineup(sid){
-  const container = document.getElementById("formation-lineup-container-"+sid);
+function closeFormationLineup(){
+  if(!formationScope) return;
+  const sid = formationScope, subMatchId = formationSubMatchId;
+  const containerId = subMatchId ? `formation-editor-${sid}-${subMatchId}` : `formation-lineup-container-${sid}`;
+  const container = document.getElementById(containerId);
   if(container) container.innerHTML = "";
-  if(formationScope===sid){ formationScope = null; formationDraft = null; }
-  resetFormationToggleLabel(sid);
+  formationScope = null; formationSubMatchId = null; formationDraft = null;
+  updateFormationToggleLabel(sid, subMatchId, false);
 }
 function formationShellHTML(){
   return `
@@ -2945,6 +2973,8 @@ function renderFormationBoard(){
   });
 
   const femmorEl = document.getElementById("formation-femmor"); if(!femmorEl) return;
+  const pc = formationDraft.playerCount || 5;
+  const cardLabel = pc===4 ? "Fyra" : "Femma";
   femmorEl.innerHTML = formationDraft.formations.map((f,fi)=>{
     const slotHTML = pos=>{
       const slotKey = `f${fi}-${pos}`;
@@ -2954,12 +2984,13 @@ function renderFormationBoard(){
         <span class="fslot-label">${FORMATION_SLOT_LABELS[pos]}</span><span class="fslot-name">${p?p.name:"—"}</span>
       </div>`;
     };
-    // Tärningsfemma-layout: back/back överst, center ensam i mitten, forward/forward underst
-    // — tre separata rader istället för en enda radbrytande rad, så ordningen alltid blir
-    // densamma oavsett skärmbredd.
-    return `<div class="formation-card"><h4>Femma ${fi+1}</h4>
+    // Tärningsfemma-layout: back/back överst, center ensam i mitten (om 5mot5), forward/forward
+    // underst — tre (eller två, vid 4mot4 utan center) separata rader istället för en enda
+    // radbrytande rad, så ordningen alltid blir densamma oavsett skärmbredd.
+    const centerRowHTML = pc===4 ? "" : `<div class="fslot-row fslot-row-center">${slotHTML("center")}</div>`;
+    return `<div class="formation-card"><h4>${cardLabel} ${fi+1}</h4>
       <div class="fslot-row">${slotHTML("back1")}${slotHTML("back2")}</div>
-      <div class="fslot-row fslot-row-center">${slotHTML("center")}</div>
+      ${centerRowHTML}
       <div class="fslot-row">${slotHTML("fwd1")}${slotHTML("fwd2")}</div>
     </div>`;
   }).join("");
@@ -3055,15 +3086,24 @@ function onFormationDragPointerUp(ev){
 }
 async function saveFormationLineup(){
   if(!formationScope) return;
-  const sid = formationScope;
+  const sid = formationScope, subMatchId = formationSubMatchId;
   const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
   await guard(async ()=>{
-    s.matchLineup = formationDraft;
-    closeFormationLineup(sid); // sätter redan rätt knapptext via resetFormationToggleLabel
+    if(subMatchId){
+      const m = (s.matches||[]).find(x=>x.id===subMatchId);
+      if(m) m.matchLineup = formationDraft;
+    } else {
+      s.matchLineup = formationDraft;
+    }
+    closeFormationLineup(); // sätter redan rätt knapptext via updateFormationToggleLabel
     // Riktad uppdatering istället för att bygga om hela sessionslistan (samma resonemang som
     // saveInlineLineup) — undviker att scrollpositionen hoppar vid spara.
-    const tableEl = document.getElementById("fl-shared-table-"+sid);
-    if(tableEl) tableEl.innerHTML = formationTableHTML(s);
+    if(subMatchId){
+      renderCupMatches(sid);
+    } else {
+      const tableEl = document.getElementById("fl-shared-table-"+sid);
+      if(tableEl) tableEl.innerHTML = formationTableHTML(s);
+    }
     await saveData();
   });
 }
@@ -3453,6 +3493,11 @@ function currentSessionType(){
 function onSessTypeChange(){
   const isMatch = document.getElementById("sess-type").value === "Match";
   document.getElementById("sess-matchformat-field").style.display = isMatch ? "block" : "none";
+  onMatchFormatChange();
+}
+function onMatchFormatChange(){
+  const isCup = document.getElementById("sess-matchformat").value === "cupflera";
+  document.getElementById("sess-cupcount-field").style.display = isCup ? "block" : "none";
 }
 function suggestMix(){
   // Målvaktsgruppen ska inte få slumpmässiga utespelare tilldelade — bara de grupper som faktiskt
@@ -3488,6 +3533,7 @@ function openSessionModal(){
   document.getElementById("sess-date").value = "";
   document.getElementById("sess-type").value = "Träning";
   document.getElementById("sess-matchformat").value = "poolspel";
+  document.getElementById("sess-cupcount").value = "5";
   onSessTypeChange();
   document.getElementById("sess-start").value = "";
   document.getElementById("sess-end").value = "";
@@ -3515,6 +3561,7 @@ function editSession(id){
   document.getElementById("sess-date").value = s.date;
   document.getElementById("sess-type").value = s.type;
   document.getElementById("sess-matchformat").value = s.matchFormat || "poolspel";
+  document.getElementById("sess-cupcount").value = String(s.cupPlayerCount || 5);
   onSessTypeChange();
   document.getElementById("sess-start").value = s.start||"";
   document.getElementById("sess-end").value = s.end||"";
@@ -3547,8 +3594,10 @@ async function saveSession(){
   const coaches = Array.from(document.querySelectorAll("#sess-coaches .checkchip.on")).map(e=>e.dataset.id);
   const oldSession = DATA.sessions.find(x=>x.id===id);
   const obj = {
+    ...(oldSession||{}), // bevarar ALLA fält utan eget formulärfält (blocks, matchLineup, matches, icsUid, pairHistoryCounted m.fl.) — annars skrevs de över till borttagna vid varje redigering av en befintlig session
     id, date: document.getElementById("sess-date").value, type: document.getElementById("sess-type").value,
     matchFormat: document.getElementById("sess-type").value==="Match" ? document.getElementById("sess-matchformat").value : (oldSession ? oldSession.matchFormat : undefined),
+    cupPlayerCount: document.getElementById("sess-matchformat").value==="cupflera" ? (+document.getElementById("sess-cupcount").value||5) : (oldSession ? oldSession.cupPlayerCount : undefined),
     start: document.getElementById("sess-start").value, end: document.getElementById("sess-end").value,
     place: document.getElementById("sess-place").value, week: oldSession ? (oldSession.week||"") : "",
     gathering: document.getElementById("sess-gathering").value,
