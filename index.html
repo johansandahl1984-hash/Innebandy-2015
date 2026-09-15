@@ -447,6 +447,7 @@
     </div>
     <div class="toolbar">
       <button class="btn" onclick="openPlayerModal()">+ Lägg till spelare</button>
+      <button class="btn ghost" onclick="openSyncModal()">🔄 Synka mot SportAdmin</button>
     </div>
     <div class="card" id="player-list"></div>
 
@@ -467,6 +468,7 @@
       <h2>Tränarstab</h2>
       <span class="hint">Redigera roll/initialer om mappningen ovan är fel</span>
     </div>
+    <div class="toolbar"><button class="btn ghost small" onclick="openCoachModal()">+ Ny tränare</button></div>
     <div class="card" id="coach-list"></div>
   </section>
 
@@ -611,10 +613,28 @@
   </div>
 </div>
 
+<div class="overlay" id="modal-sync">
+  <div class="modal" style="max-width:640px;">
+    <button class="close-x" onclick="closeModal('modal-sync')">✕</button>
+    <h3>Synka mot SportAdmin</h3>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">
+      1. Öppna <a href="https://www.hibf.se/grupp/?ID=334830" target="_blank" rel="noopener">er sida på hibf.se</a> i en ny flik.<br>
+      2. Markera och kopiera hela sidans text (både Spelare- och Ledare-listan).<br>
+      3. Klistra in här och tryck "Tolka text".
+    </p>
+    <textarea id="sync-paste-area" rows="8" placeholder="Klistra in texten från hibf.se här..."></textarea>
+    <div class="modal-actions" style="margin-top:8px;">
+      <button class="btn ghost" onclick="closeModal('modal-sync')">Avbryt</button>
+      <button class="btn" onclick="parseSyncPaste()">Tolka text</button>
+    </div>
+    <div id="sync-results"></div>
+  </div>
+</div>
+
 <div class="overlay" id="modal-coach">
   <div class="modal">
     <button class="close-x" onclick="closeModal('modal-coach')">✕</button>
-    <h3>Redigera tränare</h3>
+    <h3 id="coach-modal-title">Redigera tränare</h3>
     <input type="hidden" id="coach-id">
     <div class="field"><label>Namn</label><input type="text" id="coach-name"></div>
     <div class="field-row">
@@ -622,6 +642,7 @@
       <div class="field"><label>Initialer i mallen</label><input type="text" id="coach-initials" maxlength="4"></div>
     </div>
     <div class="modal-actions">
+      <button class="btn danger" id="coach-delete-btn" style="display:none;" onclick="deleteCoach()">Ta bort</button>
       <button class="btn ghost" onclick="closeModal('modal-coach')">Avbryt</button>
       <button class="btn" onclick="saveCoach()">Spara</button>
     </div>
@@ -4319,6 +4340,7 @@ function goalieHistorySectionHTML(bucket, playerMap){
 /* ---- Laget: tränare ---- */
 function renderCoaches(){
   const list = document.getElementById("coach-list");
+  if(DATA.coaches.length===0){ list.innerHTML = '<div class="empty">Ingen tränare tillagd ännu.</div>'; return; }
   list.innerHTML = DATA.coaches.map(c=>{
     const color = COACH_COLORS[c.initials] || "#999";
     return `<div class="coach-card">
@@ -4328,23 +4350,167 @@ function renderCoaches(){
     </div>`;
   }).join("");
 }
+function openCoachModal(){
+  document.getElementById("coach-modal-title").textContent = "Ny tränare";
+  document.getElementById("coach-id").value = "";
+  document.getElementById("coach-name").value = "";
+  document.getElementById("coach-role").value = "";
+  document.getElementById("coach-initials").value = "";
+  document.getElementById("coach-delete-btn").style.display = "none";
+  openModal("modal-coach");
+}
 function editCoach(id){
   const c = DATA.coaches.find(x=>x.id===id); if(!c) return;
+  document.getElementById("coach-modal-title").textContent = "Redigera tränare";
   document.getElementById("coach-id").value = c.id;
   document.getElementById("coach-name").value = c.name;
   document.getElementById("coach-role").value = c.role;
   document.getElementById("coach-initials").value = c.initials;
+  document.getElementById("coach-delete-btn").style.display = "inline-block";
   openModal("modal-coach");
 }
 async function saveCoach(){
-  const id = document.getElementById("coach-id").value;
+  const id = document.getElementById("coach-id").value || ("c-"+Date.now());
+  const name = document.getElementById("coach-name").value.trim();
+  if(!name){ alert("Ange ett namn."); return; }
   const idx = DATA.coaches.findIndex(x=>x.id===id);
-  if(idx>=0){
-    DATA.coaches[idx].name = document.getElementById("coach-name").value.trim();
-    DATA.coaches[idx].role = document.getElementById("coach-role").value.trim();
-    DATA.coaches[idx].initials = document.getElementById("coach-initials").value.trim().toUpperCase();
-  }
+  const obj = {
+    id, name,
+    role: document.getElementById("coach-role").value.trim(),
+    initials: document.getElementById("coach-initials").value.trim().toUpperCase(),
+  };
+  if(idx>=0) DATA.coaches[idx] = obj; else DATA.coaches.push(obj);
   const ok = await saveData(); renderCoaches(); renderCoachLegendMini(); renderSessions(); if(ok) closeModal("modal-coach");
+}
+async function deleteCoach(){
+  const id = document.getElementById("coach-id").value;
+  const c = DATA.coaches.find(x=>x.id===id); if(!c) return;
+  const yes = await confirmDialog(`Ta bort tränaren "${c.name}"? Kopplingar till hen i redan byggda pass och laguppställningar ligger kvar som ett tomt val, men går inte att peka på hen längre.`, "Ta bort tränare");
+  if(!yes) return;
+  await guard(async ()=>{
+    DATA.coaches = DATA.coaches.filter(x=>x.id!==id);
+    closeModal("modal-coach");
+    renderCoaches(); renderCoachLegendMini(); renderSessions();
+    await saveData();
+  });
+}
+
+/* =========================================================================
+   SYNKA MOT SPORTADMIN — Johan klistrar in den kopierade texten från lagets
+   hibf.se-sida (istället för att appen försöker hämta/tolka den råa HTML:en
+   direkt, vilket skulle krocka med CORS precis som kalenderflödet gjorde
+   innan proxyn, och dessutom vara skört mot att SportAdmin ändrar sin sida).
+   Tolkar texten, jämför mot nuvarande trupp/tränarstab, och låter Johan
+   kryssa i exakt vilka ändringar som ska tillämpas.
+   ========================================================================= */
+function parseSportAdminPaste(text){
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const players = []; const leaders = [];
+  let section = null; // "players" | "leaders" | null
+  const noisePatterns = [
+    /beskrivning saknas/i, /logga in/i, /sportadmin/i, /^kontakt$/i, /e-post/i, /telefon/i,
+    /^\d+\s*år$/i, /^ålder/i, /^grupp/i, /^tillbaka$/i, /^hibf/i, /^©/,
+  ];
+  const isNoise = line => noisePatterns.some(re=>re.test(line)) || /^\d+$/.test(line) || line.length<2 || line.length>40;
+  const looksLikeName = line => /^[A-ZÅÄÖ][a-zA-ZåäöÅÄÖ'\-]*(\s[A-ZÅÄÖa-zåäö][a-zA-ZåäöÅÄÖ'\-]*)+$/.test(line);
+  lines.forEach(line=>{
+    const lower = line.toLowerCase();
+    if(lower==="spelare"){ section="players"; return; }
+    if(lower==="ledare" || lower==="tränare" || lower==="tränarstab"){ section="leaders"; return; }
+    if(!section || isNoise(line) || !looksLikeName(line)) return;
+    (section==="players" ? players : leaders).push(line);
+  });
+  return { players, leaders };
+}
+function generateCoachInitials(name, existingCoaches){
+  const parts = name.trim().split(/\s+/);
+  let base = parts.length===1 ? parts[0].slice(0,2).toUpperCase() : parts.map(p=>p[0]).join("").toUpperCase().slice(0,3);
+  const taken = new Set(existingCoaches.map(c=>c.initials));
+  let candidate = base, suffix = 1;
+  while(taken.has(candidate)){ candidate = base+suffix; suffix++; }
+  return candidate;
+}
+function openSyncModal(){
+  document.getElementById("sync-paste-area").value = "";
+  document.getElementById("sync-results").innerHTML = "";
+  openModal("modal-sync");
+}
+let pendingSyncData = null; // undviker att bädda in namnlistor (som kan innehålla apostrofer) direkt i en onclick-attributsträng
+function parseSyncPaste(){
+  const text = document.getElementById("sync-paste-area").value;
+  const { players: pastedPlayers, leaders: pastedLeaders } = parseSportAdminPaste(text);
+  if(pastedPlayers.length===0 && pastedLeaders.length===0){
+    document.getElementById("sync-results").innerHTML = '<p style="font-size:12.5px;color:var(--red);margin-top:10px;">Kunde inte tolka några namn ur texten. Kontrollera att du kopierade med rubrikerna "Spelare" och "Ledare" ikopierade.</p>';
+    return;
+  }
+  const currentPlayerNames = new Set(DATA.players.filter(p=>p.active!==false).map(p=>p.name.toLowerCase()));
+  const currentCoachNames = new Set(DATA.coaches.map(c=>c.name.toLowerCase()));
+  const pastedPlayerNamesLower = new Set(pastedPlayers.map(n=>n.toLowerCase()));
+  const pastedLeaderNamesLower = new Set(pastedLeaders.map(n=>n.toLowerCase()));
+
+  const newPlayers = pastedPlayers.filter(n=>!currentPlayerNames.has(n.toLowerCase()));
+  const missingPlayers = DATA.players.filter(p=>p.active!==false && !pastedPlayerNamesLower.has(p.name.toLowerCase()));
+  const newLeaders = pastedLeaders.filter(n=>!currentCoachNames.has(n.toLowerCase()));
+  const missingLeaders = DATA.coaches.filter(c=>!pastedLeaderNamesLower.has(c.name.toLowerCase()));
+
+  const section = (title, hint, items, idPrefix, checkedByDefault) => {
+    if(items.length===0) return "";
+    const rows = items.map((item,i)=>{
+      const label = typeof item==="string" ? item : item.name;
+      return `<label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;">
+        <input type="checkbox" id="${idPrefix}-${i}" ${checkedByDefault?"checked":""}>${label}
+      </label>`;
+    }).join("");
+    return `<div style="margin-top:12px;"><b style="font-size:13px;">${title}</b> <span style="font-size:11px;color:var(--muted);">${hint}</span>${rows}</div>`;
+  };
+
+  let html = "";
+  html += section("Nya spelare", `(${newPlayers.length} hittade i SportAdmin, inte i appen)`, newPlayers, "sync-newplayer", true);
+  html += section("Spelare inte längre i listan", `(${missingPlayers.length} finns i appen men inte i den inklistrade listan — föreslås inaktiveras, tas ALDRIG bort)`, missingPlayers, "sync-missingplayer", false);
+  html += section("Nya ledare", `(${newLeaders.length} hittade i SportAdmin, inte i appen)`, newLeaders, "sync-newleader", true);
+  html += section("Ledare inte längre i listan", `(${missingLeaders.length} finns i appen men inte i den inklistrade listan — föreslås tas bort)`, missingLeaders, "sync-missingleader", false);
+  if(!html) html = '<p style="font-size:12.5px;color:var(--muted);margin-top:10px;">Ingen skillnad hittad — trupp och tränarstab stämmer redan mot det inklistrade.</p>';
+  else {
+    pendingSyncData = {newPlayers, missingPlayers:missingPlayers.map(p=>p.id), newLeaders, missingLeaders:missingLeaders.map(c=>c.id)};
+    html += `<div class="modal-actions" style="margin-top:14px;">
+      <button class="btn" onclick="applySyncChanges()">Tillämpa valda ändringar</button>
+    </div>`;
+  }
+  document.getElementById("sync-results").innerHTML = html;
+}
+async function applySyncChanges(){
+  if(!pendingSyncData) return;
+  const { newPlayers, missingPlayers, newLeaders, missingLeaders } = pendingSyncData;
+  await guard(async ()=>{
+    let changed = false;
+    newPlayers.forEach((name,i)=>{
+      if(document.getElementById(`sync-newplayer-${i}`).checked){
+        DATA.players.push({ id:"p-"+Date.now()+"-"+Math.random().toString(36).slice(2,6), name, number:"-", strengths:"", growth:"", notes:"", active:true });
+        changed = true;
+      }
+    });
+    missingPlayers.forEach((pid,i)=>{
+      if(document.getElementById(`sync-missingplayer-${i}`).checked){
+        const p = DATA.players.find(x=>x.id===pid);
+        if(p){ p.active = false; changed = true; }
+      }
+    });
+    newLeaders.forEach((name,i)=>{
+      if(document.getElementById(`sync-newleader-${i}`).checked){
+        DATA.coaches.push({ id:"c-"+Date.now()+"-"+Math.random().toString(36).slice(2,6), name, role:"Tränare", initials: generateCoachInitials(name, DATA.coaches) });
+        changed = true;
+      }
+    });
+    missingLeaders.forEach((cid,i)=>{
+      if(document.getElementById(`sync-missingleader-${i}`).checked){
+        DATA.coaches = DATA.coaches.filter(x=>x.id!==cid);
+        changed = true;
+      }
+    });
+    closeModal("modal-sync");
+    renderPlayers(); renderCoaches(); renderCoachLegendMini(); renderSessions(); renderGroups();
+    if(changed) await saveData();
+  });
 }
 
 /* ---- Modal helpers ---- */
