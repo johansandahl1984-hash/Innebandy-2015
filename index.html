@@ -2923,13 +2923,13 @@ function renderFormationBoard(){
   const placedIds = new Set([formationDraft.goalie1, formationDraft.goalie2,
     ...formationDraft.formations.flatMap(f=>Object.values(f))].filter(Boolean));
   const poolPlayers = DATA.players.filter(p=>p.active!==false && !placedIds.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name,"sv"));
-  poolEl.innerHTML = `<div class="formation-pool">${poolPlayers.length===0
+  poolEl.innerHTML = `<div class="formation-pool"><div class="checkchips">${poolPlayers.length===0
     ? '<span style="font-size:12px;color:var(--muted);">Alla aktiva spelare är placerade.</span>'
     : poolPlayers.map(p=>{
         const sel = formationSelectedPlayer===p.id ? "selected" : "";
         return `<span class="checkchip lineup-chip ${sel}" data-pid="${p.id}"
           onpointerdown="onFormationChipPointerDown(event,'${p.id}')" onclick="onFormationChipClick(event,'${p.id}')">${p.name}</span>`;
-      }).join("")}</div>`;
+      }).join("")}</div></div>`;
 
   document.querySelectorAll(".fslot[data-slot]").forEach(el=>{
     const slotKey = el.dataset.slot;
@@ -2946,16 +2946,22 @@ function renderFormationBoard(){
 
   const femmorEl = document.getElementById("formation-femmor"); if(!femmorEl) return;
   femmorEl.innerHTML = formationDraft.formations.map((f,fi)=>{
-    const posOrder = ["back1","back2","center","fwd1","fwd2"];
-    const cellsHTML = posOrder.map(pos=>{
+    const slotHTML = pos=>{
       const slotKey = `f${fi}-${pos}`;
       const pid = f[pos];
       const p = pid ? DATA.players.find(x=>x.id===pid) : null;
       return `<div class="fslot ${p?'filled':''}" data-slot="${slotKey}" onclick="onFormationSlotClick(event,'${slotKey}')" ${p?`onpointerdown="onFormationSlotPointerDown(event,'${slotKey}')"`:""}>
         <span class="fslot-label">${FORMATION_SLOT_LABELS[pos]}</span><span class="fslot-name">${p?p.name:"—"}</span>
       </div>`;
-    }).join("");
-    return `<div class="formation-card"><h4>Femma ${fi+1}</h4><div class="fslot-row">${cellsHTML}</div></div>`;
+    };
+    // Tärningsfemma-layout: back/back överst, center ensam i mitten, forward/forward underst
+    // — tre separata rader istället för en enda radbrytande rad, så ordningen alltid blir
+    // densamma oavsett skärmbredd.
+    return `<div class="formation-card"><h4>Femma ${fi+1}</h4>
+      <div class="fslot-row">${slotHTML("back1")}${slotHTML("back2")}</div>
+      <div class="fslot-row fslot-row-center">${slotHTML("center")}</div>
+      <div class="fslot-row">${slotHTML("fwd1")}${slotHTML("fwd2")}</div>
+    </div>`;
   }).join("");
 }
 function onFormationChipClick(ev, pid){
