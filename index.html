@@ -2122,8 +2122,8 @@ function formationLineupTableHTML(ml, infoRowHTML){
   const posOrder = positionOrderFor(pc);
   const cardLabel = pc===4 ? "Fyra" : "Femma";
   const femmaCards = ml.formations.map((f,fi)=>{
-    const rows = posOrder.map(pos=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">
-      <span style="color:#777;">${FORMATION_SLOT_LABELS[pos]}</span><span>${nameOf(f[pos])}</span>
+    const rows = posOrder.map(pos=>`<div style="display:flex;gap:10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">
+      <span style="color:#777;min-width:52px;flex-shrink:0;">${FORMATION_SLOT_LABELS[pos]}</span><span style="text-align:right;flex:1;">${nameOf(f[pos])}</span>
     </div>`).join("");
     return `<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
       <div style="background:var(--pine);color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;">${cardLabel} ${fi+1}</div>
@@ -2949,6 +2949,24 @@ function assignPlayerToSlot(pid, slotKey){
   clearPlayerFromAllSlots(pid); // en spelare kan bara stå på en position åt gången
   setSlotValue(slotKey, pid);
 }
+function addFormationCard(){
+  if(formationDraft.formations.length>=4) return;
+  formationDraft.formations.push(emptyFormation(formationDraft.playerCount||5));
+  formationPickerSlot = null; // undviker en kvarhängande referens till fel formation efter omindexering
+  renderFormationBoard();
+}
+async function removeFormationCard(index){
+  if(formationDraft.formations.length<=1) return;
+  const f = formationDraft.formations[index];
+  const hasPlayers = Object.values(f).some(Boolean);
+  if(hasPlayers){
+    const yes = await confirmDialog("Ta bort den här formationen? Spelarna som står på den släpps tillbaka till poolen.", "Ta bort formation");
+    if(!yes) return;
+  }
+  formationDraft.formations.splice(index,1);
+  formationPickerSlot = null;
+  renderFormationBoard();
+}
 
 function toggleFormationLineup(sid, subMatchId){
   const isThisOpen = formationScope===sid && formationSubMatchId===(subMatchId||null);
@@ -3094,12 +3112,18 @@ function renderFormationBoard(){
       const picker = formationPickerSlot===key ? renderInlinePickerHTML(key) : "";
       return row + picker;
     })();
-    return `<div class="formation-card"><h4>${cardLabel} ${fi+1}</h4>
+    return `<div class="formation-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h4 style="margin:0;">${cardLabel} ${fi+1}</h4>
+        ${formationDraft.formations.length>1 ? `<button class="btn ghost small" onclick="removeFormationCard(${fi})">Ta bort</button>` : ""}
+      </div>
       ${rowWithPicker("back1","back2")}
       ${centerRowHTML}
       ${rowWithPicker("fwd1","fwd2")}
     </div>`;
-  }).join("");
+  }).join("") + (formationDraft.formations.length<4
+    ? `<button class="btn ghost small" style="margin-bottom:10px;" onclick="addFormationCard()">+ Lägg till formation</button>`
+    : `<p style="font-size:11px;color:var(--muted);margin:0 0 10px;">Max 4 formationer.</p>`);
 }
 function onFormationChipClick(ev, pid){
   ev.stopPropagation();
@@ -3243,13 +3267,15 @@ function renderCupMatches(sid){
     const hasLineup = !!m.matchLineup;
     const matchInfoRow = m.startTime ? `<div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">Starttid ${m.startTime}</div>` : "";
     return `<div class="cup-match-card">
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <span style="font-family:'Oswald';font-weight:700;color:var(--pine-dark);min-width:18px;">${mi+1}.</span>
-        <input type="text" value="${(m.opponent||'').replace(/"/g,'&quot;')}" placeholder="Motstånd" onchange="updateCupMatchField('${sid}','${m.id}','opponent',this.value)" style="flex:1;min-width:120px;">
-        <input type="time" value="${m.startTime||''}" onchange="updateCupMatchField('${sid}','${m.id}','startTime',this.value)" style="width:110px;">
-        <button class="btn ghost small" onclick="removeCupMatch('${sid}','${m.id}')" title="Ta bort matchen">✕</button>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Oswald';font-weight:700;color:var(--pine-dark);flex-shrink:0;">${mi+1}.</span>
+        <input type="text" value="${(m.opponent||'').replace(/"/g,'&quot;')}" placeholder="Motstånd" onchange="updateCupMatchField('${sid}','${m.id}','opponent',this.value)" style="flex:1;">
       </div>
-      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <input type="time" value="${m.startTime||''}" onchange="updateCupMatchField('${sid}','${m.id}','startTime',this.value)" style="width:110px;">
+        <button class="btn ghost small" onclick="removeCupMatch('${sid}','${m.id}')" style="margin-left:auto;">✕ Ta bort match</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn ghost small" onclick="toggleFormationLineup('${sid}','${m.id}')" id="fl-toggle-${sid}-${m.id}">${hasLineup?'Redigera formation':'Bygg formation'}</button>
         ${mi>0 ? `<button class="btn ghost small" onclick="copyCupMatchFromPrevious('${sid}','${m.id}')">Kopiera föregående match</button>` : ""}
       </div>
