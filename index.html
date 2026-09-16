@@ -444,6 +444,13 @@
     <div class="card" style="margin-top:18px;">
       <p style="font-size:12.5px;color:var(--muted);margin:0;">Fler idéer och video: <a class="ex-link" href="https://www.innebandy.se/ovningsbanken" target="_blank" rel="noopener">innebandy.se — Svenska Innebandyförbundets övningsbank ↗</a></p>
     </div>
+
+    <div class="section-title" style="margin-top:30px;">
+      <h2>Träningsteman</h2>
+      <span class="hint">Temana som går att välja i Bygg-pass — lägg till egna eller ta bort de ni inte använder</span>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);margin:0 0 10px;">Varje tema kan även kopplas till en övningskategori ovan — då föreslås rätt övningar automatiskt när du väljer det temat för ett block i Bygg-pass.</p>
+    <div class="toolbar"><button class="btn ghost small" onclick="openThemeModal()">Hantera teman</button></div>
   </section>
 
   <!-- ============ LAGET ============ -->
@@ -484,12 +491,6 @@
     </div>
     <div class="toolbar"><button class="btn ghost small" onclick="openCoachModal()">+ Ny tränare</button></div>
     <div class="card" id="coach-list"></div>
-
-    <div class="section-title" style="margin-top:30px;">
-      <h2>Träningsteman</h2>
-      <span class="hint">Temana som går att välja i Bygg-pass — lägg till egna eller ta bort de ni inte använder</span>
-    </div>
-    <div class="toolbar"><button class="btn ghost small" onclick="openThemeModal()">Hantera teman</button></div>
   </section>
 
 </main>
@@ -1198,6 +1199,7 @@ function migratePairHistory(){
   if(!DATA.exerciseDiagrams) DATA.exerciseDiagrams = {};
   DATA.players.forEach(p=>{ if(p.active===undefined) p.active = true; }); // äldre spelare utan fältet räknas som aktiva
   if(!DATA.themeList) DATA.themeList = MAIN_THEME_LIST.slice(); // engångsmigrering — från och med nu är listan fritt redigerbar, inte längre hårdkodad
+  if(!DATA.themeCategoryMap) DATA.themeCategoryMap = {...MAIN_THEME_TO_CAT}; // engångsmigrering — samma sak för tema->kategori-kopplingen som styr övningsförslag
   if(!DATA.icsCalendarUrl) DATA.icsCalendarUrl = "https://portalweb.sportadmin.se/webcal?id=f47a760a-18f4-4288-af70-d67577ab760a";
 }
 // Engångsmigrering: flaggar automatiskt en befintlig grupp som heter "Målvakter" (skiftläges-
@@ -2388,7 +2390,7 @@ function blockRowHTML(s, b, i, total){
   const themeOpts = DATA.themeList.map(t=>`<option ${b.theme===t?'selected':''}>${t}</option>`).join("")
     + (!DATA.themeList.includes(b.theme) ? `<option selected>${b.theme}</option>` : "");
   const coachOpts = '<option value="">—</option>' + DATA.coaches.map(c=>`<option value="${c.id}" ${b.coach===c.id?'selected':''}>${c.name}</option>`).join("");
-  const cat = MAIN_THEME_TO_CAT[b.theme];
+  const cat = DATA.themeCategoryMap[b.theme];
   const exChipsAndAdd = exerciseCellHTML(s.id, b, cat, periodFocusCatIds(s));
 
   let extraRow = "";
@@ -4512,10 +4514,20 @@ function openThemeModal(){
 function renderThemeList(){
   const el = document.getElementById("theme-list");
   if(DATA.themeList.length===0){ el.innerHTML = '<p style="font-size:12px;color:var(--muted);">Inga teman kvar — lägg till minst ett nedan.</p>'; return; }
-  el.innerHTML = DATA.themeList.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);">
-    <span style="flex:1;font-size:13px;">${t}</span>
-    <button class="btn ghost small" onclick="removeTheme('${t.replace(/'/g,"\\'")}')">✕</button>
-  </div>`).join("");
+  const catOpts = catId => '<option value="">— ingen övningskategori —</option>' +
+    EX_CATS.map(c=>`<option value="${c.id}" ${catId===c.id?'selected':''}>${c.label}</option>`).join("");
+  el.innerHTML = DATA.themeList.map(t=>{
+    const safe = t.replace(/'/g,"\\'");
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;">
+      <span style="flex:1;font-size:13px;min-width:110px;">${t}</span>
+      <select style="font-size:12px;flex:1;min-width:140px;" onchange="updateThemeCategory('${safe}',this.value)">${catOpts(DATA.themeCategoryMap[t])}</select>
+      <button class="btn ghost small" onclick="removeTheme('${safe}')">✕</button>
+    </div>`;
+  }).join("");
+}
+function updateThemeCategory(name, catId){
+  if(catId) DATA.themeCategoryMap[name] = catId; else delete DATA.themeCategoryMap[name];
+  saveData(); // ingen omritning behövs — bara påverkar framtida övningsförslag, inget synligt att uppdatera just här
 }
 async function addTheme(){
   const input = document.getElementById("theme-new-input");
@@ -4532,6 +4544,7 @@ async function addTheme(){
 async function removeTheme(name){
   await guard(async ()=>{
     DATA.themeList = DATA.themeList.filter(t=>t!==name);
+    delete DATA.themeCategoryMap[name]; // städa bort en ev. kopplad kategori så den inte blir kvar övergiven
     renderThemeList();
     await saveData();
   });
