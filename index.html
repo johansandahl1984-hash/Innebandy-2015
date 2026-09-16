@@ -2122,8 +2122,9 @@ function formationLineupTableHTML(ml, infoRowHTML){
   const posOrder = positionOrderFor(pc);
   const cardLabel = pc===4 ? "Fyra" : "Femma";
   const femmaCards = ml.formations.map((f,fi)=>{
-    const rows = posOrder.map(pos=>`<div style="display:flex;gap:10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">
-      <span style="color:#777;min-width:52px;flex-shrink:0;">${FORMATION_SLOT_LABELS[pos]}</span><span style="text-align:right;flex:1;">${nameOf(f[pos])}</span>
+    const rows = posOrder.map(pos=>`<div style="padding:5px 0;border-bottom:1px solid #eee;">
+      <div style="font-size:10.5px;color:#777;text-transform:uppercase;letter-spacing:.03em;">${FORMATION_SLOT_LABELS[pos]}</div>
+      <div style="font-size:13.5px;">${nameOf(f[pos])}</div>
     </div>`).join("");
     return `<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
       <div style="background:var(--pine);color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;">${cardLabel} ${fi+1}</div>
