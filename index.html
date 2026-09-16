@@ -2465,7 +2465,7 @@ function exerciseCellHTML(sid, b, suggestCat, periodCats){
     if(!items.length) return;
     opts += `<optgroup label="${c.label}">` + items.map(e=>`<option value="${e.id}">${e.namn}</option>`).join("") + `</optgroup>`;
   });
-  return `<div style="min-width:0;"><div>${chips}</div><select style="font-size:11px;margin-top:2px;max-width:100%;" onchange="addBlockExercise('${sid}','${b.id}',this.value);this.value=''">${opts}</select></div>`;
+  return `<div style="min-width:0;"><div>${chips}</div><select style="font-size:11px;margin-top:2px;width:100%;max-width:100%;box-sizing:border-box;" onchange="addBlockExercise('${sid}','${b.id}',this.value);this.value=''">${opts}</select></div>`;
 }
 
 /* ---- Stationer (Tema = "Stationer") ---- */
@@ -2545,10 +2545,10 @@ function stationExtraRowHTML(s, b){
         <button class="btn ghost small" style="padding:3px 7px;flex-shrink:0;" title="Ta bort station" onclick="removeStation('${s.id}','${b.id}','${st.id}')">🗑</button>
       </div>
       <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Undertema</label>
-      <select style="font-size:11px;width:100%;margin-bottom:6px;" title="Undertema"
+      <select style="font-size:11px;width:100%;max-width:100%;box-sizing:border-box;margin-bottom:6px;" title="Undertema"
         onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
       <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Ansvarig</label>
-      <select style="font-size:11px;width:100%;" title="Ansvarig"
+      <select style="font-size:11px;width:100%;max-width:100%;box-sizing:border-box;" title="Ansvarig"
         onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
         <option value="">—</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
       <div style="font-size:10px;color:var(--muted);margin:6px 0 2px;">Övningar (förslag: ${subCat?EX_CATS.find(c=>c.id===subCat).label:"—"})</div>
@@ -2594,7 +2594,7 @@ function exerciseCellHTMLForStation(sid, bid, st, suggestCat){
     if(!items.length) return;
     opts += `<optgroup label="${c.label}">` + items.map(e=>`<option value="${e.id}">${e.namn}</option>`).join("") + `</optgroup>`;
   });
-  return `<div style="min-width:0;"><div>${chips}</div><select style="font-size:10.5px;margin-top:2px;max-width:100%;" onchange="addStationExercise('${sid}','${bid}','${st.id}',this.value);this.value=''">${opts}</select></div>`;
+  return `<div style="min-width:0;"><div>${chips}</div><select style="font-size:10.5px;margin-top:2px;width:100%;max-width:100%;box-sizing:border-box;" onchange="addStationExercise('${sid}','${bid}','${st.id}',this.value);this.value=''">${opts}</select></div>`;
 }
 
 /* ---- Spel (Tema = "Spel") — flera planer, roterande lagmöten ---- */
