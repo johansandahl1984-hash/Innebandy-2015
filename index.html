@@ -2202,7 +2202,7 @@ function renderSessions(){
           <button class="btn ghost small" onclick="toggleArchiveFromCard('${s.id}')">${archived?'↩ Kommande':'✓ Genomförd'}</button>
         </div>
       </div>
-      ${s.type!=="Match" ? `<div id="blocks-panel-${s.id}" style="display:none;"></div>` : ""}
+      ${s.type!=="Match" ? `<div id="blocks-panel-${s.id}" style="display:none;overflow-x:hidden;max-width:100%;"></div>` : ""}
       <div id="training-summary-container-${s.id}" style="display:none;"></div>
       <div id="inline-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="formation-lineup-container-${s.id}" style="overflow-x:auto;"></div>
@@ -2366,7 +2366,7 @@ function renderBlocksPanel(sid){
       </div>
       ${periodBanner}
       ${templateBar}
-      <div style="overflow-x:auto;">
+      <div style="overflow-x:auto;max-width:100%;">
         <table class="blk-table">
           <thead><tr>
             <th style="width:34px;"></th>
