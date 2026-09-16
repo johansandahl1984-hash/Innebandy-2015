@@ -313,10 +313,11 @@
   @media(max-width:640px){
     .blk-table{min-width:0;}
     .blk-table thead{display:none;}
-    .blk-table tbody{display:block;}
+    .blk-table tbody{display:block; width:100%; max-width:100%;}
     .blk-table tr{
       display:block; border:1px solid var(--line); border-radius:10px;
       margin-bottom:10px; padding:6px 8px; background:#fff;
+      width:100%; max-width:100%;
     }
     .blk-table tr[style*="border-left"]{border-left-width:4px;}
     .blk-table td{
