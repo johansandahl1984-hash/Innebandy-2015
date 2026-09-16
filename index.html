@@ -2544,19 +2544,13 @@ function stationExtraRowHTML(s, b){
           onchange="updateStationField('${s.id}','${b.id}','${st.id}','name',this.value)">
         <button class="btn ghost small" style="padding:3px 7px;flex-shrink:0;" title="Ta bort station" onclick="removeStation('${s.id}','${b.id}','${st.id}')">🗑</button>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <div style="flex:1 1 120px;min-width:0;">
-          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Undertema</label>
-          <select style="font-size:11px;width:100%;" title="Undertema"
-            onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
-        </div>
-        <div style="flex:1 1 120px;min-width:0;">
-          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Ansvarig</label>
-          <select style="font-size:11px;width:100%;" title="Ansvarig"
-            onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
-            <option value="">—</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
-        </div>
-      </div>
+      <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Undertema</label>
+      <select style="font-size:11px;width:100%;margin-bottom:6px;" title="Undertema"
+        onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
+      <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Ansvarig</label>
+      <select style="font-size:11px;width:100%;" title="Ansvarig"
+        onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
+        <option value="">—</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
       <div style="font-size:10px;color:var(--muted);margin:6px 0 2px;">Övningar (förslag: ${subCat?EX_CATS.find(c=>c.id===subCat).label:"—"})</div>
       ${exerciseCellHTMLForStation(s.id, b.id, st, subCat)}
     </div>`;
