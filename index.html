@@ -2534,12 +2534,12 @@ function stationExtraRowHTML(s, b){
     const subOpts = STATION_SUBTHEMES.map(t=>`<option ${st.subtheme===t?'selected':''}>${t}</option>`).join("");
     const subCat = SUBTHEME_TO_CAT[st.subtheme];
     return `<div style="padding:5px 8px;margin:3px 0;background:#fff;border:1px solid var(--line);border-radius:8px;">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;">
-        <input type="text" value="${st.name}" style="font-size:12px;min-width:80px;flex:1;" title="Namn"
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <input type="text" value="${st.name}" style="font-size:12px;min-width:80px;flex:1 1 80px;" title="Namn"
           onchange="updateStationField('${s.id}','${b.id}','${st.id}','name',this.value)">
-        <select style="font-size:11px;min-width:110px;flex:1;" title="Undertema"
+        <select style="font-size:11px;min-width:110px;flex:1 1 110px;" title="Undertema"
           onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
-        <select style="font-size:11px;min-width:100px;flex:1;" title="Ansvarig"
+        <select style="font-size:11px;min-width:100px;flex:1 1 100px;" title="Ansvarig"
           onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
           <option value="">Ansvarig —</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
         <button class="btn ghost small" style="padding:3px 7px;flex-shrink:0;" title="Ta bort station" onclick="removeStation('${s.id}','${b.id}','${st.id}')">🗑</button>
