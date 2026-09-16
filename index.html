@@ -2539,17 +2539,25 @@ function stationExtraRowHTML(s, b){
       + (st.subtheme && !DATA.themeList.includes(st.subtheme) ? `<option selected>${st.subtheme}</option>` : "");
     const subCat = DATA.themeCategoryMap[st.subtheme];
     return `<div style="padding:5px 8px;margin:3px 0;background:#fff;border:1px solid var(--line);border-radius:8px;">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-        <input type="text" value="${st.name}" style="font-size:12px;min-width:80px;flex:1 1 80px;" title="Namn"
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <input type="text" value="${st.name}" style="font-size:12px;flex:1;min-width:0;" placeholder="Stationens namn" title="Namn"
           onchange="updateStationField('${s.id}','${b.id}','${st.id}','name',this.value)">
-        <select style="font-size:11px;min-width:110px;flex:1 1 110px;" title="Undertema"
-          onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
-        <select style="font-size:11px;min-width:100px;flex:1 1 100px;" title="Ansvarig"
-          onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
-          <option value="">Ansvarig —</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
         <button class="btn ghost small" style="padding:3px 7px;flex-shrink:0;" title="Ta bort station" onclick="removeStation('${s.id}','${b.id}','${st.id}')">🗑</button>
       </div>
-      <div style="font-size:10px;color:var(--muted);margin:4px 0 2px;">Övningar (förslag: ${subCat?EX_CATS.find(c=>c.id===subCat).label:"—"})</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <div style="flex:1 1 120px;min-width:0;">
+          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Undertema</label>
+          <select style="font-size:11px;width:100%;" title="Undertema"
+            onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
+        </div>
+        <div style="flex:1 1 120px;min-width:0;">
+          <label style="font-size:9px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted);display:block;margin-bottom:2px;">Ansvarig</label>
+          <select style="font-size:11px;width:100%;" title="Ansvarig"
+            onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
+            <option value="">—</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin:6px 0 2px;">Övningar (förslag: ${subCat?EX_CATS.find(c=>c.id===subCat).label:"—"})</div>
       ${exerciseCellHTMLForStation(s.id, b.id, st, subCat)}
     </div>`;
   }).join("");
