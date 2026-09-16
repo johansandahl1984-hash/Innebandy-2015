@@ -2531,8 +2531,13 @@ function stationExtraRowHTML(s, b){
   const groupOpts = gid => '<option value="">—</option>' + groups.map(g=>`<option value="${g.id}" ${gid===g.id?'selected':''}>${g.name}</option>`).join("");
 
   const stationCards = stations.map(st=>{
-    const subOpts = STATION_SUBTHEMES.map(t=>`<option ${st.subtheme===t?'selected':''}>${t}</option>`).join("");
-    const subCat = SUBTHEME_TO_CAT[st.subtheme];
+    // Samma temalista som huvudblockens Tema-fält (redigerbar via Hantera teman), inte den
+    // separata hårdkodade STATION_SUBTHEMES längre — men en station som redan sparats med ett
+    // gammalt undertema (t.ex. "Passning", som inte finns i DATA.themeList) tappar inte sitt
+    // värde: samma reserv-alternativ-mönster som themeOpts i blockRowHTML.
+    const subOpts = DATA.themeList.map(t=>`<option ${st.subtheme===t?'selected':''}>${t}</option>`).join("")
+      + (st.subtheme && !DATA.themeList.includes(st.subtheme) ? `<option selected>${st.subtheme}</option>` : "");
+    const subCat = DATA.themeCategoryMap[st.subtheme];
     return `<div style="padding:5px 8px;margin:3px 0;background:#fff;border:1px solid var(--line);border-radius:8px;">
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <input type="text" value="${st.name}" style="font-size:12px;min-width:80px;flex:1 1 80px;" title="Namn"
