@@ -843,8 +843,8 @@
 
     <div class="modal-actions modal-actions-sticky">
       <button class="btn ghost" id="pb-delete-btn" onclick="deletePlaybookMoment()" style="margin-right:auto; display:none;">🗑 Ta bort moment</button>
-      <button class="btn ghost" onclick="closePlaybookEditor()">Avbryt</button>
-      <button class="btn" onclick="savePlaybookMoment()">Spara</button>
+      <button class="btn ghost" id="pb-cancel-btn" onclick="closePlaybookEditor()">Avbryt</button>
+      <button class="btn" id="pb-save-btn" onclick="savePlaybookMoment()">Spara</button>
     </div>
   </div>
 </div>
@@ -4581,7 +4581,6 @@ function openPlaybookEditor(id){
   document.getElementById("pb-new-category").value = "";
   document.getElementById("pb-text-parent").value = m ? (m.parentText||"") : "";
   document.getElementById("pb-text-coach").value = m ? (m.coachText||"") : "";
-  document.getElementById("pb-delete-btn").style.display = m ? "" : "none";
   renderPlaybookCategorySelect(m ? m.category : null);
   document.querySelectorAll(".pb-level-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.level==="parent"));
   document.getElementById("pb-text-parent").style.display = "";
@@ -4607,6 +4606,12 @@ function setPlaybookEditMode(on){
   pbEditMode = on;
   document.getElementById("pb-edit-tools").style.display = on ? "" : "none";
   document.getElementById("pb-edit-toggle-btn").textContent = on ? "👁 Visningsläge" : "✏️ Redigera";
+  // I ren visningsvy ska bara momentet synas — inga redigeringsåtgärder (ta bort/avbryt/spara),
+  // eftersom det inte finns något att bekräfta eller ångra när man bara tittar. Stängs istället
+  // med "✕" i modalens hörn. Redigera-knappen tar tillbaka hit när man faktiskt vill ändra.
+  document.getElementById("pb-delete-btn").style.display = (on && pbEditingId) ? "" : "none";
+  document.getElementById("pb-cancel-btn").style.display = on ? "" : "none";
+  document.getElementById("pb-save-btn").style.display = on ? "" : "none";
 
   let viewP = document.getElementById("pb-text-parent-view");
   let viewC = document.getElementById("pb-text-coach-view");
