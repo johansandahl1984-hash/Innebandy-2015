@@ -852,14 +852,18 @@
 <div class="overlay" id="modal-gloss-diagram">
   <div class="modal" style="max-width:600px;">
     <button class="close-x" onclick="closeGlossaryDiagramEditor()">✕</button>
-    <h3 id="gd-modal-title" style="margin-bottom:10px;">Bild för begrepp</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+      <h3 id="gd-modal-title" style="margin:0;">Bild för begrepp</h3>
+      <button class="btn ghost small" id="gd-edit-toggle-btn" onclick="toggleGdEditMode()" style="flex-shrink:0;">✏️ Redigera</button>
+    </div>
     <svg id="gd-svg" viewBox="0 0 600 340" class="diag-canvas"></svg>
-    <p style="font-size:11.5px; color:var(--muted); margin:8px 0 6px;">Klicka ett verktyg, klicka sedan på bilden. Dra för att flytta. Dubbelklicka för att döpa om eller ändra text.</p>
+    <div id="gd-definition-view" style="font-size:13.5px;line-height:1.55;padding:10px 2px;"></div>
+    <p id="gd-instructions" style="font-size:11.5px; color:var(--muted); margin:8px 0 6px;">Klicka ett verktyg, klicka sedan på bilden. Dra för att flytta. Dubbelklicka för att döpa om eller ändra text.</p>
     <div class="pb-toolbar" id="gd-toolbar"></div>
-    <div class="toolbar" style="gap:8px; margin:2px 0 14px;">
+    <div class="toolbar" id="gd-clear-row" style="gap:8px; margin:2px 0 14px;">
       <button type="button" class="diag-tool" onclick="gdClearDiagram()">🗑 Rensa allt</button>
     </div>
-    <div class="modal-actions modal-actions-sticky">
+    <div class="modal-actions modal-actions-sticky" id="gd-actions-row">
       <button class="btn ghost" onclick="closeGlossaryDiagramEditor()">Avbryt</button>
       <button class="btn" onclick="gdSaveDiagram()">Spara bild</button>
     </div>
@@ -5112,9 +5116,9 @@ function renderGlossaryList(){
   if(terms.length===0){ list.innerHTML = `<p style="color:var(--muted);font-size:13px;">Inga begrepp ännu.</p>`; return; }
   list.innerHTML = terms.map(t=>`
     <div class="pb-gloss-row">
-      <div style="position:relative;flex-shrink:0;">
+      <div style="position:relative;flex-shrink:0;cursor:pointer;" onclick="openGlossaryDiagramEditor('${t.id}')" title="Visa/redigera bild">
         ${glossaryDiagramThumbSVG(t) || `<div style="width:64px;height:36px;border:1px dashed var(--line);border-radius:6px;"></div>`}
-        <button onclick="deleteGlossaryTerm('${t.id}')" title="Ta bort begrepp"
+        <button onclick="event.stopPropagation();deleteGlossaryTerm('${t.id}')" title="Ta bort begrepp"
           style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,.25);font-size:12px;line-height:1;padding:0;cursor:pointer;color:var(--muted);">✕</button>
       </div>
       <div style="flex:1;">
@@ -5148,6 +5152,7 @@ async function deleteGlossaryTerm(id){
 
 /* ---- Ordbok: bild/diagram per begrepp (statisk, samma verktyg som spelmoment) ---- */
 let gdTermId = null;
+let gdEditMode = false;
 let gdObjects = [];
 let gdPos = {};
 let gdTool = null;
@@ -5166,6 +5171,7 @@ function openGlossaryDiagramEditor(termId){
   gdIdCounter = gdObjects.length ? Math.max(...gdObjects.map(o=>o.id))+1 : 0;
   gdTool = null; gdDragging = null;
   document.getElementById("gd-modal-title").textContent = 'Bild för "' + t.term + '"';
+  document.getElementById("gd-definition-view").innerHTML = glossarize(t.definition||"") || "<span style='color:var(--muted);'>Ingen beskrivning ännu.</span>";
   const svg = document.getElementById("gd-svg");
   svg.innerHTML = `<defs><marker id="gd-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="gd-objects-layer"></g>`;
   if(!gdListenersBound){
@@ -5174,10 +5180,23 @@ function openGlossaryDiagramEditor(termId){
     document.addEventListener("pointerup", onGdPointerUp);
     gdListenersBound = true;
   }
-  renderGdToolbar();
+  setGdEditMode(gdObjects.length===0); // inget ritat ännu -> börja direkt i redigeringsläge, annars visningsläge
   renderGdBoard();
   openModal("modal-gloss-diagram");
 }
+function setGdEditMode(on){
+  gdEditMode = on;
+  document.getElementById("gd-edit-toggle-btn").textContent = on ? "👁 Visningsläge" : "✏️ Redigera";
+  // Visningsläge: bara bilden + begreppstexten, precis som Playbookens spelmoment. Redigerings-
+  // verktygen (palett, rensa allt, spara/avbryt) syns bara efter ett aktivt tryck på Redigera.
+  document.getElementById("gd-definition-view").style.display = on ? "none" : "";
+  document.getElementById("gd-instructions").style.display = on ? "" : "none";
+  document.getElementById("gd-toolbar").style.display = on ? "" : "none";
+  document.getElementById("gd-clear-row").style.display = on ? "" : "none";
+  document.getElementById("gd-actions-row").style.display = on ? "" : "none";
+  renderGdToolbar();
+}
+function toggleGdEditMode(){ setGdEditMode(!gdEditMode); }
 function closeGlossaryDiagramEditor(){
   closeModal("modal-gloss-diagram");
   gdTermId = null;
