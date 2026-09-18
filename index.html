@@ -4482,8 +4482,9 @@ function renderPlaybookMoments(){
 }
 function playbookThumbSVG(m){
   const frame = (m.frames||[])[0];
-  const objs = frame ? (m.objects||[]).filter(o=>pbObjVisibleAtFrame(o,0)).map(o=>pbObjMarkup(o, frame.pos[o.id])).join("") : "";
-  return `<svg viewBox="0 0 600 340">${RINK_BACKGROUND_SVG}${objs}</svg>`;
+  const markerId = "thumb-arrow-" + String(m.id).replace(/[^a-zA-Z0-9]/g,"");
+  const objs = frame ? (m.objects||[]).filter(o=>pbObjVisibleAtFrame(o,0)).map(o=>pbObjMarkup(o, frame.pos[o.id], false, markerId)).join("") : "";
+  return `<svg viewBox="0 0 600 340"><defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}${objs}</svg>`;
 }
 /* ---- Synlighet per läge (text/zon kan visas bara i ett urval av momentets lägen) ---- */
 function pbObjVisibleAtFrame(obj, frameIndex){
@@ -4512,8 +4513,9 @@ function pbParseFrameRange(text, maxFrames){
   return {visibleFrom: from-1, visibleTo: to-1};
 }
 
-function pbObjMarkup(o, pos, draggable){
+function pbObjMarkup(o, pos, draggable, markerId){
   if(!pos) return "";
+  markerId = markerId || "pb-arrowhead";
   const cls = draggable ? "pb-obj" : "";
   if(o.kind==="ball"){
     return `<circle cx="${pos.x}" cy="${pos.y}" r="6" fill="#2C2C2A" class="${cls}" data-obj="${o.id}"></circle>`;
@@ -4544,7 +4546,7 @@ function pbObjMarkup(o, pos, draggable){
     const dx = o.dx||0, dy = o.dy||0;
     const x2 = pos.x+dx, y2 = pos.y+dy;
     const dashAttr = o.dashed ? ` stroke-dasharray="8 6"` : "";
-    const markerAttr = (o.arrow!==false) ? ` marker-end="url(#pb-arrowhead)"` : "";
+    const markerAttr = (o.arrow!==false) ? ` marker-end="url(#${markerId})"` : "";
     return `<g class="${cls}" data-obj="${o.id}">
       <line x1="${pos.x}" y1="${pos.y}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="16"></line>
       <line x1="${pos.x}" y1="${pos.y}" x2="${x2}" y2="${y2}" stroke="#0C447C" stroke-width="3"${dashAttr}${markerAttr} style="pointer-events:none;"></line>
@@ -5079,8 +5081,9 @@ function glossarize(text){
 function glossaryDiagramThumbSVG(term){
   const d = term.diagram;
   if(!d || !d.objects || d.objects.length===0) return "";
-  const objs = d.objects.map(o=>pbObjMarkup(o, d.pos[o.id])).join("");
-  return `<svg viewBox="0 0 600 340" style="width:64px;height:auto;border-radius:6px;background:#EEF3EA;flex-shrink:0;display:block;">${RINK_BACKGROUND_SVG}${objs}</svg>`;
+  const markerId = "gthumb-arrow-" + String(term.id).replace(/[^a-zA-Z0-9]/g,"");
+  const objs = d.objects.map(o=>pbObjMarkup(o, d.pos[o.id], false, markerId)).join("");
+  return `<svg viewBox="0 0 600 340" style="width:64px;height:auto;border-radius:6px;background:#EEF3EA;flex-shrink:0;display:block;"><defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}${objs}</svg>`;
 }
 function showGlossPopover(evt, termId){
   evt.stopPropagation();
@@ -5155,7 +5158,7 @@ function openGlossaryDiagramEditor(termId){
   gdTool = null; gdDragging = null;
   document.getElementById("gd-modal-title").textContent = 'Bild för "' + t.term + '"';
   const svg = document.getElementById("gd-svg");
-  svg.innerHTML = `<defs><marker id="pb-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="gd-objects-layer"></g>`;
+  svg.innerHTML = `<defs><marker id="gd-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="gd-objects-layer"></g>`;
   if(!gdListenersBound){
     svg.addEventListener("pointerdown", onGdCanvasPointerDown);
     document.addEventListener("pointermove", onGdPointerMove);
@@ -5290,7 +5293,7 @@ function onGdPointerUp(){
 }
 function renderGdBoard(){
   const layer = document.getElementById("gd-objects-layer"); if(!layer) return;
-  layer.innerHTML = gdObjects.map(o=>pbObjMarkup(o, gdPos[o.id], true)).join("");
+  layer.innerHTML = gdObjects.map(o=>pbObjMarkup(o, gdPos[o.id], true, "gd-arrowhead")).join("");
   layer.querySelectorAll("[data-obj]").forEach(el=>{
     const id = +el.dataset.obj;
     el.addEventListener("pointerdown", ev=>onGdObjectPointerDown(id, ev));
