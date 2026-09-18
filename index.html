@@ -251,6 +251,7 @@
 
   /* ---------- modal ---------- */
   .overlay{position:fixed; inset:0; background:rgba(18,20,15,.55); display:none; align-items:flex-end; justify-content:center; z-index:100;}
+  #modal-confirm, #modal-prompt, #modal-line-style{z-index:200;} /* alltid överst — annars hamnar de bakom en redan öppen modal */
   .overlay.open{display:flex;}
   .modal{background:#fff; width:100%; max-width:560px; border-radius:18px 18px 0 0; padding:20px 20px 26px; max-height:88vh; overflow-y:auto; animation:slideup .2s ease;}
   @media(min-width:640px){ .overlay{align-items:center;} .modal{border-radius:16px; margin-bottom:40px;} }
@@ -361,6 +362,39 @@
     .view{display:block !important;}
     .card,.sess-card,.pass-card{break-inside:avoid;}
   }
+
+  /* ---------- playbook ---------- */
+  .pb-subnav{display:flex; gap:8px; margin-bottom:14px;}
+  .pb-subnav button{background:#fff; border:1px solid var(--line); border-radius:999px; padding:7px 16px; font-size:13px; cursor:pointer; color:var(--pine-dark);}
+  .pb-subnav button.active{background:var(--pine-dark); color:#fff; border-color:var(--pine-dark);}
+  .pb-cat-chip{display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; border:1px solid var(--line); background:#fff; font-size:12px; cursor:pointer; color:var(--pine-dark); margin:0 6px 6px 0;}
+  .pb-cat-chip.active{color:#fff; border-color:transparent;}
+  .pb-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; margin-top:14px;}
+  .pb-card{border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden; cursor:pointer; transition:box-shadow .15s;}
+  .pb-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+  .pb-card-thumb{background:#EEF3EA;}
+  .pb-card-thumb svg{width:100%; display:block;}
+  .pb-card-body{padding:10px 12px;}
+  .pb-card-body h4{font-size:14px; color:var(--pine-dark); margin:0 0 4px;}
+  .pb-card-tags{display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;}
+  .pb-tag{font-size:10.5px; background:#F4F6F1; color:var(--muted); padding:2px 7px; border-radius:999px; display:inline-block;}
+  .pb-obj{cursor:grab;}
+  .pb-obj:active{cursor:grabbing;}
+  .pb-toolbar{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;}
+  .pb-tool{background:#fff; border:1px solid var(--line); border-radius:9px; padding:7px 11px; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+  .pb-tool.active{background:var(--pine); color:#fff; border-color:var(--pine);}
+  .pb-frames{display:flex; gap:8px; overflow-x:auto; padding:10px 0;}
+  .pb-frame-thumb{flex-shrink:0; width:64px; height:40px; border:2px solid var(--line); border-radius:8px; overflow:hidden; cursor:pointer; position:relative; background:#EEF3EA;}
+  .pb-frame-thumb.active{border-color:var(--pine);}
+  .pb-frame-thumb svg{width:100%; height:100%; display:block;}
+  .pb-frame-del{position:absolute; top:1px; right:1px; background:rgba(0,0,0,.55); color:#fff; font-size:9px; width:14px; height:14px; line-height:14px; border-radius:50%; text-align:center; cursor:pointer;}
+  .pb-playbar{display:flex; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;}
+  .pb-level-toggle{display:flex; gap:6px; margin:14px 0 6px;}
+  .pb-level-toggle button{flex:1; background:#fff; border:1px solid var(--line); border-radius:9px; padding:8px; font-size:12.5px; cursor:pointer;}
+  .pb-level-toggle button.active{background:var(--gold); border:1px solid var(--pine); font-weight:600;}
+  .pb-gloss-term{border-bottom:1.5px dotted var(--pine); cursor:help; color:var(--pine-dark); font-weight:600;}
+  .pb-gloss-pop{position:absolute; z-index:150; background:var(--pine-dark); color:#fff; padding:8px 12px; border-radius:9px; font-size:12.5px; max-width:240px; box-shadow:0 6px 18px rgba(0,0,0,.3);}
+  .pb-gloss-row{display:flex; justify-content:space-between; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--line);}
 </style>
 </head>
 <body>
@@ -391,6 +425,7 @@
     <button data-view="kalender">Kalender</button>
     <button data-view="ovningar">Övningsbank</button>
     <button data-view="laget">Laget</button>
+    <button data-view="playbook">Playbook</button>
   </nav>
 </header>
 
@@ -499,6 +534,37 @@
     </div>
     <div class="toolbar"><button class="btn ghost small" onclick="openCoachModal()">+ Ny tränare</button></div>
     <div class="card" id="coach-list"></div>
+  </section>
+
+  <!-- ============ PLAYBOOK ============ -->
+  <section class="view" id="view-playbook">
+    <div class="section-title">
+      <h2>Playbook — spelmoment</h2>
+      <span class="hint">Byggda spelsituationer med animation — för tränare och föräldrar</span>
+    </div>
+
+    <div class="pb-subnav" id="pb-subnav">
+      <button data-pbview="moments" class="active">Spelmoment</button>
+      <button data-pbview="glossary">📖 Ordbok</button>
+    </div>
+
+    <div id="pb-view-moments">
+      <div class="toolbar" style="flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <input type="text" id="pb-search" placeholder="Sök moment…" oninput="renderPlaybookMoments()" style="flex:1; min-width:160px; padding:8px 12px; border:1px solid var(--line); border-radius:9px; font-size:13px;">
+        <button class="btn" onclick="openPlaybookEditor(null)">+ Nytt spelmoment</button>
+      </div>
+      <div id="pb-cat-filter"></div>
+      <div class="pb-grid" id="pb-grid"></div>
+    </div>
+
+    <div id="pb-view-glossary" style="display:none;">
+      <p style="font-size:12.5px; color:var(--muted); margin:0 0 10px;">Begrepp här blir automatiskt klickbara i alla spelmoments instruktionstexter.</p>
+      <div class="toolbar" style="margin-bottom:10px;">
+        <input type="text" id="pb-gloss-search" placeholder="Sök begrepp…" oninput="renderGlossaryList()" style="flex:1; padding:8px 12px; border:1px solid var(--line); border-radius:9px; font-size:13px;">
+        <button class="btn" onclick="addGlossaryTerm()">+ Nytt begrepp</button>
+      </div>
+      <div id="pb-gloss-list"></div>
+    </div>
   </section>
 
 </main>
@@ -713,6 +779,117 @@
     <div class="modal-actions" style="margin-top:12px;">
       <button class="btn ghost" onclick="closeDiagramEditor()">Avbryt</button>
       <button class="btn" onclick="saveDiagram()">Spara diagram</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-playbook">
+  <div class="modal" style="max-width:660px;">
+    <button class="close-x" onclick="closePlaybookEditor()">✕</button>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-right:26px;">
+      <h3 id="pb-modal-title" style="margin-bottom:6px;">Nytt spelmoment</h3>
+      <button class="btn ghost small" id="pb-edit-toggle-btn" onclick="togglePlaybookEditMode()" style="flex-shrink:0;">✏️ Redigera</button>
+    </div>
+
+    <svg id="pb-svg" viewBox="0 0 600 340" class="diag-canvas"></svg>
+
+    <div class="pb-playbar">
+      <button type="button" class="diag-tool" onclick="pbStepFrame(-1)">⏮ Föregående</button>
+      <button type="button" class="diag-tool" id="pb-play-btn" onclick="pbTogglePlay()">▶ Spela</button>
+      <button type="button" class="diag-tool" onclick="pbStepFrame(1)">Nästa ⏭</button>
+      <label style="font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:5px;">Hastighet
+        <select id="pb-speed" style="font-size:11.5px; padding:4px 6px; border-radius:7px; border:1px solid var(--line);">
+          <option value="1600">Långsam</option>
+          <option value="900" selected>Normal</option>
+          <option value="500">Snabb</option>
+        </select>
+      </label>
+      <button type="button" class="diag-tool" id="pb-export-btn" onclick="pbExportVideo()">🎬 Spara som video</button>
+    </div>
+    <div class="pb-frames" id="pb-frames"></div>
+
+    <div id="pb-edit-tools" style="display:none;">
+      <p style="font-size:11.5px; color:var(--muted); margin:0 0 6px;">Välj verktyg, klicka sedan på planen. Dra ett objekt för att flytta det i det läge (den bildruta) som är valt nedan. "+ Nytt läge" kopierar nuvarande placering som nästa steg i animationen.</p>
+      <div class="pb-toolbar" id="pb-toolbar"></div>
+      <div class="toolbar" style="gap:8px; margin:2px 0 14px;">
+        <button type="button" class="diag-tool" onclick="pbAddFrame()">+ Nytt läge</button>
+        <button type="button" class="diag-tool" onclick="pbDeleteCurrentFrame()">🗑 Ta bort valt läge</button>
+      </div>
+
+      <label>Titel</label>
+      <input type="text" id="pb-title" placeholder="t.ex. Dubbling eget hörn">
+
+      <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:160px;">
+          <label>Kategori</label>
+          <select id="pb-category"></select>
+        </div>
+        <div style="flex:1; min-width:160px;">
+          <label>Ny egen kategori (valfritt)</label>
+          <input type="text" id="pb-new-category" placeholder="Lämna tomt om befintlig räcker">
+        </div>
+      </div>
+
+      <label style="margin-top:10px; display:block;">Taggar (kommaseparerat)</label>
+      <input type="text" id="pb-tags" placeholder="t.ex. press, hörn, uppspel">
+    </div>
+
+    <div class="pb-level-toggle">
+      <button type="button" data-level="parent" class="active" onclick="pbSetLevel('parent')">👪 Föräldratext</button>
+      <button type="button" data-level="coach" onclick="pbSetLevel('coach')">🎯 Tränartext</button>
+    </div>
+    <textarea id="pb-text-parent" rows="4" placeholder="Enkel förklaring för föräldrar — vad händer och varför, utan facktermer om det går."></textarea>
+    <textarea id="pb-text-coach" rows="4" style="display:none;" placeholder="Djupare taktisk text för tränarstaben."></textarea>
+
+    <div class="modal-actions modal-actions-sticky">
+      <button class="btn ghost" id="pb-delete-btn" onclick="deletePlaybookMoment()" style="margin-right:auto; display:none;">🗑 Ta bort moment</button>
+      <button class="btn ghost" onclick="closePlaybookEditor()">Avbryt</button>
+      <button class="btn" onclick="savePlaybookMoment()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-gloss-diagram">
+  <div class="modal" style="max-width:600px;">
+    <button class="close-x" onclick="closeGlossaryDiagramEditor()">✕</button>
+    <h3 id="gd-modal-title" style="margin-bottom:10px;">Bild för begrepp</h3>
+    <svg id="gd-svg" viewBox="0 0 600 340" class="diag-canvas"></svg>
+    <p style="font-size:11.5px; color:var(--muted); margin:8px 0 6px;">Klicka ett verktyg, klicka sedan på bilden. Dra för att flytta. Dubbelklicka för att döpa om eller ändra text.</p>
+    <div class="pb-toolbar" id="gd-toolbar"></div>
+    <div class="toolbar" style="gap:8px; margin:2px 0 14px;">
+      <button type="button" class="diag-tool" onclick="gdClearDiagram()">🗑 Rensa allt</button>
+    </div>
+    <div class="modal-actions modal-actions-sticky">
+      <button class="btn ghost" onclick="closeGlossaryDiagramEditor()">Avbryt</button>
+      <button class="btn" onclick="gdSaveDiagram()">Spara bild</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-prompt">
+  <div class="modal" style="max-width:400px;">
+    <h3 id="prompt-title">Skriv text</h3>
+    <p id="prompt-text" style="font-size:13px;color:var(--muted);line-height:1.5;margin:6px 0 10px;"></p>
+    <input type="text" id="prompt-input" style="width:100%;">
+    <div class="modal-actions">
+      <button class="btn ghost" id="prompt-cancel">Avbryt</button>
+      <button class="btn" id="prompt-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-line-style">
+  <div class="modal" style="max-width:360px;">
+    <h3>Linjestil</h3>
+    <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);margin:14px 0;">
+      <input type="checkbox" id="line-style-arrow" style="width:auto;"> Pilspets i slutet
+    </label>
+    <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);margin:14px 0;">
+      <input type="checkbox" id="line-style-dashed" style="width:auto;"> Streckad linje
+    </label>
+    <div class="modal-actions">
+      <button class="btn ghost" id="line-style-cancel">Avbryt</button>
+      <button class="btn" id="line-style-ok">OK</button>
     </div>
   </div>
 </div>
@@ -1095,6 +1272,10 @@ const EXERCISES = [
 const SUPABASE_URL = "https://pdbjbpxlmrhzmciqypjp.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_bMhjEqtx53g0YnIllYEBjg_8QfFEyiZ";
 const STORAGE_KEY = "hollviken-ibf-p1516-plan";
+// Playbook: startinnehåll byggt från Johans presentation (Försvarsspel + Anfallsspel) — sparas till Supabase
+// vid första körningen, och är därefter fritt redigerbart/borttagbart precis som allt annat i appen.
+const SEED_PLAYBOOK_MOMENTS = [{"id": "pb-import-grunduppst-llning-f-rsvar-2-1-2-v-xel", "title": "Grunduppställning försvar (2-1-2 växel)", "category": "forsvar", "tags": ["grundformation", "2-1-2"], "parentText": "Vår startposition i eget försvar. Två backar längst bak, en spelare i mitten (Center) och två längst fram (forwards) — som ett skyddsnät framför vårt mål.", "coachText": "2-1-2 växel. Forward på bollsida stänger sarg, andra forward flyttar in för understöd på ev. kross. Center har utgångsposition närmare backarna för kontroll på ytan framför sig. Backarna roterar så det alltid finns djup mellan dem.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 210, "y": 120}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 140, "y": 90}, "4": {"x": 140, "y": 250}, "5": {"x": 130, "y": 70}, "6": {"x": 125, "y": 72}}}, {"id": 1, "pos": {"0": {"x": 190, "y": 150}, "1": {"x": 230, "y": 230}, "2": {"x": 260, "y": 170}, "3": {"x": 110, "y": 70}, "4": {"x": 170, "y": 160}, "5": {"x": 130, "y": 70}, "6": {"x": 125, "y": 72}}}]}, {"id": "pb-import-n-r-kross-g-r-igenom", "title": "När kross går igenom", "category": "forsvar", "tags": ["kross", "dubbling"], "parentText": "Om en motståndare bryter igenom vår första linje kliver vår back ut och möter honom, medan en till spelare hjälper till (dubblar). De andra flyttar in för att täcka.", "coachText": "HB kliver ut på spelaren, fokus på att täcka skottet. HFw dubblar. Center ligger kvar och ansvarar för kross. Bortre back (VB) samt bortre forward (VFw) flyttar in.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 210, "y": 120}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 140, "y": 90}, "4": {"x": 140, "y": 250}, "5": {"x": 195, "y": 150}, "6": {"x": 190, "y": 150}}}, {"id": 1, "pos": {"0": {"x": 185, "y": 150}, "1": {"x": 240, "y": 205}, "2": {"x": 260, "y": 170}, "3": {"x": 150, "y": 140}, "4": {"x": 190, "y": 225}, "5": {"x": 195, "y": 150}, "6": {"x": 190, "y": 150}}}]}, {"id": "pb-import-n-r-boll-r-i-egen-ficka", "title": "När boll är i egen ficka", "category": "forsvar", "tags": ["hörn", "dubbling"], "parentText": "När motståndaren har bollen nere i vårt hörn dubblar två av våra spelare för att vinna tillbaka den, medan resten täcker framför mål.", "coachText": "HB samt HFw dubblar. Center ansvarar för centralytan. VB zonar framför mål och kliver upp på ev. kross.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 180, "y": 120}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 140, "y": 90}, "4": {"x": 140, "y": 250}, "5": {"x": 110, "y": 255}, "6": {"x": 108, "y": 258}}}, {"id": 1, "pos": {"0": {"x": 130, "y": 235}, "1": {"x": 150, "y": 175}, "2": {"x": 260, "y": 175}, "3": {"x": 115, "y": 270}, "4": {"x": 180, "y": 235}, "5": {"x": 110, "y": 255}, "6": {"x": 108, "y": 258}}}]}, {"id": "pb-import-hur-vi-styr-spelet-i-egen-zon", "title": "Hur vi styr spelet i egen zon", "category": "forsvar", "tags": ["styrspel"], "parentText": "Vi styr medvetet var motståndaren tar sig, istället för att bara reagera. Vår back trycker motståndaren mot samma kant han redan är på, och alla andra flyttar in för att krympa ytorna.", "coachText": "Back trycker motståndare i förstaläget spelaren upp på samma kant. Övriga spelare flyttar in mot bollen för att krympa ytor.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 200, "y": 110}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 150, "y": 95}, "4": {"x": 160, "y": 240}, "5": {"x": 150, "y": 90}, "6": {"x": 148, "y": 88}}}, {"id": 1, "pos": {"0": {"x": 150, "y": 80}, "1": {"x": 220, "y": 190}, "2": {"x": 240, "y": 150}, "3": {"x": 140, "y": 75}, "4": {"x": 200, "y": 210}, "5": {"x": 150, "y": 90}, "6": {"x": 148, "y": 88}}}]}, {"id": "pb-import-dubbling-eget-h-rn", "title": "Dubbling eget hörn", "category": "forsvar", "tags": ["hörn", "dubbling"], "parentText": "I hörnet dubblar vi alltid med forwards, inte backar. Center stannar kvar mitt i planen så han finns tillgänglig direkt om vi vinner bollen.", "coachText": "Vi dubblar med forwards. Center ligger alltid kvar centralt för att vara tillgänglig för passning när dubbling vinner boll. Bortre forward hjälper center med höga slottet samt är beredd att dra i djup när vi vinner boll.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 200, "y": 120}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 140, "y": 90}, "4": {"x": 140, "y": 250}, "5": {"x": 110, "y": 255}, "6": {"x": 108, "y": 258}}}, {"id": 1, "pos": {"0": {"x": 200, "y": 120}, "1": {"x": 220, "y": 225}, "2": {"x": 260, "y": 130}, "3": {"x": 130, "y": 240}, "4": {"x": 110, "y": 275}, "5": {"x": 110, "y": 255}, "6": {"x": 108, "y": 258}}}]}, {"id": "pb-import-spel-bakom-eget-m-l", "title": "Spel bakom eget mål", "category": "forsvar", "tags": ["bakom mål"], "parentText": "Om motståndaren har bollen bakom vårt mål kliver vi ut och möter honom istället för att jaga bakifrån, så vi alltid är vända rätt håll.", "coachText": "Vi kliver ut och möter spelaren bakom eget mål så vi hamnar framför och inte jagar efter. Back som kliver ner måste se till att bollen INTE kan spelas mellan honom och stolpen. Övriga spelare krymper i slottet — hellre att de hittar passning tillbaka till egen back än instick bakifrån. Viktigt att laget lyfter igen när bollen går tillbaka.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 120, "y": 120}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 150, "y": 90}, "4": {"x": 150, "y": 250}, "5": {"x": 70, "y": 170}, "6": {"x": 66, "y": 170}}}, {"id": 1, "pos": {"0": {"x": 95, "y": 180}, "1": {"x": 200, "y": 190}, "2": {"x": 240, "y": 175}, "3": {"x": 190, "y": 150}, "4": {"x": 190, "y": 190}, "5": {"x": 70, "y": 170}, "6": {"x": 66, "y": 170}}}]}, {"id": "pb-import-v-xa-och-kliva-in-i-skottlinje", "title": "Växa och kliva in i skottlinje", "category": "forsvar", "tags": ["återhämtning"], "parentText": "När bollen går tillbaka till motståndarens back efter att ha varit djup i vår zon, lyfter vi hela laget igen och stänger skottlinjen innan vi kliver upp på honom.", "coachText": "Forward på den sida bollen spelas tillbaka på ska först flytta in i skottlinjen innan han kliver upp på backen. Övriga spelare roterar inåt/uppåt på liknande sätt men har inte ansvar för att täcka skott från backen.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 150, "y": 140}, "1": {"x": 220, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 190, "y": 100}, "4": {"x": 160, "y": 240}, "5": {"x": 260, "y": 90}, "6": {"x": 256, "y": 88}}}, {"id": 1, "pos": {"0": {"x": 190, "y": 140}, "1": {"x": 230, "y": 210}, "2": {"x": 270, "y": 160}, "3": {"x": 220, "y": 110}, "4": {"x": 210, "y": 220}, "5": {"x": 260, "y": 90}, "6": {"x": 256, "y": 88}}}]}, {"id": "pb-import-s-tta-press-i-offensivt-h-rn", "title": "Sätta press i offensivt hörn", "category": "forsvar", "tags": ["forecheck", "press"], "parentText": "När motståndaren är på väg att hämta en boll i sitt hörn men kommer stå fel vänd, vågar vi ställa upp med hela laget och pressa hårt för att vinna bollen direkt.", "coachText": "Två närmaste spelarna till bollen stänger sarg från var sitt håll och kliver sen på bollhållaren. Tredje killen kliver in framför deras center för att stoppa ev. inspel centralt. Back på bollsida står upp, andra backen hamnar djup och blir 'städgumma' vid eventuell långboll.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 350, "y": 150}, "1": {"x": 380, "y": 250}, "2": {"x": 400, "y": 170}, "3": {"x": 420, "y": 120}, "4": {"x": 440, "y": 240}, "5": {"x": 480, "y": 260}, "6": {"x": 478, "y": 262}}}, {"id": 1, "pos": {"0": {"x": 350, "y": 150}, "1": {"x": 400, "y": 260}, "2": {"x": 400, "y": 170}, "3": {"x": 460, "y": 240}, "4": {"x": 490, "y": 270}, "5": {"x": 480, "y": 260}, "6": {"x": 478, "y": 262}}}]}, {"id": "pb-import-h-g-press-vid-inslag-p-offensiv-planhalv", "title": "Hög press vid inslag på offensiv planhalva", "category": "forsvar", "tags": ["högpress", "inslag"], "parentText": "När motståndaren ska slå in bollen på vår planhalva kan vi ibland pressa högt direkt och tvinga fram misstag redan där.", "coachText": "Vi kliver upp med två spelare, varav den vid sargen ger utrymme för en lockande passning längs sargen som vår back bakom kan kliva upp på. Sker en pet vid inslaget kliver båda forwards stenhårt — men inte så vi tjuvar och blir bortgjorda; bättre kliva till 70% och tvinga fram en långboll vi kan vinna. Kräver snack bakifrån om motståndaren förflyttar sig.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 300, "y": 140}, "1": {"x": 320, "y": 220}, "2": {"x": 340, "y": 170}, "3": {"x": 370, "y": 110}, "4": {"x": 380, "y": 230}, "5": {"x": 400, "y": 170}, "6": {"x": 398, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 320, "y": 140}, "1": {"x": 320, "y": 220}, "2": {"x": 340, "y": 170}, "3": {"x": 340, "y": 130}, "4": {"x": 340, "y": 200}, "5": {"x": 400, "y": 170}, "6": {"x": 398, "y": 168}}}]}, {"id": "pb-import-n-r-vi-m-ter-ett-pointspel", "title": "När vi möter ett Pointspel", "category": "forsvar", "tags": ["point", "styrspel"], "parentText": "Mot lag som spelar med en 'point'-spelare (en spelare som håller sig hög i planen) styr vi spelet mot en kant beroende på hur han håller klubban.", "coachText": "HFw kliver upp och stänger av passningen på sin sida. VFw faller ner, är på rätt sida sin spelare i höga fickan och ger understöd centralt. Center ligger kvar centralt men ansvarar för spelaren bakom HFw. Backarna sorterar övriga spelare.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "Point", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 200, "y": 130}, "1": {"x": 210, "y": 220}, "2": {"x": 260, "y": 170}, "3": {"x": 170, "y": 100}, "4": {"x": 150, "y": 230}, "5": {"x": 270, "y": 90}, "6": {"x": 266, "y": 88}}}, {"id": 1, "pos": {"0": {"x": 200, "y": 130}, "1": {"x": 220, "y": 225}, "2": {"x": 240, "y": 140}, "3": {"x": 230, "y": 80}, "4": {"x": 160, "y": 210}, "5": {"x": 270, "y": 90}, "6": {"x": 266, "y": 88}}}]}, {"id": "pb-import-om-styrspelet-misslyckas", "title": "Om styrspelet misslyckas", "category": "forsvar", "tags": ["styrspel", "hörn"], "parentText": "Om motståndaren ändå tar sig förbi vårt styrspel faller vi hem direkt och styr honom ner i hörnet tillsammans, utan att dubbla — då är vi för sårbara bakom.", "coachText": "HFw faller direkt hem. Center kliver ut och styr spelaren ner i hörnet tillsammans med HB. Ingen dubbling sker — vi blir för sårbara på ytan bakom Center och HB. När spelaren är nere i hörnet hittar vi tillbaka till positioner och styr honom uppåt i banan som vanligt.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "player", "label": "HFw", "playerId": null}, {"id": 4, "kind": "player", "label": "VFw", "playerId": null}, {"id": 5, "kind": "opponent", "label": "M", "playerId": null}, {"id": 6, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 210, "y": 120}, "1": {"x": 220, "y": 220}, "2": {"x": 250, "y": 150}, "3": {"x": 170, "y": 90}, "4": {"x": 160, "y": 240}, "5": {"x": 200, "y": 100}, "6": {"x": 198, "y": 98}}}, {"id": 1, "pos": {"0": {"x": 170, "y": 110}, "1": {"x": 220, "y": 220}, "2": {"x": 190, "y": 120}, "3": {"x": 140, "y": 150}, "4": {"x": 160, "y": 240}, "5": {"x": 150, "y": 110}, "6": {"x": 148, "y": 108}}}]}, {"id": "pb-import-minska-skottvinkeln-vid-kontring", "title": "Minska skottvinkeln vid kontring", "category": "forsvar", "tags": ["kontring", "målvakt"], "parentText": "I en kontring mot oss försöker vi göra skottvinkeln så liten som möjligt genom att styra spelaren mot en kant tillsammans med målvakten.", "coachText": "Målvakten styr försvararen så spelet går mot en kant och skyttens skottvinkel blir så liten som möjligt. Klubbfattningen påverkar också — tvingar vi ut bollen på sidan där spelaren inte har klubban inåt planen blir direktskottet sämre. Kräver tidig kommunikation.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "Center", "playerId": null}, {"id": 2, "kind": "opponent", "label": "M", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 150, "y": 170}, "1": {"x": 220, "y": 170}, "2": {"x": 280, "y": 150}, "3": {"x": 276, "y": 148}}}, {"id": 1, "pos": {"0": {"x": 110, "y": 230}, "1": {"x": 220, "y": 170}, "2": {"x": 190, "y": 230}, "3": {"x": 186, "y": 228}}}]}, {"id": "pb-import-2-mot-3", "title": "2 mot 3", "category": "forsvar", "tags": ["numerärt", "kontring"], "parentText": "I ett 2-mot-3-läge från kanten trycker vi hellre ut bollhållaren mot kanten och minskar vinkeln, än släpper in bollen centralt.", "coachText": "Vid 2 mot 3 från kanten släpper vi och trycker bollföraren ut mot kanten för att minska skottvinkeln. Hellre att bollhållaren tar avslut från kant där målvakten kan komma ut och göra sig stor, än släppa in bollen centralt och tvinga målvakten till förflyttning.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "player", "label": "VB", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "opponent", "label": "M", "playerId": null}, {"id": 4, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 180, "y": 110}, "1": {"x": 220, "y": 200}, "2": {"x": 250, "y": 150}, "3": {"x": 160, "y": 90}, "4": {"x": 157, "y": 88}}}, {"id": 1, "pos": {"0": {"x": 140, "y": 90}, "1": {"x": 220, "y": 200}, "2": {"x": 250, "y": 150}, "3": {"x": 160, "y": 90}, "4": {"x": 157, "y": 88}}}]}, {"id": "pb-import-1-mot-2-fr-n-kant", "title": "1 mot 2 från kant", "category": "forsvar", "tags": ["numerärt"], "parentText": "Vid 1 mot 2 från kanten tar backen bort passningsmöjligheten och ser till att motståndaren inte tar sig in i banan, utan tvingas skjuta från dålig vinkel.", "coachText": "Backen har ansvar att plocka bort passningen. Utöver det ska backen se till att bollföraren inte får trampa in i banan, utan istället ta skottet från så dålig vinkel som möjligt så målvakten kan möta skytten längre ut utan att bli rundad.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "opponent", "label": "M", "playerId": null}, {"id": 2, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 200, "y": 110}, "1": {"x": 170, "y": 80}, "2": {"x": 167, "y": 78}}}, {"id": 1, "pos": {"0": {"x": 150, "y": 95}, "1": {"x": 140, "y": 110}, "2": {"x": 137, "y": 108}}}]}, {"id": "pb-import-1-mot-2-fr-n-mitten", "title": "1 mot 2 från mitten", "category": "forsvar", "tags": ["numerärt"], "parentText": "Vid 1 mot 2 från mitten kliver backen istället på bollhållaren direkt för att tvinga fram en passning och göra skottvinkeln så liten som möjligt.", "coachText": "Backen kliver på spelaren med boll för att tvinga fram passning så skytten får så liten skottvinkel som möjligt. Målvakten är medveten om detta och kan vara beredd på förflyttning — vi tvingar motståndaren till fler moment innan avslut. Blir passningen dålig kan situationen 'rinna ut i sanden'.", "objects": [{"id": 0, "kind": "player", "label": "HB", "playerId": null}, {"id": 1, "kind": "opponent", "label": "M", "playerId": null}, {"id": 2, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 220, "y": 170}, "1": {"x": 270, "y": 170}, "2": {"x": 266, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 240, "y": 170}, "1": {"x": 280, "y": 150}, "2": {"x": 276, "y": 148}}}]}, {"id": "pb-import-vi-s-ker-trianglar", "title": "Vi söker trianglar", "category": "anfall", "tags": ["uppspel", "struktur"], "parentText": "Vi vill alltid ha två passningsmöjligheter för den som har bollen — som hörnen i en triangel — med rörelse och enkla alternativ.", "coachText": "Vi söker trianglar i uppspelen för att alltid skapa två passningsmöjligheter. Vi vill ha rörelse, enkla alternativ för bollhållaren, och söker alltid ny yta efter en slagen passning.", "objects": [{"id": 0, "kind": "player", "label": "A", "playerId": null}, {"id": 1, "kind": "player", "label": "B", "playerId": null}, {"id": 2, "kind": "player", "label": "C", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 350, "y": 120}, "1": {"x": 380, "y": 180}, "2": {"x": 340, "y": 220}, "3": {"x": 348, "y": 118}}}, {"id": 1, "pos": {"0": {"x": 400, "y": 140}, "1": {"x": 380, "y": 180}, "2": {"x": 420, "y": 220}, "3": {"x": 378, "y": 178}}}]}, {"id": "pb-import-bortre-ytan", "title": "\"Bortre ytan\"", "category": "anfall", "tags": ["bortre ytan"], "parentText": "När vi har bollen i det offensiva hörnet ska vi alltid ha en spelare som söker upp den bortre, öppna ytan vid mål — det ger bollhållaren ett alternativ utanför täckning.", "coachText": "När vi har boll i offensiv ficka ska vi ALLTID ha spelare som söker den 'bortre ytan'. Detta gör att bollföraren kan passa eller skjuta utanför täck men ändå skapa tryck på mål.", "objects": [{"id": 0, "kind": "player", "label": "A", "playerId": null}, {"id": 1, "kind": "player", "label": "B", "playerId": null}, {"id": 2, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 460, "y": 260}, "1": {"x": 500, "y": 130}, "2": {"x": 458, "y": 258}}}, {"id": 1, "pos": {"0": {"x": 460, "y": 260}, "1": {"x": 470, "y": 110}, "2": {"x": 458, "y": 258}}}]}, {"id": "pb-import-ekvatorl-pningar", "title": "Ekvatorlöpningar", "category": "anfall", "tags": ["ekvatorn", "3:e man"], "parentText": "En tredje spelare springer in mitt i planen, i höjd med motståndarnas center — vi kallar det en 'ekvatorlöpning'. Det skapar en ny passningsvariant.", "coachText": "Vi söker löpningar där 3:e killen gör en 'ekvatorlöpning' och tar sig in på ytan framför deras Center. Detta skapar en variant av triangelspel.", "objects": [{"id": 0, "kind": "player", "label": "A", "playerId": null}, {"id": 1, "kind": "player", "label": "B", "playerId": null}, {"id": 2, "kind": "player", "label": "C (3:e man)", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 380, "y": 240}, "2": {"x": 280, "y": 220}, "3": {"x": 348, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 380, "y": 240}, "2": {"x": 420, "y": 170}, "3": {"x": 348, "y": 168}}}]}, {"id": "pb-import-ekvatorl-pningar-alternativ", "title": "Ekvatorlöpningar alternativ", "category": "anfall", "tags": ["ekvatorn"], "parentText": "Ett alternativ är att den bortre backen gör ekvatorlöpningen istället — då tar forwarden ansvaret hemma bakåt.", "coachText": "Alternativ på ekvatorlöpning är när bortre back gör löpningen. Forward tar då ansvar hem.", "objects": [{"id": 0, "kind": "player", "label": "A", "playerId": null}, {"id": 1, "kind": "player", "label": "Bortre back", "playerId": null}, {"id": 2, "kind": "player", "label": "Fw", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 300, "y": 250}, "2": {"x": 380, "y": 120}, "3": {"x": 348, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 420, "y": 190}, "2": {"x": 300, "y": 220}, "3": {"x": 348, "y": 168}}}]}, {"id": "pb-import-ekvatorl-pningar-alternativ-typ-v-xel", "title": "Ekvatorlöpningar alternativ typ: Växel", "category": "anfall", "tags": ["ekvatorn", "växel"], "parentText": "En annan variant är en 'växel': spelaren vid mål backar upp i slottet, medan den bortre forwarden istället springer mot den bortre ytan.", "coachText": "Alternativ på ekvatorlöpning är en växel där spelaren på mål backar upp i slottet. Här tar bortre forward löpning mot bortre ytan, vilket skapar extra alternativ för bollhållaren.", "objects": [{"id": 0, "kind": "player", "label": "A", "playerId": null}, {"id": 1, "kind": "player", "label": "Vid mål", "playerId": null}, {"id": 2, "kind": "player", "label": "Bortre Fw", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 460, "y": 170}, "2": {"x": 460, "y": 260}, "3": {"x": 348, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 350, "y": 170}, "1": {"x": 400, "y": 170}, "2": {"x": 470, "y": 230}, "3": {"x": 348, "y": 168}}}]}, {"id": "pb-import-utkast-egen-m-lvakt", "title": "Utkast egen målvakt", "category": "anfall", "tags": ["utkast", "målvakt"], "parentText": "När målvakten spelar ut bollen ska passningar in i fickor eller djupt i planen alltid gå till en spelare som är i rörelse mot ytan — inte en som står still.", "coachText": "Utkast kring eget mål kan göras på stillastående spelare. Utkast i fickor eller djup i plan ska alltid göras på spelare som löper in på ytan. Utkast i fickor ska hålla en kvalité som gör att mottagaren kan spela vidare bollen på ett tillslag.", "objects": [{"id": 0, "kind": "player", "label": "MV", "playerId": null}, {"id": 1, "kind": "player", "label": "Mottagare", "playerId": null}, {"id": 2, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 85, "y": 170}, "1": {"x": 200, "y": 250}, "2": {"x": 88, "y": 170}}}, {"id": 1, "pos": {"0": {"x": 85, "y": 170}, "1": {"x": 220, "y": 130}, "2": {"x": 200, "y": 150}}}]}, {"id": "pb-import-djup-i-uppspelen", "title": "Djup i uppspelen", "category": "anfall", "tags": ["tredjekillen", "struktur"], "parentText": "Vi vill alltid ha minst en spelare djupt i planen i uppspelet. Har vi två djupa spelare måste 'tredjekillen' hålla sig hög i slottet istället.", "coachText": "Vi ska sträva efter att alltid ha minst en spelare nedanför sista tredjedelen. Har vi 2 spelare djupt måste 'tredjekillen' hålla sig hög i slottet.", "objects": [{"id": 0, "kind": "player", "label": "Djup 1", "playerId": null}, {"id": 1, "kind": "player", "label": "Djup 2", "playerId": null}, {"id": 2, "kind": "player", "label": "Tredjekillen", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 420, "y": 140}, "1": {"x": 420, "y": 220}, "2": {"x": 300, "y": 170}, "3": {"x": 298, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 460, "y": 120}, "1": {"x": 460, "y": 240}, "2": {"x": 340, "y": 170}, "3": {"x": 338, "y": 168}}}]}, {"id": "pb-import-underst-d-i-offensiva-h-rn", "title": "Understöd i offensiva hörn", "category": "anfall", "tags": ["hörn", "understöd"], "parentText": "När vi spelar bollen ner i det offensiva hörnet vill vi snabbt ha en spelare som backar upp så vi inte tappar den — antingen tillbaka till en back, eller förlängt längs kortsidan.", "coachText": "Alternativ finns i tillbaka till back (1) eller förlänga längs kortsidan (2). Viktigt att 'tredjekillen' faller in och håller sig hög i slottet.", "objects": [{"id": 0, "kind": "player", "label": "Bollhållare", "playerId": null}, {"id": 1, "kind": "player", "label": "Back (1)", "playerId": null}, {"id": 2, "kind": "player", "label": "Kortsida (2)", "playerId": null}, {"id": 3, "kind": "player", "label": "Tredjekillen", "playerId": null}, {"id": 4, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 480, "y": 260}, "1": {"x": 400, "y": 220}, "2": {"x": 500, "y": 300}, "3": {"x": 350, "y": 150}, "4": {"x": 478, "y": 258}}}, {"id": 1, "pos": {"0": {"x": 480, "y": 260}, "1": {"x": 400, "y": 220}, "2": {"x": 500, "y": 300}, "3": {"x": 350, "y": 150}, "4": {"x": 430, "y": 230}}}]}, {"id": "pb-import-spelv-ndning-direkt-in-p-center", "title": "Spelvändning direkt in på center", "category": "anfall", "tags": ["spelvändning"], "parentText": "Efter att en dubbling vunnit bollen spelar vi in på Center, som då kan vända spelet till andra sidan eller sätta bollen direkt i djup.", "coachText": "Dubblingen har vunnit boll och spelar in på Center. Bortre forward tar diagonallöpning i djup för att dra isär. Bortre back tar bredd. Center har nu alternativ att vända spelet på andra backen (1) eller sätta bollen direkt i djup (2).", "objects": [{"id": 0, "kind": "player", "label": "Center", "playerId": null}, {"id": 1, "kind": "player", "label": "Bortre Fw", "playerId": null}, {"id": 2, "kind": "player", "label": "Bortre back", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 300, "y": 170}, "1": {"x": 400, "y": 200}, "2": {"x": 300, "y": 260}, "3": {"x": 298, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 300, "y": 170}, "1": {"x": 470, "y": 250}, "2": {"x": 220, "y": 240}, "3": {"x": 298, "y": 168}}}]}, {"id": "pb-import-spelv-ndning-via-fw", "title": "Spelvändning via Fw", "category": "anfall", "tags": ["spelvändning"], "parentText": "Om en back vinner bollen själv kan han spela upp via forwarden, som antingen vänder in till Center eller knackar vidare till en djupgående spelare.", "coachText": "När back lyckas vinna boll på egen hand skapas alternativet att spelvända via Forward in på Center (1). Forwarden kan också förlänga genom att knacka vidare på djupgående spelare (2). Viktigt att Forward på samma sida som bollen står så högt i banan det går.", "objects": [{"id": 0, "kind": "player", "label": "Back", "playerId": null}, {"id": 1, "kind": "player", "label": "Fw", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 200, "y": 220}, "1": {"x": 250, "y": 100}, "2": {"x": 300, "y": 170}, "3": {"x": 198, "y": 218}}}, {"id": 1, "pos": {"0": {"x": 200, "y": 220}, "1": {"x": 250, "y": 100}, "2": {"x": 300, "y": 170}, "3": {"x": 248, "y": 98}}}]}, {"id": "pb-import-spelv-ndning-in-p-center-alt-1", "title": "Spelvändning in på center, alt 1", "category": "anfall", "tags": ["spelvändning", "v-löpning"], "parentText": "Bortre backen bromsar med bollen och släpper ut till Center, som tagit löpning mot samma kant. Vi strävar efter max 2 passningar innan avslut i en spelvändning.", "coachText": "Bortre back 'bromsar' med boll, släpper ut till center som tagit löpning mot samma kant. VFw gör V-löpning och skapar möjlighet till pass snett inåt/bakåt. Center kan även hitta bortre ytan med skott/pass. Mål: MAX 2 passningar på offensiv planhalva innan avslut i en spelvändning.", "objects": [{"id": 0, "kind": "player", "label": "Bortre back", "playerId": null}, {"id": 1, "kind": "player", "label": "Center", "playerId": null}, {"id": 2, "kind": "player", "label": "VFw", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 300, "y": 250}, "1": {"x": 340, "y": 200}, "2": {"x": 460, "y": 230}, "3": {"x": 298, "y": 248}}}, {"id": 1, "pos": {"0": {"x": 300, "y": 250}, "1": {"x": 300, "y": 170}, "2": {"x": 400, "y": 180}, "3": {"x": 338, "y": 198}}}]}, {"id": "pb-import-spelv-ndning-in-p-center-alt-2", "title": "Spelvändning in på center, alt 2", "category": "anfall", "tags": ["spelvändning", "v-löpning"], "parentText": "Ett alternativ: forwarden i djup faller ut på bollsidan och gör sig spelbar, medan Center går mot den bortre ytan och VFw gör en V-löpning.", "coachText": "Här väljer forward i djup att falla ut på bollsida och göra sig spelbar. Center går på bortre ytan. VFw gör V-löpning.", "objects": [{"id": 0, "kind": "player", "label": "Fw", "playerId": null}, {"id": 1, "kind": "player", "label": "Center", "playerId": null}, {"id": 2, "kind": "player", "label": "VFw", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 450, "y": 180}, "1": {"x": 300, "y": 170}, "2": {"x": 460, "y": 230}, "3": {"x": 448, "y": 178}}}, {"id": 1, "pos": {"0": {"x": 380, "y": 180}, "1": {"x": 460, "y": 150}, "2": {"x": 400, "y": 180}, "3": {"x": 378, "y": 178}}}]}, {"id": "pb-import-spelv-ndning-bakom-m-l", "title": "Spelvändning bakom mål", "category": "anfall", "tags": ["spelvändning", "press"], "parentText": "Under hård press kan vi vända spelet bakom vårt eget mål istället för centralt — det håller undan bollen från en tät yta och gör att vi tryggt kan bygga upp igen.", "coachText": "Bra alternativ när vi blir satta under hög press och inte vill vända centralt. Vi spelar längs sargen — forward på bortre sidan som skulle gått i djup tar istället bredd (1). När vi vänt bakom mål förlänger forward till djupgående spelare. Vi undviker att vända in centralt (överbelastad yta). Backar ska kliva in i banan efter momentet, och Center ska våga fylla på när bollen förlängs (2).", "objects": [{"id": 0, "kind": "player", "label": "Back", "playerId": null}, {"id": 1, "kind": "player", "label": "Fw", "playerId": null}, {"id": 2, "kind": "player", "label": "Center", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 100, "y": 90}, "1": {"x": 130, "y": 250}, "2": {"x": 300, "y": 170}, "3": {"x": 98, "y": 88}}}, {"id": 1, "pos": {"0": {"x": 85, "y": 170}, "1": {"x": 150, "y": 250}, "2": {"x": 250, "y": 170}, "3": {"x": 83, "y": 168}}}]}, {"id": "pb-import-3-mot-2-standard", "title": "3 mot 2 standard", "category": "anfall", "tags": ["numerärt", "3v2"], "parentText": "I ett standardläge 3 mot 2 släpper centralspelaren ut mot den bortre ytan medan bollhållaren bromsar och väljer mellan att spela in eller ta sig an själv.", "coachText": "Centralspelaren släpper ut och går mot bortre ytan. Blivande bollförare bromsar med bollen — alternativ att spela snett inåt/bakåt på bortre Fw som gjort ekvatorlöpning (1), eller spela på bortre ytan (2). Även alternativet att utmana själv finns. Momentet görs likadant oavsett om centralspelaren har bollen i förstaläget.", "objects": [{"id": 0, "kind": "player", "label": "Center", "playerId": null}, {"id": 1, "kind": "player", "label": "Bollförare", "playerId": null}, {"id": 2, "kind": "player", "label": "Bortre Fw", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 380, "y": 180}, "1": {"x": 300, "y": 170}, "2": {"x": 300, "y": 260}, "3": {"x": 298, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 460, "y": 140}, "1": {"x": 340, "y": 200}, "2": {"x": 420, "y": 140}, "3": {"x": 338, "y": 198}}}]}, {"id": "pb-import-3-mot-2-alternativ", "title": "3 mot 2 alternativ", "category": "anfall", "tags": ["numerärt", "3v2"], "parentText": "Om centralspelaren ligger långt bak i ett 3-mot-2-läge kan en kantspelare utan boll göra löpningen mot den bortre ytan istället — samma idé, annan utförare.", "coachText": "Om Centralspelaren är långt bak i 3 mot 2 kan icke bollförande kantspelare göra löpningen mot bortre ytan. Samma alternativ skapas som i '3 mot 2 standard'.", "objects": [{"id": 0, "kind": "player", "label": "Center (bak)", "playerId": null}, {"id": 1, "kind": "player", "label": "Bollförare", "playerId": null}, {"id": 2, "kind": "player", "label": "Kantspelare", "playerId": null}, {"id": 3, "kind": "ball", "label": "", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 300, "y": 230}, "1": {"x": 300, "y": 170}, "2": {"x": 300, "y": 110}, "3": {"x": 298, "y": 168}}}, {"id": 1, "pos": {"0": {"x": 340, "y": 230}, "1": {"x": 340, "y": 200}, "2": {"x": 420, "y": 140}, "3": {"x": 338, "y": 198}}}]}, {"id": "pb-import-val-av-uppst-llning-i-uppspel-1-2-1-1", "title": "Val av uppställning i uppspel: 1-2-1-1", "category": "anfall", "tags": ["struktur", "uppspel"], "parentText": "Vår grundformation när vi ska spela upp bollen från eget mål: en spelare djupast (målvakt/back), två på bredden, en central länk och en djupt framme.", "coachText": "Uppspelsformation 1-2-1-1: en spelare djupast, två breda, en central länk (Center), och en djupgående spelare som söker ytan bortom sista tredjedelen.", "objects": [{"id": 0, "kind": "player", "label": "MV/Back", "playerId": null}, {"id": 1, "kind": "player", "label": "Bredd 1", "playerId": null}, {"id": 2, "kind": "player", "label": "Bredd 2", "playerId": null}, {"id": 3, "kind": "player", "label": "Center", "playerId": null}, {"id": 4, "kind": "player", "label": "Djup", "playerId": null}], "frames": [{"id": 0, "pos": {"0": {"x": 110, "y": 170}, "1": {"x": 220, "y": 90}, "2": {"x": 220, "y": 250}, "3": {"x": 300, "y": 170}, "4": {"x": 420, "y": 170}}}, {"id": 1, "pos": {"0": {"x": 110, "y": 170}, "1": {"x": 220, "y": 90}, "2": {"x": 220, "y": 250}, "3": {"x": 300, "y": 170}, "4": {"x": 420, "y": 170}}}]}];
+const SEED_GLOSSARY = [{"id": "gl-seed-1", "term": "Kross", "definition": "När en försvarare (t.ex. en back) förflyttar sig från sin position för att möta en anfallare, ofta för att täcka en genombrottsspelare."}, {"id": "gl-seed-2", "term": "Point", "definition": "En anfallsspelare som positionerar sig högt/centralt i planhalvan, ofta vid mittlinjen, för att hålla igång bollinnehavet."}, {"id": "gl-seed-3", "term": "HB", "definition": "Höger back — en av backarna i grundformationen, ansvarar för sin sida av planen."}, {"id": "gl-seed-4", "term": "VB", "definition": "Vänster back — den andra backen i grundformationen."}, {"id": "gl-seed-5", "term": "HFw", "definition": "Höger forward — anfallsspelare på höger sida."}, {"id": "gl-seed-6", "term": "VFw", "definition": "Vänster forward — anfallsspelare på vänster sida."}, {"id": "gl-seed-7", "term": "Slottet", "definition": "Ytan rakt framför mål — det farligaste området för avslut."}, {"id": "gl-seed-8", "term": "Dubbling", "definition": "När två av våra spelare pressar samma motståndare samtidigt för att vinna bollen."}, {"id": "gl-seed-9", "term": "Ekvatorlöpning", "definition": "En löpning där en tredje spelare tar sig in mitt i planen, i höjd med motståndarnas center."}, {"id": "gl-seed-10", "term": "Tredjekillen", "definition": "Spelaren som inte är direkt inblandad i bollinnehavet, utan håller sig hög och tillgänglig som extra alternativ."}, {"id": "gl-seed-11", "term": "V-löpning", "definition": "En löpning i V-form som skapar en passningsvinkel snett inåt eller bakåt."}, {"id": "gl-seed-12", "term": "Bortre ytan", "definition": "Den öppna ytan på motsatt sida av planen från där bollen är, längre bort från motståndarens försvar."}, {"id": "gl-seed-13", "term": "Styrspel", "definition": "Att medvetet trycka motståndaren åt ett visst håll (t.ex. mot en kant) istället för att bara reagera på vad han gör."}];
 let DATA = {
   groups: [
     {id:"g1", name:"Blå", color:"#2E6C9E"},
@@ -1115,6 +1296,9 @@ let DATA = {
   templates: [], // sparade träningsmallar: {id, name, blocks, yta, istid, savedAt}
   periods: [], // säsongens block/perioder: {id, label, weekStart, weekEnd, color, description, focus, goal, goalStatus, goalNotes}
   pairHistoryCountingMigrated: false,
+  playbookMoments: SEED_PLAYBOOK_MOMENTS,  // spelmoment: {id,title,category,tags,parentText,coachText,objects,frames}
+  playbookCategories: [],   // egna, lagspecifika kategorier utöver de fasta (Försvarsspel/Anfallsspel/...)
+  glossary: SEED_GLOSSARY,  // ordbok: {id,term,definition} — länkas automatiskt in i spelmomentens texter
 };
 let activeExCats = new Set();
 
@@ -1122,6 +1306,7 @@ let activeExCats = new Set();
 // ingenting sparas — annars riskerar vi att skriva över lagets riktiga plan med tomma
 // standardvärden efter ett misslyckat läsanrop.
 let DATA_LOADED_OK = false;
+let PLAYBOOK_NEEDS_INITIAL_SAVE = false; // sant om appen kördes innan Playbook-modulen fanns — sparar in startinnehållet direkt
 
 async function loadData(){
   let loadFailed = false;
@@ -1133,9 +1318,11 @@ async function loadData(){
     if(!res.ok) throw new Error("Supabase load failed: "+res.status);
     const rows = await res.json();
     if(rows && rows.length>0 && rows[0].value){
+      const isFirstPlaybookRun = !("playbookMoments" in rows[0].value); // appen körd innan Playbook-modulen fanns
       DATA = Object.assign(DATA, rows[0].value);
       DATA_LOADED_OK = true;
       backupLastKnownGood();
+      if(isFirstPlaybookRun) PLAYBOOK_NEEDS_INITIAL_SAVE = true;
     } else {
       // Läsningen gick igenom men tabellen är tom — allra första körningen.
       // Först då är det säkert att seeda och skriva.
@@ -1172,7 +1359,7 @@ async function loadData(){
   const augustChanged = importAugustLineups();
   const mergeChanged = mergeDuplicateGroups();
   renderAll();
-  if(augustChanged || mergeChanged || seasonContentChanged || periodYearsChanged) trySaveOnce();
+  if(augustChanged || mergeChanged || seasonContentChanged || periodYearsChanged || PLAYBOOK_NEEDS_INITIAL_SAVE) trySaveOnce();
 }
 
 // Lokal säkerhetskopia av senast korrekt inlästa data, som nödutväg om lagringen
@@ -1209,6 +1396,9 @@ function migratePairHistory(){
   if(!DATA.themeList) DATA.themeList = MAIN_THEME_LIST.slice(); // engångsmigrering — från och med nu är listan fritt redigerbar, inte längre hårdkodad
   if(!DATA.themeCategoryMap) DATA.themeCategoryMap = {...MAIN_THEME_TO_CAT}; // engångsmigrering — samma sak för tema->kategori-kopplingen som styr övningsförslag
   if(!DATA.icsCalendarUrl) DATA.icsCalendarUrl = "https://portalweb.sportadmin.se/webcal?id=f47a760a-18f4-4288-af70-d67577ab760a";
+  if(!DATA.playbookMoments) DATA.playbookMoments = [];
+  if(!DATA.playbookCategories) DATA.playbookCategories = [];
+  if(!DATA.glossary) DATA.glossary = [];
 }
 // Engångsmigrering: flaggar automatiskt en befintlig grupp som heter "Målvakter" (skiftläges-
 // okänsligt) som den låsta målvaktsgruppen, om ingen grupp redan har flaggan. Körs bara en gång —
@@ -1720,6 +1910,10 @@ document.getElementById("tabnav").addEventListener("click", e=>{
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+btn.dataset.view).classList.add("active");
 });
+document.getElementById("pb-subnav").addEventListener("click", e=>{
+  const btn = e.target.closest("button[data-pbview]"); if(!btn) return;
+  switchPbView(btn.dataset.pbview);
+});
 
 function renderAll(){
   renderTimeline();
@@ -1733,6 +1927,7 @@ function renderAll(){
   renderExercises();
   renderGroups();
   renderPlayers();
+  renderPlaybook();
   renderMixHistory(); renderGoalieHistory();
   renderCoaches();
 }
@@ -4152,6 +4347,966 @@ function diagramThumbSVG(objects){
   const arrowId = "ah-"+Math.random().toString(36).slice(2,8);
   const objs = objects.map(o=>diagramObjectMarkup(o, arrowId)).join("");
   return `<svg viewBox="0 0 600 340" class="diag-thumb"><defs><marker id="${arrowId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}${objs}</svg>`;
+}
+
+function escapeHtml(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+/* =========================================================================
+   PLAYBOOK — spelmoment med animerade lägen, för tränare och föräldrar
+   ========================================================================= */
+function promptDialog(message, defaultValue){
+  return new Promise(resolve=>{
+    const overlay = document.getElementById("modal-prompt");
+    document.getElementById("prompt-text").textContent = message;
+    const input = document.getElementById("prompt-input");
+    input.value = defaultValue || "";
+    const okBtn = document.getElementById("prompt-ok");
+    const cancelBtn = document.getElementById("prompt-cancel");
+    const cleanup = ()=>{
+      overlay.classList.remove("open");
+      okBtn.onclick=null; cancelBtn.onclick=null; input.onkeydown=null;
+    };
+    okBtn.onclick = ()=>{ const v = input.value; cleanup(); resolve(v); };
+    cancelBtn.onclick = ()=>{ cleanup(); resolve(null); };
+    input.onkeydown = (e)=>{
+      if(e.key==="Enter"){ e.preventDefault(); okBtn.onclick(); }
+      if(e.key==="Escape"){ e.preventDefault(); cancelBtn.onclick(); }
+    };
+    overlay.classList.add("open");
+    setTimeout(()=>{ input.focus(); input.select(); }, 50);
+  });
+}
+function lineStyleDialog(current){
+  return new Promise(resolve=>{
+    const overlay = document.getElementById("modal-line-style");
+    const arrowCb = document.getElementById("line-style-arrow");
+    const dashedCb = document.getElementById("line-style-dashed");
+    arrowCb.checked = current.arrow!==false;
+    dashedCb.checked = !!current.dashed;
+    const okBtn = document.getElementById("line-style-ok");
+    const cancelBtn = document.getElementById("line-style-cancel");
+    const cleanup = ()=>{ overlay.classList.remove("open"); okBtn.onclick=null; cancelBtn.onclick=null; };
+    okBtn.onclick = ()=>{ const v = {arrow: arrowCb.checked, dashed: dashedCb.checked}; cleanup(); resolve(v); };
+    cancelBtn.onclick = ()=>{ cleanup(); resolve(null); };
+    overlay.classList.add("open");
+  });
+}
+
+function pbWrapText(text, maxCharsPerLine, maxLines){
+  const words = (text||"").split(/\s+/).filter(Boolean);
+  const lines = [];
+  let current = "";
+  words.forEach(w=>{
+    const test = current ? current+" "+w : w;
+    if(test.length > maxCharsPerLine && current){
+      lines.push(current);
+      current = w;
+    } else {
+      current = test;
+    }
+  });
+  if(current) lines.push(current);
+  if(lines.length===0) lines.push("");
+  if(lines.length > maxLines){
+    lines.length = maxLines;
+    lines[maxLines-1] = lines[maxLines-1].replace(/\s+$/,"") + "…";
+  }
+  return lines;
+}
+
+const PLAYBOOK_FIXED_CATS = [
+  {id:"forsvar",   label:"Försvarsspel",         color:"#2E6C9E"},
+  {id:"anfall",    label:"Anfallsspel",          color:"#C24A3A"},
+  {id:"overlage",  label:"Numerärt överläge",    color:"#3F8F5F"},
+  {id:"underlage", label:"Numerärt underläge",   color:"#C9A24B"},
+  {id:"frislag",   label:"Frislag",              color:"#8A6BAF"},
+];
+
+function playbookCategories(){
+  return PLAYBOOK_FIXED_CATS.concat((DATA.playbookCategories||[]).map(c=>({id:c.id, label:c.label, color:c.color||"#8A8F86"})));
+}
+function playbookCatById(id){ return playbookCategories().find(c=>c.id===id); }
+
+let pbActiveCatFilter = null;
+let pbEditingId = null;
+let pbEditMode = false;
+let pbCurrentLevel = "parent";
+let pbObjects = [];
+let pbFrames = [];
+let pbCurrentFrame = 0;
+let pbTool = null;
+let pbDragging = null;
+let pbIdCounter = 0;
+let pbPlaying = false;
+let pbPlayRAF = null;
+let pbListenersBound = false;
+let pbLineDrawing = false;
+let pbLineDrawId = null;
+
+function switchPbView(view){
+  document.querySelectorAll("#pb-subnav button").forEach(b=>b.classList.toggle("active", b.dataset.pbview===view));
+  document.getElementById("pb-view-moments").style.display = view==="moments" ? "" : "none";
+  document.getElementById("pb-view-glossary").style.display = view==="glossary" ? "" : "none";
+  if(view==="glossary") renderGlossaryList();
+}
+
+function renderPlaybook(){
+  renderPlaybookCatFilter();
+  renderPlaybookMoments();
+}
+function renderPlaybookCatFilter(){
+  const wrap = document.getElementById("pb-cat-filter"); if(!wrap) return;
+  const cats = playbookCategories();
+  wrap.innerHTML = `<span class="pb-cat-chip${pbActiveCatFilter===null?' active':''}" style="${pbActiveCatFilter===null?'background:var(--pine-dark);':''}" onclick="pbActiveCatFilter=null;renderPlaybookMoments();renderPlaybookCatFilter();">Alla</span>` +
+    cats.map(c=>`<span class="pb-cat-chip${pbActiveCatFilter===c.id?' active':''}" style="${pbActiveCatFilter===c.id?'background:'+c.color+';':''}" onclick="pbActiveCatFilter='${c.id}';renderPlaybookMoments();renderPlaybookCatFilter();">${c.label}</span>`).join("");
+}
+function renderPlaybookMoments(){
+  const grid = document.getElementById("pb-grid"); if(!grid) return;
+  const q = (document.getElementById("pb-search").value||"").toLowerCase();
+  const items = (DATA.playbookMoments||[]).filter(m=>{
+    if(pbActiveCatFilter && m.category!==pbActiveCatFilter) return false;
+    if(q && !(m.title||"").toLowerCase().includes(q) && !(m.tags||[]).join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if(items.length===0){ grid.innerHTML = `<p style="color:var(--muted);font-size:13px;">Inga spelmoment ännu — tryck "+ Nytt spelmoment" för att börja.</p>`; return; }
+  grid.innerHTML = items.map(m=>{
+    const cat = playbookCatById(m.category);
+    return `<div class="pb-card" onclick="openPlaybookEditor('${m.id}')">
+      <div class="pb-card-thumb">${playbookThumbSVG(m)}</div>
+      <div class="pb-card-body">
+        <h4>${escapeHtml(m.title||"Namnlöst moment")}</h4>
+        ${cat?`<span class="pb-tag" style="background:${cat.color}22;color:${cat.color};">${escapeHtml(cat.label)}</span>`:""}
+        <div class="pb-card-tags">${(m.tags||[]).map(t=>`<span class="pb-tag">${escapeHtml(t)}</span>`).join("")}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+function playbookThumbSVG(m){
+  const frame = (m.frames||[])[0];
+  const objs = frame ? (m.objects||[]).filter(o=>pbObjVisibleAtFrame(o,0)).map(o=>pbObjMarkup(o, frame.pos[o.id])).join("") : "";
+  return `<svg viewBox="0 0 600 340">${RINK_BACKGROUND_SVG}${objs}</svg>`;
+}
+/* ---- Synlighet per läge (text/zon kan visas bara i ett urval av momentets lägen) ---- */
+function pbObjVisibleAtFrame(obj, frameIndex){
+  if(obj.visibleFrom==null || obj.visibleTo==null) return true; // ingen gräns satt = alltid synlig
+  return frameIndex>=obj.visibleFrom && frameIndex<=obj.visibleTo;
+}
+function pbObjVisibleInSegment(obj, seg){
+  if(obj.visibleFrom==null || obj.visibleTo==null) return true;
+  return pbObjVisibleAtFrame(obj, seg) || pbObjVisibleAtFrame(obj, seg+1);
+}
+function pbFrameRangeToText(obj){
+  if(obj.visibleFrom==null || obj.visibleTo==null) return "";
+  const a = obj.visibleFrom+1, b = obj.visibleTo+1;
+  return a===b ? String(a) : (a+"-"+b);
+}
+function pbParseFrameRange(text, maxFrames){
+  const t = (text||"").trim();
+  if(!t) return {visibleFrom:null, visibleTo:null};
+  const m = t.match(/^(\d+)\s*-\s*(\d+)$/);
+  let from, to;
+  if(m){ from=parseInt(m[1],10); to=parseInt(m[2],10); }
+  else { const n=parseInt(t,10); if(isNaN(n)) return {visibleFrom:null, visibleTo:null}; from=n; to=n; }
+  from = Math.max(1, Math.min(maxFrames, from));
+  to = Math.max(1, Math.min(maxFrames, to));
+  if(from>to){ const tmp=from; from=to; to=tmp; }
+  return {visibleFrom: from-1, visibleTo: to-1};
+}
+
+function pbObjMarkup(o, pos, draggable){
+  if(!pos) return "";
+  const cls = draggable ? "pb-obj" : "";
+  if(o.kind==="ball"){
+    return `<circle cx="${pos.x}" cy="${pos.y}" r="6" fill="#2C2C2A" class="${cls}" data-obj="${o.id}"></circle>`;
+  }
+  if(o.kind==="text"){
+    const rawLabel = o.label || "…";
+    const lines = pbWrapText(rawLabel, 30, 5);
+    const longestLine = Math.max(...lines.map(l=>l.length), 1);
+    const w = Math.min(220, Math.max(40, 16 + longestLine*6.2));
+    const lineHeight = 14;
+    const textBlockH = lines.length*lineHeight;
+    const h = textBlockH + 10;
+    const firstY = pos.y - textBlockH/2 + lineHeight*0.78;
+    const tspans = lines.map((line,i)=>`<tspan x="${pos.x}" y="${firstY + i*lineHeight}">${escapeHtml(line)}</tspan>`).join("");
+    return `<g class="${cls}" data-obj="${o.id}">
+      <rect x="${pos.x - w/2}" y="${pos.y - h/2}" width="${w}" height="${h}" rx="6" fill="#1A1A1A" fill-opacity="0.85"></rect>
+      <text text-anchor="middle" font-size="11" font-family="Inter" fill="#fff" style="pointer-events:none;">${tspans}</text>
+    </g>`;
+  }
+  if(o.kind==="zone"){
+    const w = o.w||140, h = o.h||90;
+    return `<g class="${cls}" data-obj="${o.id}">
+      <rect x="${pos.x-w/2}" y="${pos.y-h/2}" width="${w}" height="${h}" rx="10" fill="#E8621A" fill-opacity="0.22" stroke="#E8621A" stroke-width="2"></rect>
+      ${o.label ? `<text x="${pos.x}" y="${pos.y+4}" text-anchor="middle" font-size="11" font-family="Oswald" fill="#7A3410" style="pointer-events:none;">${escapeHtml(o.label)}</text>` : ""}
+    </g>`;
+  }
+  if(o.kind==="line"){
+    const dx = o.dx||0, dy = o.dy||0;
+    const x2 = pos.x+dx, y2 = pos.y+dy;
+    const dashAttr = o.dashed ? ` stroke-dasharray="8 6"` : "";
+    const markerAttr = (o.arrow!==false) ? ` marker-end="url(#pb-arrowhead)"` : "";
+    return `<g class="${cls}" data-obj="${o.id}">
+      <line x1="${pos.x}" y1="${pos.y}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="16"></line>
+      <line x1="${pos.x}" y1="${pos.y}" x2="${x2}" y2="${y2}" stroke="#0C447C" stroke-width="3"${dashAttr}${markerAttr} style="pointer-events:none;"></line>
+    </g>`;
+  }
+  const fill = o.kind==="opponent" ? "#C24A3A" : "#2E6C9E";
+  const label = (o.playerId ? playerShortLabel(o.playerId) : (o.label||"")).slice(0,3);
+  return `<g class="${cls}" data-obj="${o.id}">
+    <circle cx="${pos.x}" cy="${pos.y}" r="13" fill="${fill}"></circle>
+    <text x="${pos.x}" y="${pos.y+4}" text-anchor="middle" font-size="10" font-family="Oswald" fill="#fff" style="pointer-events:none;">${escapeHtml(label)}</text>
+  </g>`;
+}
+function playerShortLabel(pid){
+  const p = DATA.players.find(x=>x.id===pid);
+  if(!p) return "?";
+  const parts = p.name.split(" ");
+  return (parts[0]||"").slice(0,1) + (p.number && p.number!=="-" ? p.number : "");
+}
+
+function openPlaybookEditor(id){
+  pbEditingId = id;
+  const m = id ? (DATA.playbookMoments||[]).find(x=>x.id===id) : null;
+  pbObjects = m ? JSON.parse(JSON.stringify(m.objects||[])) : [];
+  pbFrames = m ? JSON.parse(JSON.stringify(m.frames||[])) : [{id:0, pos:{}}];
+  pbIdCounter = pbObjects.length ? Math.max(...pbObjects.map(o=>o.id))+1 : 0;
+  pbCurrentFrame = 0;
+  pbTool = null; pbDragging = null; pbPlaying = false; pbCurrentLevel = "parent";
+
+  document.getElementById("pb-modal-title").textContent = m ? "Redigera spelmoment" : "Nytt spelmoment";
+  document.getElementById("pb-title").value = m ? (m.title||"") : "";
+  document.getElementById("pb-tags").value = m ? (m.tags||[]).join(", ") : "";
+  document.getElementById("pb-new-category").value = "";
+  document.getElementById("pb-text-parent").value = m ? (m.parentText||"") : "";
+  document.getElementById("pb-text-coach").value = m ? (m.coachText||"") : "";
+  document.getElementById("pb-delete-btn").style.display = m ? "" : "none";
+  renderPlaybookCategorySelect(m ? m.category : null);
+  document.querySelectorAll(".pb-level-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.level==="parent"));
+  document.getElementById("pb-text-parent").style.display = "";
+  document.getElementById("pb-text-coach").style.display = "none";
+
+  const svg = document.getElementById("pb-svg");
+  svg.innerHTML = `<defs><marker id="pb-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="pb-objects-layer"></g>`;
+  if(!pbListenersBound){
+    svg.addEventListener("pointerdown", onPbCanvasPointerDown);
+    document.addEventListener("pointermove", onPbPointerMove);
+    document.addEventListener("pointerup", onPbPointerUp);
+    pbListenersBound = true;
+  }
+  setPlaybookEditMode(!m);
+  openModal("modal-playbook");
+}
+function closePlaybookEditor(){
+  pbStopPlay();
+  closeModal("modal-playbook");
+  pbEditingId = null;
+}
+function setPlaybookEditMode(on){
+  pbEditMode = on;
+  document.getElementById("pb-edit-tools").style.display = on ? "" : "none";
+  document.getElementById("pb-edit-toggle-btn").textContent = on ? "👁 Visningsläge" : "✏️ Redigera";
+
+  let viewP = document.getElementById("pb-text-parent-view");
+  let viewC = document.getElementById("pb-text-coach-view");
+  if(!viewP){
+    viewP = document.createElement("div"); viewP.id = "pb-text-parent-view"; viewP.style.cssText = "font-size:13.5px;line-height:1.55;padding:6px 2px;";
+    document.getElementById("pb-text-parent").insertAdjacentElement("afterend", viewP);
+    viewC = document.createElement("div"); viewC.id = "pb-text-coach-view"; viewC.style.cssText = "font-size:13.5px;line-height:1.55;padding:6px 2px;";
+    document.getElementById("pb-text-coach").insertAdjacentElement("afterend", viewC);
+  }
+  document.getElementById("pb-text-parent").style.display = (on && pbCurrentLevel==="parent") ? "" : "none";
+  document.getElementById("pb-text-coach").style.display = (on && pbCurrentLevel==="coach") ? "" : "none";
+  viewP.style.display = (!on && pbCurrentLevel==="parent") ? "" : "none";
+  viewC.style.display = (!on && pbCurrentLevel==="coach") ? "" : "none";
+  if(!on){
+    viewP.innerHTML = glossarize(document.getElementById("pb-text-parent").value);
+    viewC.innerHTML = glossarize(document.getElementById("pb-text-coach").value);
+  }
+  renderPbToolbar();
+  renderPbFrames();
+}
+function togglePlaybookEditMode(){ setPlaybookEditMode(!pbEditMode); }
+function pbSetLevel(level){
+  pbCurrentLevel = level;
+  document.querySelectorAll(".pb-level-toggle button").forEach(b=>b.classList.toggle("active", b.dataset.level===level));
+  setPlaybookEditMode(pbEditMode);
+}
+
+function renderPlaybookCategorySelect(selected){
+  const sel = document.getElementById("pb-category");
+  sel.innerHTML = playbookCategories().map(c=>`<option value="${c.id}" ${c.id===selected?"selected":""}>${escapeHtml(c.label)}</option>`).join("");
+}
+
+function renderPbToolbar(){
+  const wrap = document.getElementById("pb-toolbar"); if(!wrap) return;
+  if(!pbEditMode){ wrap.innerHTML = ""; return; }
+  const rosterOptions = DATA.players.filter(p=>p.active!==false).slice().sort((a,b)=>a.name.localeCompare(b.name,"sv"))
+    .map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join("");
+  wrap.innerHTML = `
+    <span class="pb-tool" data-tool="player" onclick="setPbTool('player')"><span style="width:11px;height:11px;border-radius:50%;background:#2E6C9E;display:inline-block;"></span>Spelare (position)</span>
+    <span class="pb-tool" data-tool="opponent" onclick="setPbTool('opponent')"><span style="width:11px;height:11px;border-radius:50%;background:#C24A3A;display:inline-block;"></span>Motståndare</span>
+    <span class="pb-tool" data-tool="ball" onclick="setPbTool('ball')">⚫ Boll</span>
+    <span class="pb-tool" data-tool="text" onclick="setPbTool('text')">💬 Textkommentar</span>
+    <span class="pb-tool" data-tool="zone" onclick="setPbTool('zone')">▭ Zon (yta)</span>
+    <span class="pb-tool" data-tool="line" onclick="setPbTool('line')">➜ Linje/Pil</span>
+    <span class="pb-tool" data-tool="erase" onclick="setPbTool('erase')">🗑 Ta bort objekt</span>
+    <select id="pb-add-roster" onchange="pbAddRosterPlayer(this.value); this.value='';" style="font-size:12px; padding:6px 8px;">
+      <option value="">+ Lägg till spelare från truppen…</option>
+      ${rosterOptions}
+    </select>
+  `;
+  document.querySelectorAll(".pb-tool[data-tool]").forEach(b=>b.classList.toggle("active", b.dataset.tool===pbTool));
+}
+function setPbTool(tool){ pbTool = (pbTool===tool) ? null : tool; renderPbToolbar(); }
+
+function onPbCanvasPointerDown(evt){
+  if(!pbEditMode || !pbTool) return;
+  if(evt.target.closest(".pb-obj")) return;
+  const p = pbSvgPoint(evt);
+  if(pbTool==="player"){
+    pbCreateObject("player", "", null, p); // placeras direkt, samma flöde som motståndare — döp om med dubbelklick
+  } else if(pbTool==="opponent"){
+    pbCreateObject("opponent", "M", null, p);
+  } else if(pbTool==="ball"){
+    if(pbObjects.some(o=>o.kind==="ball")) return;
+    pbCreateObject("ball", "", null, p);
+  } else if(pbTool==="text"){
+    const obj = pbCreateObject("text", "", null, p); // placeras direkt på planen
+    promptDialog("Textkommentar (visas på planen):", "").then(text=>{
+      if(text){ obj.label = text.trim(); renderPbBoard(); renderPbFrames(); }
+    });
+  } else if(pbTool==="zone"){
+    const obj = pbCreateObject("zone", "", null, p, {w:140,h:90});
+    promptDialog('Namn på ytan (t.ex. "Slottet"), valfritt:', "").then(text=>{
+      if(text){ obj.label = text.trim(); renderPbBoard(); renderPbFrames(); }
+    });
+  } else if(pbTool==="line"){
+    const obj = pbCreateObject("line", "", null, p, {dx:0, dy:0});
+    pbLineDrawing = true; pbLineDrawId = obj.id;
+  }
+}
+async function onPbObjectDoubleClick(objId, evt){
+  evt.stopPropagation();
+  if(!pbEditMode) return;
+  const obj = pbObjects.find(o=>o.id===objId); if(!obj) return;
+  if(obj.kind==="ball") return;
+  if(obj.kind==="player" && obj.playerId) return;
+  if(obj.kind==="line"){
+    const style = await lineStyleDialog({arrow: obj.arrow!==false, dashed: !!obj.dashed});
+    if(style){ obj.arrow = style.arrow; obj.dashed = style.dashed; }
+  } else {
+    const current = obj.label || "";
+    let promptText = "Positionsnamn (t.ex. Center, HB, Back):";
+    if(obj.kind==="text") promptText = "Ändra textkommentar:";
+    if(obj.kind==="zone") promptText = "Namn på ytan:";
+    const label = await promptDialog(promptText, current);
+    if(label===null) return;
+    obj.label = label.trim();
+  }
+  if(obj.kind==="zone"){
+    const currentSize = Math.round(obj.w||140) + "x" + Math.round(obj.h||90);
+    const sizeText = await promptDialog('Storlek på ytan, bredd x höjd i pixlar (planen är 600x340). T.ex. "140x90".', currentSize);
+    if(sizeText!==null){
+      const m = sizeText.match(/(\d+)\s*[x×]\s*(\d+)/i);
+      if(m){ obj.w = Math.max(20, Math.min(560, parseInt(m[1],10))); obj.h = Math.max(20, Math.min(300, parseInt(m[2],10))); }
+    }
+  }
+  if((obj.kind==="text" || obj.kind==="zone" || obj.kind==="line") && pbFrames.length>1){
+    const rangeText = await promptDialog('Vilka lägen ska den synas i? T.ex. "2-4", eller ett ensamt läge som "3". Lämna tomt för alla lägen (1–'+pbFrames.length+').', pbFrameRangeToText(obj));
+    if(rangeText!==null){
+      const r = pbParseFrameRange(rangeText, pbFrames.length);
+      obj.visibleFrom = r.visibleFrom; obj.visibleTo = r.visibleTo;
+    }
+  }
+  renderPbBoard(); renderPbFrames();
+}
+function pbAddRosterPlayer(playerId){
+  if(!playerId) return;
+  pbCreateObject("player", "", playerId, {x:300, y:170});
+}
+function pbCreateObject(kind, label, playerId, pos, extra){
+  const obj = Object.assign({id: pbIdCounter++, kind, label, playerId}, extra||{});
+  pbObjects.push(obj);
+  pbFrames.forEach(f=>{ f.pos[obj.id] = {x:pos.x, y:pos.y}; });
+  renderPbBoard(); renderPbFrames();
+  return obj;
+}
+function onPbObjectPointerDown(objId, evt){
+  evt.stopPropagation();
+  if(!pbEditMode) return;
+  if(pbTool==="erase"){
+    pbObjects = pbObjects.filter(o=>o.id!==objId);
+    pbFrames.forEach(f=>{ delete f.pos[objId]; });
+    renderPbBoard(); renderPbFrames();
+    return;
+  }
+  pbDragging = objId;
+}
+function onPbPointerMove(evt){
+  if(pbLineDrawing && pbLineDrawId!=null){
+    const p = pbSvgPoint(evt);
+    const obj = pbObjects.find(o=>o.id===pbLineDrawId);
+    const start = pbFrames[pbCurrentFrame].pos[pbLineDrawId];
+    if(obj && start){ obj.dx = p.x-start.x; obj.dy = p.y-start.y; renderPbBoard(); }
+    return;
+  }
+  if(pbDragging==null || !pbEditMode) return;
+  const p = pbSvgPoint(evt);
+  pbFrames[pbCurrentFrame].pos[pbDragging] = p;
+  renderPbBoard();
+}
+function onPbPointerUp(){
+  if(pbLineDrawing){
+    const obj = pbObjects.find(o=>o.id===pbLineDrawId);
+    if(obj && Math.hypot(obj.dx||0, obj.dy||0)<12){ // för kort — sannolikt ett oavsiktligt klick, ta bort
+      pbObjects = pbObjects.filter(o=>o.id!==obj.id);
+      pbFrames.forEach(f=>{ delete f.pos[obj.id]; });
+    }
+    pbLineDrawing = false; pbLineDrawId = null;
+    renderPbBoard(); renderPbFrames();
+    return;
+  }
+  if(pbDragging!=null) renderPbFrames();
+  pbDragging = null;
+}
+function pbSvgPoint(evt){
+  const svg = document.getElementById("pb-svg");
+  const rect = svg.getBoundingClientRect();
+  const scaleX = 600/rect.width, scaleY = 340/rect.height;
+  return {
+    x: Math.max(14, Math.min(586, (evt.clientX-rect.left)*scaleX)),
+    y: Math.max(14, Math.min(326, (evt.clientY-rect.top)*scaleY)),
+  };
+}
+function renderPbBoard(overridePos, playSeg){
+  const layer = document.getElementById("pb-objects-layer"); if(!layer) return;
+  const frame = pbFrames[pbCurrentFrame];
+  const visibleObjs = pbObjects.filter(o=> playSeg!=null ? pbObjVisibleInSegment(o, playSeg) : pbObjVisibleAtFrame(o, pbCurrentFrame));
+  layer.innerHTML = visibleObjs.map(o=>{
+    const pos = (overridePos && overridePos[o.id]) ? overridePos[o.id] : (frame ? frame.pos[o.id] : null);
+    return pbObjMarkup(o, pos, pbEditMode);
+  }).join("");
+  if(!pbEditMode) return;
+  layer.querySelectorAll("[data-obj]").forEach(el=>{
+    const id = +el.dataset.obj;
+    el.addEventListener("pointerdown", ev=>onPbObjectPointerDown(id, ev));
+    el.addEventListener("dblclick", ev=>onPbObjectDoubleClick(id, ev));
+  });
+}
+function renderPbFrames(){
+  const wrap = document.getElementById("pb-frames"); if(!wrap) return;
+  wrap.innerHTML = pbFrames.map((f,i)=>`
+    <div class="pb-frame-thumb${i===pbCurrentFrame?' active':''}" onclick="pbGoToFrame(${i})">
+      <svg viewBox="0 0 600 340">${RINK_BACKGROUND_SVG}${pbObjects.filter(o=>pbObjVisibleAtFrame(o,i)).map(o=>pbObjMarkup(o,f.pos[o.id])).join("")}</svg>
+      ${(pbEditMode && pbFrames.length>1) ? `<span class="pb-frame-del" onclick="event.stopPropagation();pbDeleteFrame(${i})">✕</span>` : ""}
+    </div>
+  `).join("");
+}
+function pbGoToFrame(i){ pbStopPlay(); pbCurrentFrame = i; renderPbBoard(); renderPbFrames(); }
+function pbAddFrame(){
+  const cur = pbFrames[pbCurrentFrame];
+  const copy = {id: Date.now(), pos: JSON.parse(JSON.stringify(cur ? cur.pos : {}))};
+  pbFrames.splice(pbCurrentFrame+1, 0, copy);
+  pbCurrentFrame++;
+  renderPbBoard(); renderPbFrames();
+}
+function pbDeleteCurrentFrame(){ pbDeleteFrame(pbCurrentFrame); }
+async function pbDeleteFrame(i){
+  if(pbFrames.length<=1) return;
+  const yes = await confirmDialog("Ta bort läge "+(i+1)+" permanent? Det går inte att ångra.", "Ta bort läge");
+  if(!yes) return;
+  pbFrames.splice(i,1);
+  pbCurrentFrame = Math.min(pbCurrentFrame, pbFrames.length-1);
+  renderPbBoard(); renderPbFrames();
+}
+function pbStepFrame(dir){
+  pbStopPlay();
+  const next = pbCurrentFrame + dir;
+  if(next<0 || next>=pbFrames.length) return;
+  pbCurrentFrame = next;
+  renderPbBoard(); renderPbFrames();
+}
+function pbTogglePlay(){ pbPlaying ? pbStopPlay() : pbStartPlay(); }
+function pbStartPlay(){
+  if(pbFrames.length<2) return;
+  pbPlaying = true;
+  document.getElementById("pb-play-btn").textContent = "⏸ Pausa";
+  const stepMs = +document.getElementById("pb-speed").value;
+  let seg = pbCurrentFrame < pbFrames.length-1 ? pbCurrentFrame : 0;
+  pbCurrentFrame = seg;
+  let segStart = performance.now();
+  function tick(now){
+    if(!pbPlaying) return;
+    const t = Math.min(1, (now-segStart)/stepMs);
+    const from = pbFrames[seg].pos, to = pbFrames[seg+1].pos;
+    const lerp = {};
+    pbObjects.forEach(o=>{
+      const a = from[o.id], b = to[o.id];
+      if(a && b) lerp[o.id] = {x: a.x+(b.x-a.x)*t, y: a.y+(b.y-a.y)*t};
+      else lerp[o.id] = b || a;
+    });
+    renderPbBoard(lerp, seg);
+    if(t>=1){
+      seg++;
+      if(seg>=pbFrames.length-1){ pbCurrentFrame = pbFrames.length-1; pbStopPlay(); renderPbFrames(); return; }
+      segStart = now;
+    }
+    pbPlayRAF = requestAnimationFrame(tick);
+  }
+  pbPlayRAF = requestAnimationFrame(tick);
+}
+function pbStopPlay(){
+  pbPlaying = false;
+  if(pbPlayRAF) cancelAnimationFrame(pbPlayRAF);
+  const btn = document.getElementById("pb-play-btn");
+  if(btn) btn.textContent = "▶ Spela";
+}
+
+/* ---- Spara som video (webm) ---- */
+let PB_BG_IMAGE = null;
+function pbGetBgImage(){
+  return new Promise((resolve)=>{
+    if(PB_BG_IMAGE){ resolve(PB_BG_IMAGE); return; }
+    const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" width="600" height="340">${RINK_BACKGROUND_SVG}</svg>`;
+    const img = new Image();
+    img.onload = ()=>{ PB_BG_IMAGE = img; resolve(img); };
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgStr)));
+  });
+}
+function pbRoundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function pbDrawObjectsOnCanvas(ctx, positions, scale, visFn){
+  pbObjects.forEach(o=>{
+    if(visFn && !visFn(o)) return;
+    const pos = positions[o.id]; if(!pos) return;
+    const x = pos.x*scale, y = pos.y*scale;
+    if(o.kind==="ball"){
+      ctx.beginPath(); ctx.arc(x,y,6*scale,0,Math.PI*2); ctx.fillStyle="#2C2C2A"; ctx.fill();
+      return;
+    }
+    if(o.kind==="text"){
+      const rawLabel = o.label || "";
+      const lines = pbWrapText(rawLabel, 30, 5);
+      ctx.font = (11*scale)+"px Inter, sans-serif";
+      let maxW = 0;
+      lines.forEach(l=>{ const lw = ctx.measureText(l).width; if(lw>maxW) maxW=lw; });
+      const w = maxW + 14*scale;
+      const lineHeight = 14*scale;
+      const textBlockH = lines.length*lineHeight;
+      const h = textBlockH + 10*scale;
+      ctx.fillStyle = "rgba(26,26,26,0.85)";
+      pbRoundRect(ctx, x-w/2, y-h/2, w, h, 6*scale);
+      ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      const firstY = y - textBlockH/2 + lineHeight/2;
+      lines.forEach((l,i)=>{ ctx.fillText(l, x, firstY + i*lineHeight); });
+      return;
+    }
+    if(o.kind==="zone"){
+      const zw = (o.w||140)*scale, zh = (o.h||90)*scale;
+      ctx.fillStyle = "rgba(232,98,26,0.22)";
+      ctx.strokeStyle = "#E8621A"; ctx.lineWidth = 2*scale;
+      pbRoundRect(ctx, x-zw/2, y-zh/2, zw, zh, 10*scale);
+      ctx.fill(); ctx.stroke();
+      if(o.label){
+        ctx.fillStyle = "#7A3410"; ctx.font=(11*scale)+"px Oswald, sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+        ctx.fillText(o.label, x, y+1*scale);
+      }
+      return;
+    }
+    if(o.kind==="line"){
+      const dx = (o.dx||0)*scale, dy = (o.dy||0)*scale;
+      const x2 = x+dx, y2 = y+dy;
+      ctx.strokeStyle = "#0C447C"; ctx.lineWidth = 3*scale;
+      ctx.setLineDash(o.dashed ? [8*scale, 6*scale] : []);
+      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x2,y2); ctx.stroke();
+      ctx.setLineDash([]);
+      if(o.arrow!==false){
+        const angle = Math.atan2(dy,dx), headLen = 10*scale;
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - headLen*Math.cos(angle-Math.PI/6), y2 - headLen*Math.sin(angle-Math.PI/6));
+        ctx.lineTo(x2 - headLen*Math.cos(angle+Math.PI/6), y2 - headLen*Math.sin(angle+Math.PI/6));
+        ctx.closePath();
+        ctx.fillStyle = "#0C447C"; ctx.fill();
+      }
+      return;
+    }
+    const fill = o.kind==="opponent" ? "#C24A3A" : "#2E6C9E";
+    ctx.beginPath(); ctx.arc(x,y,13*scale,0,Math.PI*2); ctx.fillStyle=fill; ctx.fill();
+    const label = (o.playerId ? playerShortLabel(o.playerId) : (o.label||"")).slice(0,3);
+    if(label){
+      ctx.fillStyle="#fff"; ctx.font=(10*scale)+"px Oswald, sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(label, x, y+1*scale);
+    }
+  });
+}
+async function pbExportVideo(){
+  if(pbFrames.length<1){ alert("Lägg till minst ett läge innan du sparar."); return; }
+
+  const btn = document.getElementById("pb-export-btn");
+  const origLabel = btn.textContent; btn.textContent = "⏳ Spelar in…"; btn.disabled = true;
+  try{
+    if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+    const scale = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = 600*scale; canvas.height = 340*scale;
+    const ctx = canvas.getContext("2d");
+    const bg = await pbGetBgImage();
+    const stream = canvas.captureStream(30);
+    const mimeCandidates = [
+      "video/mp4;codecs=avc1",
+      "video/mp4",
+      "video/webm;codecs=vp9",
+      "video/webm;codecs=vp8",
+      "video/webm",
+    ];
+    const mimeType = (window.MediaRecorder && mimeCandidates.find(t=>MediaRecorder.isTypeSupported(t))) || "video/webm";
+    const fileExt = mimeType.startsWith("video/mp4") ? "mp4" : "webm";
+    const recorder = new MediaRecorder(stream, {mimeType});
+    const chunks = [];
+    recorder.ondataavailable = e=>{ if(e.data.size>0) chunks.push(e.data); };
+    const stopped = new Promise(resolve=>{ recorder.onstop = resolve; });
+    recorder.start();
+
+    const stepMs = +document.getElementById("pb-speed").value;
+    const drawFrame = (positions, visFn)=>{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#EEF3EA";
+      pbRoundRect(ctx, 10*scale, 10*scale, 580*scale, 320*scale, 52*scale);
+      ctx.fill();
+      ctx.drawImage(bg,0,0,canvas.width,canvas.height);
+      pbDrawObjectsOnCanvas(ctx, positions, scale, visFn);
+    };
+
+    if(pbFrames.length===1){
+      drawFrame(pbFrames[0].pos, o=>pbObjVisibleAtFrame(o,0));
+    } else {
+      for(let seg=0; seg<pbFrames.length-1; seg++){
+        const from = pbFrames[seg].pos, to = pbFrames[seg+1].pos;
+        const segStart = performance.now();
+        await new Promise(resolveSeg=>{
+          function step(){
+            const now = performance.now();
+            const t = Math.min(1, (now-segStart)/stepMs);
+            const positions = {};
+            pbObjects.forEach(o=>{
+              const a = from[o.id], b = to[o.id];
+              if(a && b) positions[o.id] = {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t};
+              else positions[o.id] = b||a;
+            });
+            drawFrame(positions, o=>pbObjVisibleInSegment(o, seg));
+            if(t<1){ requestAnimationFrame(step); } else { resolveSeg(); }
+          }
+          requestAnimationFrame(step);
+        });
+      }
+    }
+    await new Promise(r=>setTimeout(r, 500)); // håll kvar sista läget en liten stund
+    recorder.stop();
+    await stopped;
+    const blob = new Blob(chunks, {type: fileExt==="mp4" ? "video/mp4" : "video/webm"});
+    const filename = (document.getElementById("pb-title").value.trim() || "spelmoment") + "." + fileExt;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  }catch(err){
+    console.error(err);
+    alert("Kunde inte spara videon: " + (err && err.message ? err.message : err));
+  }finally{
+    btn.textContent = origLabel; btn.disabled = false;
+  }
+}
+async function savePlaybookMoment(){
+  const newCatName = document.getElementById("pb-new-category").value.trim();
+  let categoryId = document.getElementById("pb-category").value;
+  if(newCatName){
+    if(!DATA.playbookCategories) DATA.playbookCategories = [];
+    const id = "pbcat-"+Date.now();
+    DATA.playbookCategories.push({id, label:newCatName, color:"#8A8F86"});
+    categoryId = id;
+  }
+  const tags = document.getElementById("pb-tags").value.split(",").map(t=>t.trim()).filter(Boolean);
+  const moment = {
+    id: pbEditingId || ("pb-"+Date.now()+"-"+Math.random().toString(36).slice(2,6)),
+    title: document.getElementById("pb-title").value.trim() || "Namnlöst moment",
+    category: categoryId,
+    tags,
+    parentText: document.getElementById("pb-text-parent").value,
+    coachText: document.getElementById("pb-text-coach").value,
+    objects: pbObjects,
+    frames: pbFrames,
+  };
+  if(!DATA.playbookMoments) DATA.playbookMoments = [];
+  const idx = DATA.playbookMoments.findIndex(m=>m.id===moment.id);
+  if(idx>=0) DATA.playbookMoments[idx] = moment; else DATA.playbookMoments.push(moment);
+  closePlaybookEditor();
+  renderPlaybook();
+  await saveData();
+}
+async function deletePlaybookMoment(){
+  if(!pbEditingId) return;
+  const yes = await confirmDialog("Ta bort det här spelmomentet permanent?", "Ta bort");
+  if(!yes) return;
+  DATA.playbookMoments = (DATA.playbookMoments||[]).filter(m=>m.id!==pbEditingId);
+  closePlaybookEditor();
+  renderPlaybook();
+  await saveData();
+}
+function glossarize(text){
+  if(!text) return `<span style="color:var(--muted);">—</span>`;
+  let html = escapeHtml(text);
+  const terms = (DATA.glossary||[]).slice().sort((a,b)=>(b.term||"").length-(a.term||"").length);
+  terms.forEach(t=>{
+    if(!t.term) return;
+    const esc = t.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`(${esc})`, "gi");
+    html = html.replace(re, `<span class="pb-gloss-term" onclick="showGlossPopover(event,'${t.id}')">$1</span>`);
+  });
+  return html.replace(/\n/g, "<br>");
+}
+function glossaryDiagramThumbSVG(term){
+  const d = term.diagram;
+  if(!d || !d.objects || d.objects.length===0) return "";
+  const objs = d.objects.map(o=>pbObjMarkup(o, d.pos[o.id])).join("");
+  return `<svg viewBox="0 0 600 340" style="width:64px;height:auto;border-radius:6px;background:#EEF3EA;flex-shrink:0;display:block;">${RINK_BACKGROUND_SVG}${objs}</svg>`;
+}
+function showGlossPopover(evt, termId){
+  evt.stopPropagation();
+  document.querySelectorAll(".pb-gloss-pop").forEach(p=>p.remove());
+  const t = (DATA.glossary||[]).find(x=>x.id===termId); if(!t) return;
+  const pop = document.createElement("div");
+  pop.className = "pb-gloss-pop";
+  const thumb = glossaryDiagramThumbSVG(t);
+  pop.innerHTML = `<b>${escapeHtml(t.term)}:</b> ${escapeHtml(t.definition||"(ingen förklaring ännu)")}` + (thumb ? `<div style="margin-top:6px;">${thumb}</div>` : "");
+  document.body.appendChild(pop);
+  const r = evt.target.getBoundingClientRect();
+  pop.style.left = Math.max(8, Math.min(window.innerWidth-260, r.left)) + "px";
+  pop.style.top = (r.bottom + window.scrollY + 6) + "px";
+  setTimeout(()=>document.addEventListener("click", function closeOnce(){ pop.remove(); document.removeEventListener("click", closeOnce); }, {once:true}), 0);
+}
+function renderGlossaryList(){
+  const list = document.getElementById("pb-gloss-list"); if(!list) return;
+  const q = (document.getElementById("pb-gloss-search").value||"").toLowerCase();
+  const terms = (DATA.glossary||[]).filter(t=>!q || (t.term||"").toLowerCase().includes(q)).sort((a,b)=>(a.term||"").localeCompare(b.term||"","sv"));
+  if(terms.length===0){ list.innerHTML = `<p style="color:var(--muted);font-size:13px;">Inga begrepp ännu.</p>`; return; }
+  list.innerHTML = terms.map(t=>`
+    <div class="pb-gloss-row">
+      ${glossaryDiagramThumbSVG(t) || `<div style="width:64px;height:36px;flex-shrink:0;border:1px dashed var(--line);border-radius:6px;"></div>`}
+      <div style="flex:1;">
+        <input type="text" value="${escapeHtml(t.term)}" onchange="updateGlossaryTerm('${t.id}','term',this.value)" style="font-weight:700;color:var(--pine-dark);font-family:'Oswald';border:none;background:transparent;width:100%;padding:2px 0;font-size:14px;">
+        <input type="text" value="${escapeHtml(t.definition)}" onchange="updateGlossaryTerm('${t.id}','definition',this.value)" style="font-size:12.5px;color:var(--muted);border:none;background:transparent;width:100%;padding:2px 0;">
+      </div>
+      <button class="btn ghost small" onclick="openGlossaryDiagramEditor('${t.id}')" style="flex-shrink:0;">🖼️ Bild</button>
+      <button class="close-x" style="position:static;" onclick="deleteGlossaryTerm('${t.id}')">✕</button>
+    </div>
+  `).join("");
+}
+async function addGlossaryTerm(){
+  const term = await promptDialog('Nytt begrepp (t.ex. "Kross"):', ""); if(!term) return;
+  const definition = (await promptDialog("Kort, föräldravänlig förklaring:", "")) || "";
+  if(!DATA.glossary) DATA.glossary = [];
+  DATA.glossary.push({id:"gl-"+Date.now()+"-"+Math.random().toString(36).slice(2,6), term:term.trim(), definition:definition.trim()});
+  renderGlossaryList();
+  await saveData();
+}
+async function updateGlossaryTerm(id, field, value){
+  const t = (DATA.glossary||[]).find(x=>x.id===id); if(!t) return;
+  t[field] = value;
+  await saveData();
+}
+async function deleteGlossaryTerm(id){
+  const yes = await confirmDialog("Ta bort begreppet permanent?", "Ta bort");
+  if(!yes) return;
+  DATA.glossary = (DATA.glossary||[]).filter(x=>x.id!==id);
+  renderGlossaryList();
+  await saveData();
+}
+
+/* ---- Ordbok: bild/diagram per begrepp (statisk, samma verktyg som spelmoment) ---- */
+let gdTermId = null;
+let gdObjects = [];
+let gdPos = {};
+let gdTool = null;
+let gdDragging = null;
+let gdIdCounter = 0;
+let gdListenersBound = false;
+let gdLineDrawing = false;
+let gdLineDrawId = null;
+
+function openGlossaryDiagramEditor(termId){
+  const t = (DATA.glossary||[]).find(x=>x.id===termId); if(!t) return;
+  gdTermId = termId;
+  const d = t.diagram;
+  gdObjects = d ? JSON.parse(JSON.stringify(d.objects||[])) : [];
+  gdPos = d ? JSON.parse(JSON.stringify(d.pos||{})) : {};
+  gdIdCounter = gdObjects.length ? Math.max(...gdObjects.map(o=>o.id))+1 : 0;
+  gdTool = null; gdDragging = null;
+  document.getElementById("gd-modal-title").textContent = 'Bild för "' + t.term + '"';
+  const svg = document.getElementById("gd-svg");
+  svg.innerHTML = `<defs><marker id="pb-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="gd-objects-layer"></g>`;
+  if(!gdListenersBound){
+    svg.addEventListener("pointerdown", onGdCanvasPointerDown);
+    document.addEventListener("pointermove", onGdPointerMove);
+    document.addEventListener("pointerup", onGdPointerUp);
+    gdListenersBound = true;
+  }
+  renderGdToolbar();
+  renderGdBoard();
+  openModal("modal-gloss-diagram");
+}
+function closeGlossaryDiagramEditor(){
+  closeModal("modal-gloss-diagram");
+  gdTermId = null;
+}
+function renderGdToolbar(){
+  const wrap = document.getElementById("gd-toolbar"); if(!wrap) return;
+  wrap.innerHTML = `
+    <span class="pb-tool" data-tool="player" onclick="setGdTool('player')"><span style="width:11px;height:11px;border-radius:50%;background:#2E6C9E;display:inline-block;"></span>Spelare</span>
+    <span class="pb-tool" data-tool="opponent" onclick="setGdTool('opponent')"><span style="width:11px;height:11px;border-radius:50%;background:#C24A3A;display:inline-block;"></span>Motståndare</span>
+    <span class="pb-tool" data-tool="ball" onclick="setGdTool('ball')">⚫ Boll</span>
+    <span class="pb-tool" data-tool="text" onclick="setGdTool('text')">💬 Textkommentar</span>
+    <span class="pb-tool" data-tool="zone" onclick="setGdTool('zone')">▭ Zon (yta)</span>
+    <span class="pb-tool" data-tool="line" onclick="setGdTool('line')">➜ Linje/Pil</span>
+    <span class="pb-tool" data-tool="erase" onclick="setGdTool('erase')">🗑 Ta bort objekt</span>
+  `;
+  document.querySelectorAll("#gd-toolbar .pb-tool[data-tool]").forEach(b=>b.classList.toggle("active", b.dataset.tool===gdTool));
+}
+function setGdTool(tool){ gdTool = (gdTool===tool) ? null : tool; renderGdToolbar(); }
+function gdSvgPoint(evt){
+  const svg = document.getElementById("gd-svg");
+  const rect = svg.getBoundingClientRect();
+  const scaleX = 600/rect.width, scaleY = 340/rect.height;
+  return {
+    x: Math.max(14, Math.min(586, (evt.clientX-rect.left)*scaleX)),
+    y: Math.max(14, Math.min(326, (evt.clientY-rect.top)*scaleY)),
+  };
+}
+function gdCreateObject(kind, label, playerId, pos, extra){
+  const obj = Object.assign({id: gdIdCounter++, kind, label, playerId}, extra||{});
+  gdObjects.push(obj);
+  gdPos[obj.id] = {x:pos.x, y:pos.y};
+  renderGdBoard();
+  return obj;
+}
+function onGdCanvasPointerDown(evt){
+  if(!gdTool) return;
+  if(evt.target.closest(".pb-obj")) return;
+  const p = gdSvgPoint(evt);
+  if(gdTool==="player"){
+    gdCreateObject("player", "", null, p);
+  } else if(gdTool==="opponent"){
+    gdCreateObject("opponent", "M", null, p);
+  } else if(gdTool==="ball"){
+    if(gdObjects.some(o=>o.kind==="ball")) return;
+    gdCreateObject("ball", "", null, p);
+  } else if(gdTool==="text"){
+    const obj = gdCreateObject("text", "", null, p);
+    promptDialog("Textkommentar (visas på bilden):", "").then(text=>{
+      if(text){ obj.label = text.trim(); renderGdBoard(); }
+    });
+  } else if(gdTool==="zone"){
+    const obj = gdCreateObject("zone", "", null, p, {w:140,h:90});
+    promptDialog('Namn på ytan (t.ex. "Slottet"), valfritt:', "").then(text=>{
+      if(text){ obj.label = text.trim(); renderGdBoard(); }
+    });
+  } else if(gdTool==="line"){
+    const obj = gdCreateObject("line", "", null, p, {dx:0, dy:0});
+    gdLineDrawing = true; gdLineDrawId = obj.id;
+  }
+}
+function onGdObjectPointerDown(objId, evt){
+  evt.stopPropagation();
+  if(gdTool==="erase"){
+    gdObjects = gdObjects.filter(o=>o.id!==objId);
+    delete gdPos[objId];
+    renderGdBoard();
+    return;
+  }
+  gdDragging = objId;
+}
+async function onGdObjectDoubleClick(objId, evt){
+  evt.stopPropagation();
+  const obj = gdObjects.find(o=>o.id===objId); if(!obj) return;
+  if(obj.kind==="ball") return;
+  if(obj.kind==="player" && obj.playerId) return;
+  if(obj.kind==="line"){
+    const style = await lineStyleDialog({arrow: obj.arrow!==false, dashed: !!obj.dashed});
+    if(style){ obj.arrow = style.arrow; obj.dashed = style.dashed; }
+  } else {
+    const current = obj.label || "";
+    let promptText = "Positionsnamn:";
+    if(obj.kind==="text") promptText = "Ändra textkommentar:";
+    if(obj.kind==="zone") promptText = "Namn på ytan:";
+    const label = await promptDialog(promptText, current);
+    if(label===null) return;
+    obj.label = label.trim();
+  }
+  if(obj.kind==="zone"){
+    const currentSize = Math.round(obj.w||140) + "x" + Math.round(obj.h||90);
+    const sizeText = await promptDialog('Storlek på ytan, bredd x höjd i pixlar (bilden är 600x340). T.ex. "140x90".', currentSize);
+    if(sizeText!==null){
+      const m = sizeText.match(/(\d+)\s*[x×]\s*(\d+)/i);
+      if(m){ obj.w = Math.max(20, Math.min(560, parseInt(m[1],10))); obj.h = Math.max(20, Math.min(300, parseInt(m[2],10))); }
+    }
+  }
+  renderGdBoard();
+}
+function onGdPointerMove(evt){
+  if(gdLineDrawing && gdLineDrawId!=null){
+    const p = gdSvgPoint(evt);
+    const obj = gdObjects.find(o=>o.id===gdLineDrawId);
+    const start = gdPos[gdLineDrawId];
+    if(obj && start){ obj.dx = p.x-start.x; obj.dy = p.y-start.y; renderGdBoard(); }
+    return;
+  }
+  if(gdDragging==null) return;
+  gdPos[gdDragging] = gdSvgPoint(evt);
+  renderGdBoard();
+}
+function onGdPointerUp(){
+  if(gdLineDrawing){
+    const obj = gdObjects.find(o=>o.id===gdLineDrawId);
+    if(obj && Math.hypot(obj.dx||0, obj.dy||0)<12){
+      gdObjects = gdObjects.filter(o=>o.id!==obj.id);
+      delete gdPos[obj.id];
+    }
+    gdLineDrawing = false; gdLineDrawId = null;
+    renderGdBoard();
+    return;
+  }
+  gdDragging = null;
+}
+function renderGdBoard(){
+  const layer = document.getElementById("gd-objects-layer"); if(!layer) return;
+  layer.innerHTML = gdObjects.map(o=>pbObjMarkup(o, gdPos[o.id], true)).join("");
+  layer.querySelectorAll("[data-obj]").forEach(el=>{
+    const id = +el.dataset.obj;
+    el.addEventListener("pointerdown", ev=>onGdObjectPointerDown(id, ev));
+    el.addEventListener("dblclick", ev=>onGdObjectDoubleClick(id, ev));
+  });
+}
+function gdClearDiagram(){
+  gdObjects = []; gdPos = {};
+  renderGdBoard();
+}
+async function gdSaveDiagram(){
+  const t = (DATA.glossary||[]).find(x=>x.id===gdTermId); if(!t) return;
+  t.diagram = {objects: gdObjects, pos: gdPos};
+  closeGlossaryDiagramEditor();
+  renderGlossaryList();
+  await saveData();
 }
 
 /* ---- Laget: grupper ---- */
