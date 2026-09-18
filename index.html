@@ -990,7 +990,22 @@ const DEFAULT_PERIODS = [
   // via "+ Ny period" i Årsöversikt när ni vet era fokusområden för säsongen.
 ].map((p,i)=>({id:"per-default-"+i, ...p}));
 
-function periodForWeek(w){ return (DATA.periods||[]).find(p=>w>=p.weekStart && w<=p.weekEnd); }
+// w = veckonummer (bakåtkompatibelt, används av säsongstidslinjens ritning som inte har ett
+// specifikt kalenderdatum att jämföra mot). refDate = ett faktiskt Date-objekt — när det ges
+// jämförs det mot periodens RIKTIGA kalenderdatum (via periodStartDate/periodEndDate) istället
+// för ett rått veckonummer, vilket annars inte säger något om VILKET år det gäller (en period
+// som sträcker sig över ett årsskifte, t.ex. v.49→v.3, skulle annars kunna matchas fel).
+function periodForWeek(w, refDate){
+  if(refDate){
+    const refUTC = Date.UTC(refDate.getFullYear(), refDate.getMonth(), refDate.getDate());
+    return (DATA.periods||[]).find(p=>{
+      const startUTC = periodStartDate(p).getTime();
+      const endUTC = periodEndDate(p).getTime() + 6*86400000; // till söndagen i slutveckan, inte bara måndagen
+      return refUTC>=startUTC && refUTC<=endUTC;
+    });
+  }
+  return (DATA.periods||[]).find(p=>w>=p.weekStart && w<=p.weekEnd);
+}
 
 // Räknar ut det faktiska kalenderdatumet för måndagen i en given ISO-vecka+år. Behövs för att
 // kunna jämföra perioder korrekt när en säsong sträcker sig över ett årsskifte — ett rått
@@ -2176,8 +2191,8 @@ function renderCurrentPeriodBanner(){
   const el = document.getElementById("current-period-banner");
   if(!el) return;
   const wk = isoWeekNumber(new Date());
-  const p = periodForWeek(wk);
-  if(!p){ el.innerHTML = `<p style="margin:0;font-size:13px;color:var(--muted);">Vecka ${wk} ligger utanför säsongsramverket (v.32–52).</p>`; el.style.borderLeft=""; return; }
+  const p = periodForWeek(wk, new Date());
+  if(!p){ el.innerHTML = `<p style="margin:0;font-size:13px;color:var(--muted);">Vecka ${wk} matchar ingen period i Säsongens block just nu — kolla att blocken i Årsöversikt täcker hela säsongen utan luckor.</p>`; el.style.borderLeft=""; return; }
   el.style.borderLeft = `5px solid ${p.color}`;
   el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <div><span class="hint" style="text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;">Just nu — vecka ${wk}</span>
@@ -2194,11 +2209,10 @@ function renderToPlanCallout(){
     if(isArchived(s)) return false;
     if(s.date < today) return false;
     const assignedCount = Object.values(s.lineup||{}).reduce((n,g)=>n+(g.players||[]).length+(g.goalie?1:0),0);
-    if(assignedCount===0) return true;
-    return s.type==="Träning" && !s.week;
+    return assignedCount===0; // bara laguppställning avgör — vecka-koppling är inte ett krav
   }).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
   if(needsPlanning.length===0){ el.innerHTML = ""; return; }
-  el.innerHTML = `<div class="note-box"><b>Att planera:</b> ${needsPlanning.length} kommande pass saknar kopplad vecka och/eller laguppställning.
+  el.innerHTML = `<div class="note-box"><b>Att planera:</b> ${needsPlanning.length} kommande pass saknar laguppställning.
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
       ${needsPlanning.map(s=>{
         const d = new Date(s.date+"T00:00:00");
@@ -2631,7 +2645,7 @@ function toggleBlockNotes(bid){
 
 function sessionPeriod(s){
   const wk = s.week ? +s.week : isoWeekNumber(new Date(s.date+"T00:00:00"));
-  return periodForWeek(wk);
+  return periodForWeek(wk, new Date(s.date+"T00:00:00"));
 }
 function periodFocusCatIds(s){
   const p = sessionPeriod(s); if(!p || !p.focus) return [];
