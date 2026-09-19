@@ -681,6 +681,18 @@
   </div>
 </div>
 
+<div class="overlay" id="modal-manage-templates">
+  <div class="modal">
+    <button class="close-x" onclick="closeModal('modal-manage-templates')">✕</button>
+    <h3>Hantera mallar</h3>
+    <p style="font-size:11.5px;color:var(--muted);margin:0 0 10px;">Döp om eller ta bort sparade träningsmallar. Träningar som redan använt en mall behåller sina block även om mallen tas bort — bara framtida val påverkas.</p>
+    <div id="template-manager-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-manage-templates')">Klar</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="modal-theme">
   <div class="modal">
     <button class="close-x" onclick="closeModal('modal-theme')">✕</button>
@@ -2424,6 +2436,7 @@ function renderBlocksPanel(sid){
     </select>
     <button class="btn ghost small" onclick="applyTemplateToSession('${sid}')" ${templates.length?'':'disabled'}>Använd mall</button>
     <button class="btn ghost small" onclick="saveSessionAsTemplate('${sid}')" ${blocks.length?'':'disabled'}>💾 Spara som mall</button>
+    ${templates.length ? `<button class="btn ghost small" onclick="openTemplateManager()" title="Döp om eller ta bort sparade mallar">⚙️ Hantera mallar</button>` : ""}
   </div>`;
 
   const rows = blocks.map((b,i)=>blockRowHTML(s,b,i,blocks.length)).join("");
@@ -2904,6 +2917,45 @@ async function applyTemplateToSession(sid){
     const yes = await confirmDialog(`Lägga till ${tmpl.blocks.length} block från mallen "${tmpl.name}" till de ${s.blocks.length} block som redan finns på denna träning?`, "Lägg till block");
     if(yes) await doApply();
   } else { await doApply(); }
+}
+function openTemplateManager(){
+  renderTemplateManagerList();
+  openModal("modal-manage-templates");
+}
+function renderTemplateManagerList(){
+  const el = document.getElementById("template-manager-list"); if(!el) return;
+  const templates = DATA.templates || [];
+  if(templates.length===0){ el.innerHTML = '<p style="font-size:12px;color:var(--muted);">Inga mallar sparade ännu.</p>'; return; }
+  el.innerHTML = templates.map(t=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:13.5px;">${escapeHtml(t.name)}</div>
+        <div style="font-size:11px;color:var(--muted);">${t.blocks.length} block${t.savedAt?' · sparad '+t.savedAt:''}</div>
+      </div>
+      <button class="btn ghost small" onclick="renameTemplate('${t.id}')">✏️ Döp om</button>
+      <button class="btn ghost small" onclick="deleteTemplateConfirm('${t.id}')">🗑 Ta bort</button>
+    </div>
+  `).join("");
+}
+async function renameTemplate(id){
+  const t = (DATA.templates||[]).find(x=>x.id===id); if(!t) return;
+  const name = window.prompt("Nytt namn på mallen:", t.name);
+  if(!name || !name.trim() || name.trim()===t.name) return;
+  await guard(async ()=>{
+    t.name = name.trim();
+    const ok = await saveData();
+    if(ok){ renderTemplateManagerList(); renderSessions(); }
+  });
+}
+async function deleteTemplateConfirm(id){
+  const t = (DATA.templates||[]).find(x=>x.id===id); if(!t) return;
+  const yes = await confirmDialog(`Ta bort mallen "${t.name}"? Träningar som redan använt den behåller sina block — bara framtida val påverkas.`, "Ta bort mall");
+  if(!yes) return;
+  await guard(async ()=>{
+    DATA.templates = DATA.templates.filter(x=>x.id!==id);
+    const ok = await saveData();
+    if(ok){ renderTemplateManagerList(); renderSessions(); }
+  });
 }
 
 
