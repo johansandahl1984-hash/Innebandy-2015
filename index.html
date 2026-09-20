@@ -368,6 +368,116 @@
   .pb-gloss-term{border-bottom:1.5px dotted var(--pine); cursor:help; color:var(--pine-dark); font-weight:600;}
   .pb-gloss-pop{position:absolute; z-index:150; background:var(--pine-dark); color:#fff; padding:8px 12px; border-radius:9px; font-size:12.5px; max-width:240px; box-shadow:0 6px 18px rgba(0,0,0,.3);}
   .pb-gloss-row{display:flex; justify-content:space-between; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--line);}
+
+  /* ===== Övningsritare (XD) ===== */
+/* ===== Övningsritare (XD) ===== */
+body.xd-lock{overflow:hidden;}
+.xd-overlay{position:fixed; top:0; left:0; right:0; bottom:0; z-index:400; display:none; background:rgba(18,20,15,.55);}
+.xd-overlay.open{display:flex;}
+.xd-sheet{position:relative; display:flex; flex-direction:column; width:100%; max-width:860px; height:100%; margin:0 auto; background:#fff; color:#1A1508; font-family:'Inter',system-ui,sans-serif;}
+.xd-topbar{display:flex; align-items:center; gap:10px; padding:10px 12px; padding-top:max(10px, env(safe-area-inset-top)); background:linear-gradient(135deg,#1A1A1A,#E8621A 130%); color:#fff;}
+.xd-title{flex:1; font-family:'Oswald',sans-serif; font-size:17px; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.xd-x{background:none; border:none; color:#fff; font-size:22px; line-height:1; cursor:pointer; padding:4px 8px;}
+.xd-tabs{display:flex; border-bottom:1px solid #E3DED8; background:#fff;}
+.xd-tab{flex:1; padding:11px 8px; border:none; background:none; font-size:14px; font-weight:600; color:#6B5F54; cursor:pointer; border-bottom:3px solid transparent;}
+.xd-tab.active{color:#E8621A; border-bottom-color:#E8621A;}
+.xd-scroll{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:20px;}
+.xd-canvas-wrap{position:sticky; top:0; z-index:5; background:#fff; padding:8px 10px 6px; border-bottom:1px solid #E3DED8;}
+#xd-svg{display:block; width:100%; height:auto; border:1px solid #E3DED8; border-radius:10px; background:#fff; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;}
+.xd-edit-mode #xd-svg{cursor:crosshair;}
+.xd-player{padding:8px 12px 2px;}
+.xd-pl-row{display:flex; align-items:center; gap:8px;}
+.xd-pl-row input[type=range]{flex:1; min-width:0; accent-color:#E8621A;}
+.xd-steplabel{font-size:12px; color:#6B5F54; margin:4px 2px 0; font-family:'IBM Plex Mono',monospace;}
+.xd-btn{border:none; border-radius:9px; padding:9px 14px; font-size:13.5px; font-weight:600; background:#1A1A1A; color:#fff; cursor:pointer;}
+.xd-btn.small{padding:6px 10px; font-size:12.5px; border-radius:8px;}
+.xd-btn.primary{background:#E8621A;}
+.xd-btn.ghost{background:#fff; color:#E8621A; border:1px solid #E8621A;}
+.xd-btn.light{background:rgba(255,255,255,.2); color:#fff;}
+.xd-btn.danger{background:#C24A3A;}
+.xd-btn.play{background:#E8621A; min-width:52px; font-size:17px; padding:7px 14px;}
+.xd-btn:disabled{opacity:.4; cursor:default;}
+.xd-empty{margin:14px 12px; padding:12px; background:#F7F5F1; border-radius:10px; font-size:13px; color:#6B5F54; display:none;}
+.xd-stillbar{display:none; margin:8px 12px 0; padding:9px 11px; background:#F7F5F1; border-radius:10px; font-size:12.5px; color:#6B5F54; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;}
+.xd-legend{margin:10px 12px 0; padding:10px 12px; background:#F7F5F1; border-radius:10px; font-size:12.5px;}
+.xd-legend b{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#E8621A; margin-bottom:6px;}
+.xd-leg-item{display:flex; align-items:center; gap:10px; padding:2px 0;}
+.xd-leg-item svg{flex:0 0 auto; width:88px; height:auto; max-height:30px;}
+.xd-edit{display:none; padding:6px 12px 0;}
+.xd-steps{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:10px 0 6px;}
+.xd-chip{border:1px solid #E3DED8; background:#fff; border-radius:16px; min-width:34px; padding:6px 11px; font-size:13px; font-weight:600; cursor:pointer;}
+.xd-chip.active{background:#E8621A; color:#fff; border-color:#E8621A;}
+.xd-chip.add{color:#E8621A; border-color:#E8621A;}
+.xd-toolhint{font-size:12.5px; color:#6B5F54; margin:4px 0 8px; min-height:18px;}
+.xd-editbar{display:flex; gap:8px; margin:8px 0;}
+.xd-group{margin:10px 0;}
+.xd-group-t{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#E8621A; font-weight:700; margin-bottom:6px;}
+.xd-palette{display:grid; gap:6px;}
+.xd-figs{grid-template-columns:repeat(3,1fr);}
+.xd-paths{grid-template-columns:repeat(2,1fr);}
+.xd-tool{display:flex; flex-direction:column; align-items:center; gap:3px; padding:7px 5px; border:1px solid #E3DED8; border-radius:10px; background:#fff; cursor:pointer; font-size:11.5px; line-height:1.2; color:#1A1508; text-align:center;}
+.xd-tool svg{max-width:100%;}
+.xd-tool.active{border-color:#E8621A; background:#FFF1E8; box-shadow:0 0 0 2px #E8621A inset;}
+.xd-selbox{border:2px solid #E8621A; border-radius:12px; padding:10px 12px; margin:8px 0; background:#FFF8F3; display:flex; flex-direction:column; gap:8px;}
+.xd-selh{font-family:'Oswald',sans-serif; font-size:14.5px;}
+.xd-selbox label{display:flex; flex-direction:column; gap:3px; font-size:12px; color:#6B5F54;}
+.xd-selbox select,.xd-selbox input[type=text]{font-size:16px; padding:7px 8px; border:1px solid #E3DED8; border-radius:8px; background:#fff; max-width:100%;}
+.xd-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.xd-seg{display:flex; border:1px solid #E8621A; border-radius:8px; overflow:hidden;}
+.xd-seg button{border:none; background:#fff; color:#E8621A; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer;}
+.xd-seg button.on{background:#E8621A; color:#fff;}
+.xd-stepper{display:flex; align-items:center; gap:6px; font-size:12.5px; color:#6B5F54;}
+.xd-stepper button{width:30px; height:30px; border-radius:8px; border:1px solid #E3DED8; background:#fff; font-size:16px; cursor:pointer;}
+.xd-stepper b{min-width:18px; text-align:center; color:#1A1508;}
+.xd-note{font-size:11.5px; color:#6B5F54;}
+.xd-foot{display:none; gap:10px; padding:10px 12px; padding-bottom:max(10px, env(safe-area-inset-bottom)); border-top:1px solid #E3DED8; background:#fff; justify-content:flex-end;}
+.xd-confirm{display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(18,20,15,.55); align-items:center; justify-content:center; z-index:20; padding:20px;}
+.xd-confirm.open{display:flex;}
+.xd-confirm-box{background:#fff; border-radius:14px; padding:18px; max-width:340px; width:100%; text-align:center;}
+.xd-confirm-box p{margin:0 0 14px; font-size:14.5px;}
+.xd-confirm-box .xd-btn{margin:3px;}
+.xd-thumb{width:100%; height:auto; display:block; border:1px solid #E3DED8; border-radius:10px; background:#fff;}
+.xd-tool.xd-select{flex-direction:row; width:100%; justify-content:center; gap:8px; margin:8px 0 2px; font-size:14px; font-weight:600; padding:10px;}
+.xd-tool.xd-select .xd-ico{font-size:19px;}
+.xd-sheet button,.xd-sheet select,.xd-sheet input{touch-action:manipulation;}
+.xd-check{flex-direction:row !important; align-items:flex-start; gap:9px !important; font-size:13px !important; color:#1A1508 !important; background:#fff; border:1px solid #E3DED8; border-radius:10px; padding:9px 10px; cursor:pointer;}
+.xd-check input{width:22px; height:22px; margin:0; flex:0 0 auto; accent-color:#E8621A;}
+.xd-check small{color:#6B5F54;}
+
+.xd-pl-row2{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px;}
+.xd-pl-row2 .xd-steplabel{margin:0;}
+.xd-tog{background:#fff; color:#1A1508; border:1px solid #E3DED8;}
+.xd-tog.on{background:#E8621A; color:#fff; border-color:#E8621A;}
+#xd-stillgrid{padding:0 0 6px;}
+.xd-stillgrid-in{display:grid; grid-template-columns:1fr; gap:0;}
+@media(min-width:720px){ .xd-stillgrid-in{grid-template-columns:1fr 1fr; gap:0 10px;} }
+.xd-stillimg{margin:10px 12px 0;}
+.xd-stillcap{font-family:'Oswald',sans-serif; font-size:14px; color:#E8621A; margin:0 0 4px; letter-spacing:.03em;}
+.xd-stillsvg{display:block; width:100%; height:auto; border:1px solid #E3DED8; border-radius:10px; background:#fff;}
+.xd-stillbar .xd-seg{flex:0 0 auto;}
+.xd-thumbgrid{display:grid; grid-template-columns:1fr 1fr; gap:6px;}
+.xd-thumbcell{position:relative;}
+.xd-thumbcap{position:absolute; left:6px; top:5px; font:600 10px 'Oswald',sans-serif; letter-spacing:.03em; color:#E8621A; background:rgba(255,255,255,.9); padding:1px 7px; border-radius:8px; z-index:1;}
+
+#xd-parts{margin:8px 12px 0;}
+.xd-parts-box{border:2px solid #E8621A; border-radius:12px; background:#FFF8F3; padding:10px 12px; display:flex; flex-direction:column; gap:8px;}
+.xd-parts-t{font-family:'Oswald',sans-serif; font-size:14.5px;}
+.xd-partchips{display:flex; align-items:center; flex-wrap:wrap; gap:2px; row-gap:6px;}
+.xd-pc{min-width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:17px; font-weight:700; font-size:14px; border:1px solid #E3DED8;}
+.xd-pc.p0{background:#FFE4D1; color:#B84A0C; border-color:#F2934F;}
+.xd-pc.p1{background:#DCEBF6; color:#1F5A8A; border-color:#8FB6D6;}
+.xd-brk{width:34px; height:34px; border:none; background:none; border-radius:17px; font-size:16px; color:#B7B0A6; cursor:pointer; padding:0;}
+.xd-brk.on{background:#E8621A; color:#fff;}
+.xd-partsum{font-size:12.5px; color:#3A3226; line-height:1.5;}
+
+/* --- mobilanpassad redigering: steg-raden klibbar under canvas, verktygsraden ligger nära, paletten fälls ihop --- */
+.xd-canvas-wrap .xd-steps{display:none; flex-wrap:nowrap; overflow-x:auto; margin:6px 0 0; padding-bottom:2px; -webkit-overflow-scrolling:touch;}
+.xd-canvas-wrap .xd-steps .xd-chip{flex:0 0 auto;}
+.xd-toolbar{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:10px 0 4px;}
+.xd-toolbar .xd-tool.xd-select{width:auto; margin:0; padding:7px 12px; flex-direction:row; gap:6px; font-size:13px;}
+.xd-toolbar .xd-tb.on{background:#E8621A;}
+.xd-toolbar .xd-tb:disabled{opacity:.4;}
+
 </style>
 </head>
 <body>
@@ -746,29 +856,6 @@
   </div>
 </div>
 
-<div class="overlay" id="modal-diagram">
-  <div class="modal" style="max-width:640px;">
-    <button class="close-x" onclick="closeDiagramEditor()">✕</button>
-    <h3>Rita diagram — <span id="diagram-ex-name"></span></h3>
-    <p style="font-size:11.5px;color:var(--muted);margin:0 0 10px;">Klicka på ett verktyg, sedan på planen för att placera. Dra ett placerat objekt för att flytta det. Pil: klicka start, sedan slutpunkt.</p>
-    <div class="diag-toolbar">
-      <button type="button" class="diag-tool" data-tool="player" onclick="setDiagramTool('player')"><span style="width:12px;height:12px;border-radius:50%;background:#2E6C9E;display:inline-block;"></span>Spelare</button>
-      <button type="button" class="diag-tool" data-tool="opponent" onclick="setDiagramTool('opponent')"><span style="width:12px;height:12px;border-radius:50%;background:#C24A3A;display:inline-block;"></span>Motst.</button>
-      <button type="button" class="diag-tool" data-tool="cone" onclick="setDiagramTool('cone')">🔺 Kon</button>
-      <button type="button" class="diag-tool" data-tool="puck" onclick="setDiagramTool('puck')">⚫ Boll</button>
-      <button type="button" class="diag-tool" data-tool="arrow" onclick="setDiagramTool('arrow')">↗ Pil</button>
-      <button type="button" class="diag-tool" data-tool="erase" onclick="setDiagramTool('erase')">🗑 Radera</button>
-      <div style="flex:1;"></div>
-      <button type="button" class="diag-tool" onclick="clearDiagram()">Rensa allt</button>
-    </div>
-    <svg id="diagram-svg" viewBox="0 0 600 340" class="diag-canvas"></svg>
-    <div class="modal-actions" style="margin-top:12px;">
-      <button class="btn ghost" onclick="closeDiagramEditor()">Avbryt</button>
-      <button class="btn" onclick="saveDiagram()">Spara diagram</button>
-    </div>
-  </div>
-</div>
-
 <div class="overlay" id="modal-playbook">
   <div class="modal" style="max-width:660px;">
     <button class="close-x" onclick="closePlaybookEditor()">✕</button>
@@ -967,6 +1054,1065 @@
   <button class="close-x" style="position:static;color:#fff;" onclick="document.getElementById('save-toast').style.display='none';">✕</button>
 </div>
 
+<script>
+/* ===================== ÖVNINGSRITARE (XD) — geometri, tecken, pilar, simulering ===================== */
+var XD_CORE = (function(){
+"use strict";
+var R = 13, INK = "#111", ORANGE = "#E8621A", HL = 13, HW = 5.4, SNAP = 26;
+
+var FIG_TYPES = [
+  {id:"attackBack", label:"Anfallande back"},
+  {id:"defense",    label:"Försvarsspelare"},
+  {id:"attack",     label:"Anfallsspelare"},
+  {id:"goalie",     label:"Målvakt"},
+  {id:"unit",       label:"Spelarled"},
+  {id:"leader",     label:"Ledare"},
+  {id:"cone",       label:"Kon"},
+  {id:"ball",       label:"Boll"},
+  {id:"bench",      label:"Bänk"}
+];
+var PATH_TYPES = [
+  {id:"fwd",      label:"Rörelse framåt utan boll",           move:true,  carry:false, speed:105},
+  {id:"fwdBall",  label:"Rörelse framåt med boll",            move:true,  carry:true,  speed:105},
+  {id:"back",     label:"Rörelse bakåt utan boll",            move:true,  carry:false, speed:85},
+  {id:"backBall", label:"Rörelse bakåt med boll",             move:true,  carry:true,  speed:85},
+  {id:"turn",     label:"Vändning 360° under rörelse framåt", move:true,  carry:true,  speed:105},
+  {id:"stop",     label:"Rörelse framåt med stopp",           move:true,  carry:true,  speed:105},
+  {id:"tempo",    label:"Tempo växling framåt",               move:true,  carry:true,  speed:105},
+  {id:"pass",     label:"Passning",                           move:false, speed:240},
+  {id:"lift",     label:"Lyftpassning",                       move:false, speed:200},
+  {id:"shot",     label:"Skott",                              move:false, speed:380},
+  {id:"gk",       label:"Målvaktsutkast",                     move:false, speed:230}
+];
+var HOLDERS = {attackBack:1, defense:1, attack:1, goalie:1, unit:1, leader:1};
+function figLabel(id){ for(var i=0;i<FIG_TYPES.length;i++) if(FIG_TYPES[i].id===id) return FIG_TYPES[i].label; return id; }
+function pathInfo(id){ for(var i=0;i<PATH_TYPES.length;i++) if(PATH_TYPES[i].id===id) return PATH_TYPES[i]; return PATH_TYPES[0]; }
+
+function f1(n){ return Math.round(n*10)/10; }
+function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+/* ---------- Polylinje-verktyg ---------- */
+function catmull(pts){
+  var out = [], n = pts.length;
+  function P(i){ return pts[Math.max(0, Math.min(n-1, i))]; }
+  for(var i=0;i<n-1;i++){
+    var p0=P(i-1), p1=P(i), p2=P(i+1), p3=P(i+2);
+    var steps = Math.max(6, Math.ceil(dist(p1,p2)/8));
+    for(var s=0;s<steps;s++){
+      var t=s/steps, t2=t*t, t3=t2*t;
+      out.push({
+        x:0.5*((2*p1.x)+(-p0.x+p2.x)*t+(2*p0.x-5*p1.x+4*p2.x-p3.x)*t2+(-p0.x+3*p1.x-3*p2.x+p3.x)*t3),
+        y:0.5*((2*p1.y)+(-p0.y+p2.y)*t+(2*p0.y-5*p1.y+4*p2.y-p3.y)*t2+(-p0.y+3*p1.y-3*p2.y+p3.y)*t3)
+      });
+    }
+  }
+  out.push({x:pts[n-1].x, y:pts[n-1].y});
+  return out;
+}
+function polylineOf(p){
+  var pts = p.pts||[];
+  if(pts.length>=3 && p.smooth) return catmull(pts);
+  return pts.map(function(q){ return {x:q.x, y:q.y}; });
+}
+function measure(poly){
+  var cum=[0];
+  for(var i=1;i<poly.length;i++) cum.push(cum[i-1]+dist(poly[i-1],poly[i]));
+  return cum;
+}
+function at(poly, cum, d){
+  var n=poly.length, L=cum[n-1];
+  if(n===1) return {x:poly[0].x, y:poly[0].y, ang:0};
+  d = Math.max(0, Math.min(L, d));
+  var i=0; while(i<n-2 && cum[i+1]<d) i++;
+  var seg = cum[i+1]-cum[i]; var t = seg>0 ? (d-cum[i])/seg : 0;
+  var a=poly[i], b=poly[i+1];
+  return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, ang:Math.atan2(b.y-a.y, b.x-a.x)};
+}
+function sub(poly, cum, d0, d1){
+  var L=cum[cum.length-1]; d0=Math.max(0,d0); d1=Math.min(L,d1);
+  if(d1<=d0) return [at(poly,cum,d0)];
+  var out=[at(poly,cum,d0)];
+  for(var i=0;i<poly.length;i++) if(cum[i]>d0+0.01 && cum[i]<d1-0.01) out.push(poly[i]);
+  out.push(at(poly,cum,d1));
+  return out;
+}
+function offsetPts(pts, off){
+  return pts.map(function(p,i){
+    var a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
+    var dx=b.x-a.x, dy=b.y-a.y, l=Math.hypot(dx,dy)||1;
+    return {x:p.x - dy/l*off, y:p.y + dx/l*off};
+  });
+}
+function ptsStr(pts){ return pts.map(function(p){ return f1(p.x)+","+f1(p.y); }).join(" "); }
+function zigzag(poly, cum, d0, d1){
+  var step=8, amp=4, pts=[at(poly,cum,d0)], k=1;
+  for(var d=d0+step; d<d1-step*0.6; d+=step, k++){
+    var q=at(poly,cum,d), off=(k%2?1:-1)*amp;
+    pts.push({x:q.x - Math.sin(q.ang)*off, y:q.y + Math.cos(q.ang)*off});
+  }
+  pts.push(at(poly,cum,d1));
+  return pts;
+}
+function headAngle(poly, cum, L){
+  var a=at(poly,cum,Math.max(0,L-9)), b=at(poly,cum,L);
+  return Math.atan2(b.y-a.y, b.x-a.x);
+}
+function headPoly(tip, ang){
+  var bx=tip.x-Math.cos(ang)*HL, by=tip.y-Math.sin(ang)*HL;
+  var nx=-Math.sin(ang)*HW, ny=Math.cos(ang)*HW;
+  return f1(tip.x)+","+f1(tip.y)+" "+f1(bx+nx)+","+f1(by+ny)+" "+f1(bx-nx)+","+f1(by-ny);
+}
+
+/* ---------- Figurer (spelare, kon, boll ...) ---------- */
+function figMarkup(f, o){
+  o = o||{};
+  var x=f.x, y=f.y, sw=2.4, id=f.id;
+  var body="", hit="", sel="", op = o.opacity==null ? 1 : o.opacity;
+  var stroke = 'stroke="'+INK+'" stroke-width="'+sw+'"';
+  var hitR = R+7;
+  switch(f.type){
+    case "defense":
+      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'; break;
+    case "attack": {
+      var a=R*0.86;
+      body='<path d="M'+f1(x-a)+','+f1(y-a)+' L'+f1(x+a)+','+f1(y+a)+' M'+f1(x-a)+','+f1(y+a)+' L'+f1(x+a)+','+f1(y-a)+'" stroke="'+INK+'" stroke-width="2.9" stroke-linecap="round" fill="none"/>'; break; }
+    case "attackBack": {
+      var b=R*0.58;
+      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
+        '<path d="M'+f1(x-b)+','+f1(y-b)+' L'+f1(x+b)+','+f1(y+b)+' M'+f1(x-b)+','+f1(y+b)+' L'+f1(x+b)+','+f1(y-b)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; break; }
+    case "goalie":
+      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/><circle cx="'+x+'" cy="'+y+'" r="'+f1(R*0.42)+'" fill="'+INK+'"/>'; break;
+    case "unit": {
+      var letters=String(f.label||"ABC").toUpperCase().slice(0,4).split(""), n=letters.length, sp=R*1.45, x0=x-(n-1)*sp/2;
+      letters.forEach(function(ch,i){
+        var cx=x0+i*sp;
+        body+='<circle cx="'+f1(cx)+'" cy="'+y+'" r="'+f1(R*0.95)+'" fill="#fff" '+stroke+'/>'+
+          '<text x="'+f1(cx)+'" y="'+f1(y+4.6)+'" text-anchor="middle" font-size="13" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(ch)+'</text>';
+      });
+      hitR = Math.max(R+7, (n-1)*sp/2+R+5); break; }
+    case "leader":
+      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
+        '<text x="'+x+'" y="'+f1(y+4.8)+'" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(String(f.label||"L").slice(0,2))+'</text>'; break;
+    case "cone":
+      body='<polygon points="'+f1(x-R*0.95)+','+f1(y+R*0.78)+' '+f1(x+R*0.95)+','+f1(y+R*0.78)+' '+x+','+f1(y-R*0.95)+'" fill="#fff" stroke="'+INK+'" stroke-width="2.2" stroke-linejoin="round"/>'; break;
+    case "ball":
+      body='<circle cx="'+x+'" cy="'+y+'" r="6" fill="'+INK+'"/>'; hitR=14; break;
+    case "bench":
+      body='<path d="M'+x+','+(y-17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y-17)+' L'+x+','+(y-17)+' M'+(x-11)+','+(y+17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y+3)+' L'+x+','+(y+3)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; hitR=20; break;
+  }
+  if(!o.noHit) hit='<circle cx="'+x+'" cy="'+y+'" r="'+hitR+'" fill="transparent"/>';
+  var hb="";
+  if(o.hideBadge!=null){
+    var bx=x+R*0.95, by=y-R*1.15, lab="×"+o.hideBadge;
+    hb='<g style="pointer-events:none"><rect x="'+f1(bx-11)+'" y="'+f1(by-7.5)+'" width="22" height="15" rx="7.5" fill="#fff" stroke="'+ORANGE+'" stroke-width="1.6"/>'+
+       '<text x="'+f1(bx)+'" y="'+f1(by+3.6)+'" text-anchor="middle" font-size="9.5" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+ORANGE+'">'+esc(lab)+'</text></g>';
+  }
+  if(o.selected) sel='<circle cx="'+x+'" cy="'+y+'" r="'+(hitR+1)+'" fill="none" stroke="'+ORANGE+'" stroke-width="2" stroke-dasharray="4 3" style="pointer-events:none"/>';
+  return '<g class="xd-fig" data-id="'+id+'"'+(op<1?' opacity="'+op+'"':'')+'>'+hit+body+sel+hb+'</g>';
+}
+
+/* ---------- Pilar / rörelsemönster ---------- */
+function ownerFig(p, objs){
+  if(p.owner==null || !objs) return null;
+  for(var i=0;i<objs.length;i++) if(objs[i].kind==="fig" && objs[i].id===p.owner) return objs[i];
+  return null;
+}
+function trimsFor(p, objs, L){
+  var t0=0, t1=0;
+  if(!objs || !p.pts || p.pts.length<2) return [0,0];
+  var info=pathInfo(p.type), first=p.pts[0], last=p.pts[p.pts.length-1];
+  if(info.move){
+    for(var j=0;j<objs.length;j++){ var g0=objs[j]; if(g0.kind==="fig" && HOLDERS[g0.type] && dist(first,g0)<4){ t0=R+3; break; } }
+  }
+  for(var i=0;i<objs.length;i++){
+    var f=objs[i];
+    if(f.kind!=="fig") continue;
+    if((HOLDERS[f.type] || f.type==="cone") && dist(last,f)<4){ t1=R+3; break; }
+  }
+  if(t0+t1 > L-26){ t0=0; t1=0; }
+  return [t0,t1];
+}
+function pathMarkup(p, o){
+  o = o||{};
+  var col=o.color||INK, sw=o.sw||2.6, op=o.opacity==null?1:o.opacity;
+  var poly0=polylineOf(p); if(poly0.length<2) return "";
+  var cum0=measure(poly0), L0=cum0[cum0.length-1]; if(L0<6) return "";
+  var tr=trimsFor(p,o.objs,L0), poly=poly0, cum=cum0, L=L0;
+  if(tr[0]||tr[1]){ poly=sub(poly0,cum0,tr[0],L0-tr[1]); cum=measure(poly); L=cum[cum.length-1]; }
+  var st='stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linejoin="round"';
+  function line(pts, extra){ return pts.length<2?"":'<polyline points="'+ptsStr(pts)+'" '+st+(extra||"")+'/>'; }
+  var tip=at(poly,cum,L), ang=headAngle(poly,cum,L);
+  var parts="", t=p.type, bodyEnd=Math.max(0,L-HL+1), dash=' stroke-dasharray="7 5"';
+  function headFilled(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="'+col+'" stroke="'+col+'" stroke-width="1" stroke-linejoin="round"/>'; }
+  function headOpen(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="#fff" stroke="'+col+'" stroke-width="'+sw+'" stroke-linejoin="round"/>'; }
+  function perp(pt,a,off){ return {x:pt.x-Math.sin(a)*off, y:pt.y+Math.cos(a)*off}; }
+  function bar(d,len,w){ var c=at(poly,cum,d), a=c.ang, u=perp(c,a,len/2), v=perp(c,a,-len/2);
+    return '<line x1="'+f1(u.x)+'" y1="'+f1(u.y)+'" x2="'+f1(v.x)+'" y2="'+f1(v.y)+'" stroke="'+col+'" stroke-width="'+(w||2.4)+'" stroke-linecap="round"/>'; }
+  var dl=15;
+  switch(t){
+    case "fwd":      parts=line(sub(poly,cum,0,bodyEnd))+headFilled(tip,ang); break;
+    case "fwdBall":  parts=line(zigzag(poly,cum,0,bodyEnd))+headFilled(tip,ang); break;
+    case "back": case "backBall": {
+      var c0=at(poly,cum,7), a0=c0.ang, dm=[[ -7,0],[0,-5.2],[7,0],[0,5.2]].map(function(q){ return {x:c0.x+q[0]*Math.cos(a0)-q[1]*Math.sin(a0), y:c0.y+q[0]*Math.sin(a0)+q[1]*Math.cos(a0)}; });
+      var dia='<polygon points="'+ptsStr(dm)+'" fill="'+(t==="back"?col:"#fff")+'" stroke="'+col+'" stroke-width="'+(sw-0.4)+'" stroke-linejoin="round"/>';
+      parts=dia+(t==="back"?line(sub(poly,cum,dl-1,bodyEnd)):line(zigzag(poly,cum,dl-1,bodyEnd)))+headFilled(tip,ang); break; }
+    case "turn": {
+      var s0=at(poly,cum,0), ts=[[0,-4.6],[9,0],[0,4.6]].map(function(q){ return {x:s0.x+q[0]*Math.cos(s0.ang)-q[1]*Math.sin(s0.ang), y:s0.y+q[0]*Math.sin(s0.ang)+q[1]*Math.cos(s0.ang)}; });
+      var cc=perp(at(poly,cum,L*0.42), at(poly,cum,L*0.42).ang, -9.5);
+      parts=line(sub(poly,cum,0,bodyEnd))+'<polygon points="'+ptsStr(ts)+'" fill="'+col+'"/>'+
+        '<circle cx="'+f1(cc.x)+'" cy="'+f1(cc.y)+'" r="5.6" fill="#fff" stroke="'+col+'" stroke-width="'+(sw-0.6)+'"/>'+headFilled(tip,ang); break; }
+    case "stop": {
+      var tipD=Math.max(HL+4, L-10), tp=at(poly,cum,tipD), ta=headAngle(poly,cum,tipD);
+      parts=line(sub(poly,cum,0,tipD-HL+1))+headFilled(tp,ta)+bar(Math.max(0,L-5.5),13,2.4)+bar(Math.max(0,L-0.8),13,2.4); break; }
+    case "tempo": {
+      var m=L*0.5; parts=line(sub(poly,cum,0,bodyEnd));
+      for(var k=-1.5;k<=1.5;k+=1) parts+=bar(m+k*3.2,15,2.1);
+      parts+=headFilled(tip,ang); break; }
+    case "pass":  parts=line(sub(poly,cum,0,bodyEnd),dash)+headFilled(tip,ang); break;
+    case "lift":  parts=line(sub(poly,cum,0,bodyEnd),dash)+headOpen(tip,ang); break;
+    case "shot": {
+      var sb=sub(poly,cum,0,bodyEnd); parts=line(offsetPts(sb,2.5))+line(offsetPts(sb,-2.5))+headOpen(tip,ang); break; }
+    case "gk": {
+      var gb=sub(poly,cum,0,bodyEnd); parts=line(offsetPts(gb,2.5),dash)+line(offsetPts(gb,-2.5),dash)+headOpen(tip,ang); break; }
+  }
+  var hit = o.noHit ? "" : '<polyline points="'+ptsStr(poly0)+'" fill="none" stroke="transparent" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>';
+  var badge="";
+  if(o.badge){
+    var bp=at(poly0,cum0,Math.min(26,L0*0.3)), bb=perp(bp,bp.ang,-17);
+    badge='<g style="pointer-events:none"><circle cx="'+f1(bb.x)+'" cy="'+f1(bb.y)+'" r="11" fill="'+ORANGE+'" stroke="#fff" stroke-width="1.8"/><text x="'+f1(bb.x)+'" y="'+f1(bb.y+4.7)+'" text-anchor="middle" font-size="13.5" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#fff">'+esc(p.step||1)+'</text></g>';
+  }
+  return '<g class="xd-path" data-id="'+p.id+'"'+(op<1?' opacity="'+op+'"':'')+'>'+hit+parts+badge+'</g>';
+}
+
+/* ---------- Ikoner för paletten och teckenförklaring ---------- */
+function figIcon(type, label){
+  return '<svg viewBox="-34 -19 68 38" width="46" height="26" aria-hidden="true">'+figMarkup({id:0,type:type,x:0,y:0,label:label},{noHit:true})+'</svg>';
+}
+function pathIcon(type){
+  return '<svg viewBox="0 -6 88 34" width="88" height="28" aria-hidden="true">'+pathMarkup({id:0,type:type,pts:[{x:6,y:12},{x:82,y:12}],smooth:false,step:1},{noHit:true})+'</svg>';
+}
+
+/* ---------- Auto-koppling: vem rör sig / vilken boll flyger ---------- */
+function autoOwner(type, start, objs){
+  var info=pathInfo(type), best=null, bd=SNAP+6;
+  objs.forEach(function(f){
+    if(f.kind!=="fig") return;
+    var ok = info.move ? !!HOLDERS[f.type] : f.type==="ball";
+    if(!ok) return;
+    var d=dist(f,start); if(d<bd){ bd=d; best=f; }
+  });
+  return best ? best.id : null;
+}
+
+/* ---------- Simulering: spelare följer pilen ---------- */
+var PAUSE = 0.45;
+function ease(type,u){
+  u=Math.max(0,Math.min(1,u));
+  switch(type){
+    case "stop":  return 1-Math.pow(1-u,3);
+    case "tempo": return u<0.5 ? 0.3*(u/0.5) : 0.3+0.7*Math.pow((u-0.5)/0.5,1.4);
+    case "turn":  return u<0.3 ? 0.35*(u/0.3) : (u<0.5 ? 0.35 : 0.35+0.65*((u-0.5)/0.5));
+    case "shot":  return 1-Math.pow(1-u,2);
+    case "pass": case "lift": case "gk": return u;
+    default:      return u*u*(3-2*u);
+  }
+}
+function cloneState(s){
+  var pos={}, held={}, free={};
+  for(var k in s.pos) pos[k]={x:s.pos[k].x,y:s.pos[k].y};
+  for(var h in s.held) held[h]=s.held[h]?{id:s.held[h].id,dx:s.held[h].dx,dy:s.held[h].dy}:null;
+  for(var b in s.free) free[b]={x:s.free[b].x,y:s.free[b].y};
+  return {pos:pos,held:held,free:free};
+}
+function ballPosOf(state,id){
+  var h=state.held[id];
+  if(h && state.pos[h.id]) return {x:state.pos[h.id].x+h.dx, y:state.pos[h.id].y+h.dy};
+  if(state.free[id]) return state.free[id];
+  return state.pos[id];
+}
+function buildSim(objs){
+  var figs=objs.filter(function(o){ return o.kind==="fig"; });
+  var paths=objs.filter(function(o){ return o.kind==="path" && o.pts && o.pts.length>=2; });
+  var byId={}; figs.forEach(function(f){ byId[f.id]=f; });
+  var init={pos:{},held:{},free:{}};
+  figs.forEach(function(f){ init.pos[f.id]={x:f.x,y:f.y}; });
+  figs.filter(function(f){ return f.type==="ball"; }).forEach(function(b){
+    var best=null, bd=32;
+    figs.forEach(function(h){ if(HOLDERS[h.type]){ var d=dist(b,h); if(d<bd){ bd=d; best=h; } } });
+    if(best){ init.held[b.id]={id:best.id,dx:b.x-best.x,dy:b.y-best.y}; } else { init.held[b.id]=null; init.free[b.id]={x:b.x,y:b.y}; }
+  });
+  var nums=[]; paths.forEach(function(p){ var s=p.step||1; if(nums.indexOf(s)<0) nums.push(s); }); nums.sort(function(a,b){ return a-b; });
+  var steps=[], cur=init, T0=0;
+  nums.forEach(function(sn){
+    var start=cloneState(cur), motions=[];
+    paths.filter(function(p){ return (p.step||1)===sn; }).forEach(function(p){
+      var info=pathInfo(p.type), poly=polylineOf(p);
+      var mv=null, bid=null, ow=p.owner;
+      if(info.move){
+        if(ow!=null && ow>=0){ if(byId[ow] && HOLDERS[byId[ow].type]) mv=ow; }
+        else if(ow==null){
+          var bh=null, bhd=SNAP+4;
+          figs.forEach(function(h){ if(HOLDERS[h.type]){ var d=dist(start.pos[h.id],poly[0]); if(d<bhd){ bhd=d; bh=h; } } });
+          if(bh) mv=bh.id;
+        }
+      } else {
+        if(ow!=null && ow>=0){ if(byId[ow] && byId[ow].type==="ball") bid=ow; }
+        else if(ow==null){
+          var bb=null, bbd=SNAP+10;
+          figs.forEach(function(b){ if(b.type==="ball"){ var d2=dist(ballPosOf(start,b.id),poly[0]); if(d2<bbd){ bbd=d2; bb=b; } } });
+          if(bb) bid=bb.id;
+        }
+      }
+      // glid från figurens/bollens faktiska position fram till pilens start om de inte sammanfaller
+      var ref = mv!=null ? start.pos[mv] : (bid!=null ? ballPosOf(start,bid) : null);
+      if(ref && dist(ref,poly[0])>6) poly=[{x:ref.x,y:ref.y}].concat(poly);
+      var cum=measure(poly), len=cum[cum.length-1];
+      if(len<4) return;
+      var m={p:p, info:info, poly:poly, cum:cum, len:len, dur:Math.max(0.55, len/info.speed), carried:[], moverId:mv, ballId:bid, transient:!info.move && bid==null};
+      if(mv!=null && info.carry){
+        figs.forEach(function(b){ if(b.type==="ball" && start.held[b.id] && start.held[b.id].id===mv) m.carried.push(b.id); });
+      }
+      motions.push(m);
+    });
+    if(!motions.length) return;
+    var dur=0; motions.forEach(function(m){ dur=Math.max(dur,m.dur); });
+    // sluttillstånd
+    var end=cloneState(start), endPos={};
+    motions.forEach(function(m){ if(m.moverId!=null){ var e=m.poly[m.poly.length-1]; end.pos[m.moverId]={x:e.x,y:e.y}; } });
+    // bollar som lämnas kvar (rörelse utan boll): släpp där de låg
+    motions.forEach(function(m){
+      if(m.moverId!=null && !m.info.carry){
+        figs.forEach(function(b){ if(b.type==="ball" && start.held[b.id] && start.held[b.id].id===m.moverId){
+          var h=start.held[b.id], hp=start.pos[m.moverId]; end.held[b.id]=null; end.free[b.id]={x:hp.x+h.dx,y:hp.y+h.dy}; } });
+      }
+    });
+    motions.forEach(function(m){
+      if(m.ballId!=null){
+        var e=m.poly[m.poly.length-1], rec=null, bd=32;
+        if(m.p.type!=="shot") figs.forEach(function(h){ if(HOLDERS[h.type] && !(start.held[m.ballId] && start.held[m.ballId].id===h.id)){ var q=end.pos[h.id], d=dist(q,e); if(d<bd){ bd=d; rec=h; } } });
+        if(rec){ end.held[m.ballId]={id:rec.id,dx:9,dy:8}; delete end.free[m.ballId]; }
+        else { end.held[m.ballId]=null; end.free[m.ballId]={x:e.x,y:e.y}; }
+      }
+    });
+    steps.push({sn:sn, dur:dur, T0:T0, start:start, end:end, motions:motions});
+    T0+=dur+PAUSE; cur=end;
+  });
+  var total=steps.length?steps[steps.length-1].T0+steps[steps.length-1].dur:0;
+  var moverByPath={}, ballByPath={}, hideTime={};
+  steps.forEach(function(s){ s.motions.forEach(function(m){ if(m.moverId!=null) moverByPath[m.p.id]=m.moverId; if(m.ballId!=null) ballByPath[m.p.id]=m.ballId; }); });
+  figs.forEach(function(f){
+    if(f.hideAfter==null) return;
+    var t=Infinity; steps.forEach(function(s){ if(s.sn<=f.hideAfter) t=s.T0+s.dur; });
+    hideTime[f.id]=t;
+  });
+  var mh=0; for(var k in hideTime){ if(isFinite(hideTime[k])) mh=Math.max(mh,hideTime[k]); }
+  if(mh>0) total=Math.max(total, mh+0.4);   // ge utfasningen tid även efter sista steget
+  return {steps:steps, init:init, total:total, figs:figs, paths:paths, moverByPath:moverByPath, ballByPath:ballByPath, hideTime:hideTime};
+}
+/* Position för alla figurer vid tid T. Returnerar {pos:{id:{x,y}}, stepIdx, phase, transient:[{x,y}]} */
+function stateAt(sim, T){
+  var steps=sim.steps, si=-1;
+  for(var i=0;i<steps.length;i++) if(T>=steps[i].T0) si=i;
+  var base = si<0 ? sim.init : (T>=steps[si].T0+steps[si].dur ? steps[si].end : steps[si].start);
+  var st=cloneState(base), trans=[];
+  if(si>=0 && T<steps[si].T0+steps[si].dur){
+    var s=steps[si], t=T-s.T0;
+    s.motions.forEach(function(m){
+      var u=Math.min(1,t/m.dur), pt=at(m.poly,m.cum,ease(m.p.type,u)*m.len);
+      if(m.moverId!=null){
+        st.pos[m.moverId]={x:pt.x,y:pt.y};
+        m.carried.forEach(function(bid){ var h=s.start.held[bid]; st.held[bid]={id:m.moverId,dx:h.dx,dy:h.dy}; });
+      }
+      if(m.ballId!=null){
+        if(u<1){ st.held[m.ballId]=null; st.free[m.ballId]={x:pt.x,y:pt.y}; }
+        else { st.held[m.ballId]=s.end.held[m.ballId]; if(s.end.free[m.ballId]) st.free[m.ballId]=s.end.free[m.ballId]; else delete st.free[m.ballId]; }
+      }
+      if(m.transient && u>0 && u<1) trans.push({x:pt.x,y:pt.y,type:m.p.type});
+    });
+  }
+  // ballpositioner
+  var ballPos={};
+  sim.figs.forEach(function(f){
+    if(f.type!=="ball") return;
+    var h=st.held[f.id];
+    if(h && st.pos[h.id]) ballPos[f.id]={x:st.pos[h.id].x+h.dx, y:st.pos[h.id].y+h.dy};
+    else if(st.free[f.id]) ballPos[f.id]=st.free[f.id];
+    else ballPos[f.id]={x:f.x,y:f.y};
+  });
+  var pos={}; sim.figs.forEach(function(f){ pos[f.id]= f.type==="ball" ? ballPos[f.id] : st.pos[f.id]; });
+  var vis={};
+  for(var hid in sim.hideTime){ var ht=sim.hideTime[hid]; vis[hid] = T<ht ? 1 : Math.max(0, 1-(T-ht)/0.35); }
+  var stepIdx = si<0 ? -1 : si;
+  var finished = si>=0 && T>=steps[si].T0+steps[si].dur;
+  return {pos:pos, stepIdx:stepIdx, finished:finished, transient:trans, vis:vis};
+}
+
+return {R:R, INK:INK, ORANGE:ORANGE, SNAP:SNAP, FIG_TYPES:FIG_TYPES, PATH_TYPES:PATH_TYPES, HOLDERS:HOLDERS, PAUSE:PAUSE,
+  figLabel:figLabel, pathInfo:pathInfo, dist:dist, esc:esc, f1:f1, polylineOf:polylineOf, measure:measure, at:at,
+  figMarkup:figMarkup, pathMarkup:pathMarkup, figIcon:figIcon, pathIcon:pathIcon, autoOwner:autoOwner,
+  buildSim:buildSim, stateAt:stateAt, ease:ease};
+})();
+
+/* ===================== ÖVNINGSRITARE (XD) — gränssnitt: visa, animera, rita ===================== */
+var XD = (function(C){
+"use strict";
+var esc=C.esc, f1=C.f1, dist=C.dist;
+var RINK = '<rect x="10" y="10" width="580" height="320" rx="52" fill="#fff" stroke="#8A8F86" stroke-width="2.5"></rect>'+
+'<line x1="300" y1="10" x2="300" y2="330" stroke="#8A8F86" stroke-width="2"></line><circle cx="300" cy="170" r="5.5" fill="#8A8F86"></circle>'+
+'<rect x="62" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="62" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="50" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
+'<rect x="452" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="504" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="538" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
+'<path d="M78,54 h14 M85,47 v14 M78,286 h14 M85,279 v14 M508,54 h14 M515,47 v14 M508,286 h14 M515,279 v14 M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5" fill="none"></path>';
+
+var host = null;
+var S = {exId:null, mode:"view", tab:"anim", drawing:null, base:"", tool:null, selected:null, activeStep:1, stepCount:1,
+  undo:[], playing:false, T:0, speed:1, hideDone:false, paletteOpen:true, raf:null, lastTs:0, drag:null, draft:null, sim:null, nid:1, toolsBuilt:false};
+
+function $(id){ return document.getElementById(id); }
+function svgEl(){ return $("xd-svg"); }
+// Sätt innehåll bara om det ändrats — undviker att element byts ut under ett tryck (annars uteblir "click" på mobil)
+function setHTML(el, html){ if(!el) return; if(el.__xd!==html){ el.innerHTML=html; el.__xd=html; } }
+
+/* ---------- Data ---------- */
+function emptyDrawing(){ return {v:2, objects:[], still:null}; }
+function cloneJ(o){ return JSON.parse(JSON.stringify(o)); }
+function objsRef(){ return (S.tab==="still" && S.drawing.still) ? S.drawing.still.objects : S.drawing.objects; }
+function displayObjs(){ return S.tab==="still" ? (S.drawing.still ? S.drawing.still.objects : S.drawing.objects) : S.drawing.objects; }
+function findObj(id){ var a=objsRef(); for(var i=0;i<a.length;i++) if(a[i].id===id) return a[i]; return null; }
+function maxStep(objs){ var m=1; (objs||[]).forEach(function(o){ if(o.kind==="path") m=Math.max(m,o.step||1); }); return m; }
+function computeNid(d){ var m=0; d.objects.forEach(function(o){ m=Math.max(m,o.id); }); if(d.still) d.still.objects.forEach(function(o){ m=Math.max(m,o.id); }); return m+1; }
+function figName(f, objs){
+  var same=objs.filter(function(o){ return o.kind==="fig" && o.type===f.type; }), idx=same.indexOf(f)+1;
+  return C.figLabel(f.type)+(same.length>1?" "+idx:"");
+}
+function ballNear(pt, objs, maxD){
+  var best=null, bd=maxD;
+  objs.forEach(function(f){ if(f.kind==="fig" && f.type==="ball"){ var d=dist(f,pt); if(d<bd){ bd=d; best=f; } } });
+  return best;
+}
+
+/* ---------- Rendering av ritning ---------- */
+function paintObjs(objs, o){
+  o=o||{};
+  var multi = maxStep(objs)>1;
+  var paths=objs.filter(function(x){ return x.kind==="path"; }), figs=objs.filter(function(x){ return x.kind==="fig"; });
+  var html="";
+  paths.forEach(function(p){
+    var st=(o.pathStyle && o.pathStyle(p))||{};
+    if(st.hidden) return;
+    html+=C.pathMarkup(p,{objs:objs, badge:multi && !st.noBadge, color:st.color, sw:st.sw, opacity:st.opacity, noHit:o.noHit});
+  });
+  var pos=o.pos||{};
+  var order=figs.filter(function(f){ return f.type!=="ball"; }).concat(figs.filter(function(f){ return f.type==="ball"; }));
+  order.forEach(function(f){
+    var v = o.vis && o.vis[f.id]!=null ? o.vis[f.id] : 1;
+    if(v<=0) return;
+    var g=pos[f.id]?Object.assign({},f,{x:pos[f.id].x,y:pos[f.id].y}):f;
+    html+=C.figMarkup(g,{noHit:o.noHit, selected:o.selected===f.id, opacity:v, hideBadge:(o.showHide && f.hideAfter!=null) ? f.hideAfter : null});
+  });
+  return html;
+}
+var GREY = "#9B9B95";
+/* ---- Delar: lägen (steg) grupperas i en eller flera delar; varje del blir en egen stillbild ---- */
+function partBreaksOf(d, sim){
+  var sns=sim.steps.map(function(s){ return s.sn; }), br;
+  if(d.partBreaks) br=d.partBreaks.slice();
+  else if(d.stillLayout==="perStep") br=sns.slice(1);     // äldre sparade ritningar
+  else br=[];
+  var seen={};
+  return br.filter(function(x){ var ok=sns.indexOf(x)>0 && !seen[x]; seen[x]=1; return ok; }).sort(function(a,b){ return a-b; });
+}
+function partsOf(d, sim){
+  var br=partBreaksOf(d,sim), parts=[], cur=null;
+  sim.steps.forEach(function(s,i){
+    if(!cur || br.indexOf(s.sn)>=0){ cur={first:i,last:i}; parts.push(cur); } else cur.last=i;
+  });
+  return parts;
+}
+function partLabel(sim, part, pi){
+  var a=sim.steps[part.first].sn, b=sim.steps[part.last].sn;
+  return "Del "+(pi+1)+" · steg "+(a===b?a:a+"–"+b);
+}
+/* Stillbild för en del: figurerna som de står när delen börjar, alla delens pilar i svart (med stegnummer),
+   tidigare delars pilar kvar i grått, senare delar dolda */
+function partImageInner(sim, objs, part){
+  var stepOrder=sim.steps.map(function(s){ return s.sn; });
+  var st=C.stateAt(sim, sim.steps[part.first].T0);
+  return paintObjs(objs,{pos:st.pos, vis:st.vis, noHit:true, pathStyle:function(p){
+    var idx=stepOrder.indexOf(p.step||1);
+    if(idx<0 || idx>part.last) return {hidden:true};
+    // tidigare delars pilar ligger kvar i grått utan stegnummer — även löpningar av spelare som försvunnit (själva spelaren visas inte)
+    return idx<part.first ? {color:GREY, noBadge:true} : {};
+  }});
+}
+function isSplitStill(d, sim){ return !d.still && partsOf(d,sim).length>=2; }
+function thumbSVG(drawing){
+  if(!drawing || !drawing.objects) return "";
+  if(!drawing.still){
+    var sim=C.buildSim(drawing.objects), parts=partsOf(drawing,sim);
+    if(parts.length>=2){
+      var n=Math.min(parts.length,4), g="";
+      for(var k=0;k<n;k++) g+='<div class="xd-thumbcell"><span class="xd-thumbcap">Del '+(k+1)+'</span><svg viewBox="0 0 600 340" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+RINK+partImageInner(sim,drawing.objects,parts[k])+'</svg></div>';
+      return '<div class="xd-thumbgrid">'+g+'</div>';
+    }
+  }
+  var objs = drawing.still ? drawing.still.objects : drawing.objects;
+  return '<svg viewBox="0 0 600 340" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+RINK+paintObjs(objs,{noHit:true})+'</svg>';
+}
+/* Stillbilder som färdig SVG-text (för PDF/utskrift): en bild, eller en per del om ritningen är delad. */
+function stillImages(drawing){
+  if(!drawing || !drawing.objects || !drawing.objects.length) return [];
+  var open='<svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg">';
+  if(!drawing.still){
+    var sim=C.buildSim(drawing.objects), parts=partsOf(drawing,sim);
+    if(parts.length>=2) return parts.map(function(part,pi){ return {label:partLabel(sim,part,pi), svg:open+RINK+partImageInner(sim,drawing.objects,part)+'</svg>'}; });
+  }
+  var objs = drawing.still ? drawing.still.objects : drawing.objects;
+  return [{label:null, svg:open+RINK+paintObjs(objs,{noHit:true})+'</svg>'}];
+}
+function hasContent(d){ return !!(d && d.objects && d.objects.length); }
+
+function legendHTML(objs){
+  var figT={}, pathT={};
+  objs.forEach(function(o){ if(o.kind==="fig") figT[o.type]=1; else pathT[o.type]=1; });
+  var items="";
+  C.FIG_TYPES.forEach(function(t){ if(figT[t.id]) items+='<div class="xd-leg-item">'+C.figIcon(t.id, t.id==="unit"?"ABC":undefined)+'<span>'+esc(t.label)+'</span></div>'; });
+  C.PATH_TYPES.forEach(function(t){ if(pathT[t.id]) items+='<div class="xd-leg-item">'+C.pathIcon(t.id)+'<span>'+esc(t.label)+'</span></div>'; });
+  return items ? '<div class="xd-legend"><b>Tecken i den här övningen</b>'+items+'</div>' : "";
+}
+
+function getSim(){ if(!S.sim) S.sim=C.buildSim(S.drawing.objects); return S.sim; }
+function animView(){ return S.tab==="anim" && (S.mode==="view" || S.playing || S.T>0); }
+function canEditNow(){ return S.mode==="edit" && !S.playing && S.T===0 && (S.tab==="anim" || (S.tab==="still" && !!S.drawing.still)); }
+
+/* Ritytan (snabb — används även under dragning) */
+function renderCanvas(){
+  var svg=svgEl(); if(!svg) return;
+  var body="";
+  if(animView()){
+    var sim=getSim(), st=C.stateAt(sim,S.T), stepIdx=st.stepIdx;
+    var stepOrder=sim.steps.map(function(s){ return s.sn; });
+    body=paintObjs(S.drawing.objects,{
+      pos:st.pos, vis:st.vis,
+      pathStyle:function(p){
+        var k=stepOrder.indexOf(p.step||1), r;
+        if(k<0) r={};
+        else if(k<stepIdx || (k===stepIdx && st.finished)) r = S.hideDone ? {hidden:true} : {opacity:0.4};
+        else if(k===stepIdx) r={color:C.ORANGE, sw:3.3};
+        else r={opacity:0.16};
+        if(r.hidden) return r;
+        var mv=sim.moverByPath[p.id], vm=(mv!=null && st.vis[mv]!=null) ? st.vis[mv] : 1;
+        if(vm<=0) return {hidden:true};
+        if(vm<1) r.opacity=(r.opacity==null?1:r.opacity)*vm;
+        return r;
+      }, noHit:true});
+    st.transient.forEach(function(t){ body+='<circle cx="'+f1(t.x)+'" cy="'+f1(t.y)+'" r="6" fill="'+C.INK+'"/>'; });
+  } else {
+    var objs=displayObjs();
+    body=paintObjs(objs,{selected: canEditNow()?S.selected:null, showHide: canEditNow() && S.tab==="anim"});
+    if(canEditNow() && S.tool===null) body+=overlayHandles(objs);
+  }
+  if(S.draft){
+    body+=C.pathMarkup({id:-1,type:S.draft.type,pts:S.draft.pts,smooth:false,step:S.activeStep},{objs:objsRef(),noHit:true,color:C.ORANGE,opacity:0.85});
+  }
+  svg.innerHTML = RINK+body;
+  svg.style.touchAction = (S.mode==="edit") ? "none" : "pan-y";
+}
+function render(){ renderCanvas(); renderChrome(); }
+
+function overlayHandles(objs){
+  var p=selPath(objs); if(!p) return "";
+  var h="";
+  for(var i=0;i<p.pts.length-1;i++){
+    var a=p.pts[i], b=p.pts[i+1], mx=f1((a.x+b.x)/2), my=f1((a.y+b.y)/2);
+    h+='<circle data-m="'+i+'" cx="'+mx+'" cy="'+my+'" r="6.5" fill="#fff" fill-opacity="0.85" stroke="'+C.ORANGE+'" stroke-width="1.6"/>'+
+       '<circle data-m="'+i+'" cx="'+mx+'" cy="'+my+'" r="14" fill="transparent"/>';
+  }
+  p.pts.forEach(function(q,i){
+    // ändpunkter som sitter på en figur får inget handtag — de följer figuren, och handtaget skulle annars skymma den
+    if((i===0 || i===p.pts.length-1) && objs.some(function(f){ return f.kind==="fig" && dist(f,q)<4; })) return;
+    h+='<circle data-h="'+i+'" cx="'+f1(q.x)+'" cy="'+f1(q.y)+'" r="8" fill="#fff" stroke="'+C.ORANGE+'" stroke-width="2.6"/>'+
+       '<circle data-h="'+i+'" cx="'+f1(q.x)+'" cy="'+f1(q.y)+'" r="16" fill="transparent"/>';
+  });
+  return '<g>'+h+'</g>';
+}
+function selPath(objs){
+  if(S.selected==null) return null;
+  var o=(objs||objsRef()).filter(function(x){ return x.id===S.selected && x.kind==="path"; })[0];
+  return o||null;
+}
+function selFig(){ var o=findObj(S.selected); return (o && o.kind==="fig") ? o : null; }
+
+/* ---------- Chrome: flikar, spelare, paletter, panel ---------- */
+function renderChrome(){
+  var ov=$("xd-overlay"); if(!ov) return;
+  var edit = S.mode==="edit";
+  ov.classList.toggle("xd-edit-mode", edit);
+  $("xd-modebtn").style.display = (host && host.canEdit && !host.canEdit()) ? "none" : "";
+  $("xd-modebtn").textContent = edit ? "👁 Visa" : "✏️ Redigera";
+  ov.querySelectorAll(".xd-tab").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab")===S.tab); });
+  var hasPaths = S.drawing.objects.some(function(o){ return o.kind==="path"; });
+  $("xd-player").style.display = S.tab==="anim" ? "block" : "none";
+  var sim=getSim(), total=sim.total;
+  $("xd-play").textContent = S.playing ? "⏸" : (S.T>=total && total>0 ? "↻" : "▶");
+  $("xd-play").disabled = !hasPaths;
+  $("xd-slider").disabled = !hasPaths;
+  $("xd-slider").value = total>0 ? Math.round(S.T/total*1000) : 0;
+  $("xd-speed").textContent = S.speed===1 ? "1×" : (S.speed<1 ? "0,5×" : "2×");
+  var si = animView() ? Math.max(0, C.stateAt(sim,S.T).stepIdx) : 0;
+  var hd=$("xd-hidedone");
+  hd.classList.toggle("on", S.hideDone); hd.setAttribute("aria-pressed", S.hideDone?"true":"false");
+  hd.textContent = S.hideDone ? "✓ Avklarade pilar dolda" : "Dölj avklarade pilar"; hd.disabled = !hasPaths;
+  $("xd-steplabel").textContent = hasPaths ? ("Steg "+(si+1)+" av "+sim.steps.length) : "Inga pilar ännu";
+  $("xd-hint-empty").style.display = (!hasPaths && S.mode==="view") ? "block" : "none";
+  setHTML($("xd-legend"), edit ? "" : legendHTML(displayObjs()));
+  var stillBar=$("xd-stillbar"), split=false, partsEl=$("xd-parts");
+  if(S.tab==="still"){
+    var custom=!!S.drawing.still, sim2=getSim(), parts2=partsOf(S.drawing,sim2);
+    var canSplit=!custom && sim2.steps.length>=2;
+    split=isSplitStill(S.drawing, sim2);
+    stillBar.style.display="flex";
+    var txt = custom ? 'Egen stillbild — ändras inte när animeringen ändras.' : (split ? 'Stillbilden är delad i '+parts2.length+' delar (en bild per del). Tidigare delar ligger kvar i grått.' : 'Automatisk stillbild från animeringen (startpositioner + alla pilar).');
+    setHTML(stillBar, '<span>'+txt+'</span>'+
+      (edit ? (custom ? '<button class="xd-btn small" onclick="XD.resetStill()">↺ Tillbaka till automatisk</button>' : '<button class="xd-btn small primary" onclick="XD.customizeStill()">✏️ Justera stillbilden (en bild)</button>') : ''));
+    partsEl.style.display = (edit && canSplit) ? "block" : "none";
+    setHTML(partsEl, (edit && canSplit) ? partsEditorHTML(sim2, parts2) : "");
+  } else { stillBar.style.display="none"; partsEl.style.display="none"; }
+  $("xd-canvaswrap").style.display = split ? "none" : "";
+  var grid=$("xd-stillgrid");
+  grid.style.display = split ? "block" : "none";
+  if(split){
+    var sm=getSim(), pp=partsOf(S.drawing,sm), gh="";
+    pp.forEach(function(part,pi){
+      gh+='<div class="xd-stillimg"><div class="xd-stillcap">'+esc(partLabel(sm,part,pi))+'</div><svg viewBox="0 0 600 340" class="xd-stillsvg" xmlns="http://www.w3.org/2000/svg">'+RINK+partImageInner(sm,S.drawing.objects,part)+'</svg></div>';
+    });
+    setHTML(grid,'<div class="xd-stillgrid-in">'+gh+'</div>');
+  }
+  $("xd-edit").style.display = (edit && (S.tab==="anim" || S.drawing.still)) ? "block" : "none";
+  if(!edit) $("xd-steps").style.display="none";
+  $("xd-foot").style.display = edit ? "flex" : "none";
+  if(edit) renderEditor();
+}
+function partsEditorHTML(sim, parts){
+  var br=partBreaksOf(S.drawing,sim), partIdx=[];
+  parts.forEach(function(p,pi){ for(var i=p.first;i<=p.last;i++) partIdx[i]=pi; });
+  var chips="";
+  sim.steps.forEach(function(st,i){
+    if(i>0){
+      var on=br.indexOf(st.sn)>=0;
+      chips+='<button class="xd-brk'+(on?' on':'')+'" onclick="XD.toggleBreak('+st.sn+')" aria-label="'+(on?'Ta bort delning före steg ':'Ny del från steg ')+st.sn+'">'+(on?'✂':'·')+'</button>';
+    }
+    chips+='<span class="xd-pc p'+(partIdx[i]%2)+'">'+st.sn+'</span>';
+  });
+  var sum=parts.map(function(p,pi){ return partLabel(sim,p,pi); }).join('<br>');
+  return '<div class="xd-parts-box"><div class="xd-parts-t">Dela in i delar — en stillbild per del</div>'+
+    '<div class="xd-note">Alla steg i samma del hamnar i samma stillbild. Tryck på ✂-platsen mellan två steg för att börja en ny del.</div>'+
+    '<div class="xd-partchips">'+chips+'</div><div class="xd-partsum">'+sum+'</div>'+
+    '<div class="xd-row"><button class="xd-btn small" onclick="XD.setParts(\'one\')">En del (en bild)</button><button class="xd-btn small" onclick="XD.setParts(\'each\')">Varje steg egen del</button></div></div>';
+}
+function toolHint(){
+  if(S.tool===null) return "✋ Markera & flytta: tryck på en figur eller pil för att markera, dra för att flytta. På en markerad pil kan du dra i ringarna för att böja den.";
+  if(S.tool.indexOf("fig:")===0) return "Tryck på planen för att placera: "+C.figLabel(S.tool.slice(4))+". Tryck ✋ Markera & flytta när du vill flytta saker.";
+  return "Dra på planen för att rita: "+C.pathInfo(S.tool.slice(5)).label+". Börja på en spelare (eller bollen) så följer den pilen. Tryck ✋ för att böja eller flytta pilen.";
+}
+function toolName(){
+  if(S.tool===null) return null;
+  return S.tool.indexOf("fig:")===0 ? C.figLabel(S.tool.slice(4)) : C.pathInfo(S.tool.slice(5)).label;
+}
+function renderEditor(){
+  var tools=$("xd-tools");
+  if(!S.toolsBuilt){
+    var h='<div class="xd-group"><div class="xd-group-t">Figurer</div><div class="xd-palette xd-figs">';
+    C.FIG_TYPES.forEach(function(t){ h+='<button class="xd-tool" data-tool="fig:'+t.id+'" onclick="XD.pickTool(\'fig:'+t.id+'\')">'+C.figIcon(t.id, t.id==="unit"?"ABC":undefined)+'<span>'+esc(t.label)+'</span></button>'; });
+    h+='</div></div><div class="xd-group"><div class="xd-group-t">Pilar &amp; rörelsemönster</div><div class="xd-palette xd-paths">';
+    C.PATH_TYPES.forEach(function(t){ h+='<button class="xd-tool" data-tool="path:'+t.id+'" onclick="XD.pickTool(\'path:'+t.id+'\')">'+C.pathIcon(t.id)+'<span>'+esc(t.label)+'</span></button>'; });
+    h+='</div></div>';
+    tools.innerHTML=h; S.toolsBuilt=true;
+  }
+  tools.style.display = S.paletteOpen ? "block" : "none";
+  tools.querySelectorAll(".xd-tool").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tool")===S.tool); });
+  var tn=toolName();
+  setHTML($("xd-toolbar"),
+    '<button class="xd-tool xd-select'+(S.tool===null?' active':'')+'" data-tool="select" onclick="XD.pickTool(\'select\')"><span class="xd-ico">✋</span><span>Markera &amp; flytta</span></button>'+
+    '<button class="xd-btn small xd-tb'+(S.paletteOpen?' on':'')+'" onclick="XD.togglePalette()">'+(tn ? esc(tn)+' ' : 'Välj verktyg ')+(S.paletteOpen?'▴':'▾')+'</button>'+
+    '<button class="xd-btn small xd-tb" id="xd-undo" onclick="XD.undo()"'+(S.undo.length?'':' disabled')+'>↶ Ångra</button>'+
+    '<button class="xd-btn small xd-tb" onclick="XD.clearAll()">Rensa allt</button>');
+  $("xd-toolhint").textContent=toolHint();
+  S.stepCount=Math.max(S.stepCount, maxStep(S.drawing.objects), S.activeStep);
+  if(S.tab==="anim"){
+    var chips="";
+    for(var i=1;i<=S.stepCount;i++) chips+='<button class="xd-chip'+(i===S.activeStep?' active':'')+'" onclick="XD.setActiveStep('+i+')">'+i+'</button>';
+    chips+='<button class="xd-chip add" onclick="XD.newStep()">+ Nytt steg</button>';
+    setHTML($("xd-steps"), '<span class="xd-group-t" style="margin:0 8px 0 0;white-space:nowrap">Steg</span>'+chips);
+    $("xd-steps").style.display="flex";
+  } else $("xd-steps").style.display="none";
+  renderSelPanel();
+}
+function renderSelPanel(){
+  var el=$("xd-sel"), objs=objsRef(), p=selPath(objs), f=selFig(), html="";
+  if(p){
+    var info=C.pathInfo(p.type);
+    var typeOpts=C.PATH_TYPES.map(function(t){ return '<option value="'+t.id+'"'+(t.id===p.type?' selected':'')+'>'+esc(t.label)+'</option>'; }).join("");
+    var cands=objs.filter(function(o){ return o.kind==="fig" && (info.move ? C.HOLDERS[o.type] : o.type==="ball"); });
+    var sim=getSim(), resId = info.move ? sim.moverByPath[p.id] : sim.ballByPath[p.id], resF=null;
+    objs.forEach(function(o){ if(o.id===resId) resF=o; });
+    var autoTxt = (p.owner==null && resF) ? figName(resF,objs) : (p.owner==null ? (info.move ? "ingen hittad" : "en boll tonas fram") : "närmaste");
+    var hideRow="";
+    if(S.tab==="anim" && info.move){
+      var mvF = null; objs.forEach(function(o){ if(o.id===sim.moverByPath[p.id]) mvF=o; });
+      hideRow = mvF
+        ? '<label class="xd-check"><input type="checkbox" '+(mvF.hideAfter===(p.step||1)?'checked ':'')+'onchange="XD.toggleHide(this.checked)"><span>Spelaren försvinner när rörelsen är klar <small>('+esc(figName(mvF,objs))+', efter steg '+(p.step||1)+')</small></span></label>'
+        : '<div class="xd-note">Koppla pilen till en spelare (starta den på en spelare) för att kunna låta spelaren försvinna efteråt.</div>';
+    }
+    var ownOpts='<option value=""'+(p.owner==null?' selected':'')+'>Automatisk ('+esc(autoTxt)+')</option>'+
+      cands.map(function(o){ return '<option value="'+o.id+'"'+(o.id===p.owner?' selected':'')+'>'+esc(figName(o,objs))+'</option>'; }).join("")+
+      '<option value="-1"'+(p.owner===-1?' selected':'')+'>Ingen (bara en pil)</option>';
+    var hasBall = !!ballNear(p.pts[0],objs,36) || (p.owner!=null && p.owner>=0 && !info.move);
+    var ballBtn = (S.tab==="anim" && (info.carry || !info.move) && !hasBall)
+      ? '<button class="xd-btn small primary" onclick="XD.addBallAtStart()">⚽ Lägg till boll vid pilens start</button>' : '';
+    html='<div class="xd-selbox"><div class="xd-selh">Markerad pil</div>'+
+      '<label>Typ<select onchange="XD.setPathType(this.value)">'+typeOpts+'</select></label>'+
+      '<div class="xd-row"><div class="xd-seg"><button class="'+(p.smooth?'':'on')+'" onclick="XD.setSmooth(false)">Rak</button><button class="'+(p.smooth?'on':'')+'" onclick="XD.setSmooth(true)">Böjd</button></div>'+
+      (S.tab==="anim" ? '<div class="xd-stepper"><span>Steg</span><button onclick="XD.bumpStep(-1)">−</button><b>'+(p.step||1)+'</b><button onclick="XD.bumpStep(1)">+</button></div>' : '')+'</div>'+
+      (S.tab==="anim" ? '<label>'+(info.move?'Spelare som följer pilen':'Boll som skickas')+'<select onchange="XD.setOwner(this.value)">'+ownOpts+'</select></label>' : '')+
+      hideRow+ballBtn+
+      '<div class="xd-note">Tryck ✋ Markera &amp; flytta och dra i ringen mitt på pilen för att böja den. Tryck på en böjpunkt för att ta bort den.</div>'+
+      '<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort pil</button></div>';
+  } else if(f){
+    var lab = (f.type==="unit"||f.type==="leader")
+      ? '<label>'+(f.type==="unit"?'Bokstäver (t.ex. ABC)':'Bokstav')+'<input type="text" maxlength="'+(f.type==="unit"?4:2)+'" value="'+esc(f.label||(f.type==="unit"?"ABC":"L"))+'" oninput="XD.setLabel(this.value)"></label>' : "";
+    var hideSel="";
+    if(S.tab==="anim"){
+      var opts='<option value="">Aldrig — syns hela tiden</option>';
+      for(var n=1;n<=Math.max(S.stepCount,maxStep(S.drawing.objects));n++) opts+='<option value="'+n+'"'+(f.hideAfter===n?' selected':'')+'>Försvinner när steg '+n+' är klart</option>';
+      hideSel='<label>Visas i animeringen<select onchange="XD.setHideAfter(this.value)">'+opts+'</select></label>';
+    }
+    html='<div class="xd-selbox"><div class="xd-selh">Markerad: '+esc(figName(f,objs))+'</div>'+lab+hideSel+'<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort</button></div>';
+  }
+  setHTML(el, html);
+}
+
+/* ---------- Undo ---------- */
+function pushUndo(){ S.undo.push(JSON.stringify(S.drawing)); if(S.undo.length>40) S.undo.shift(); }
+function undo(){
+  if(!S.undo.length) return;
+  S.drawing=JSON.parse(S.undo.pop()); S.selected=null; S.sim=null; render();
+}
+function dirty(){ S.sim=null; }
+
+/* ---------- Pekare (allt på själva SVG:en med pointer capture, så tryck/dragning fungerar på mobil) ---------- */
+function svgPoint(e){
+  var r=svgEl().getBoundingClientRect(), w=r.width||600, h=r.height||340;
+  var x=(e.clientX-r.left)*600/w, y=(e.clientY-r.top)*340/h;
+  return {x:Math.max(6,Math.min(594,x)), y:Math.max(6,Math.min(334,y))};
+}
+function nearestFig(p, objs, filterFn, maxD){
+  var best=null, bd=maxD;
+  objs.forEach(function(f){ if(f.kind!=="fig"||!filterFn(f)) return; var d=dist(f,p); if(d<bd){ bd=d; best=f; } });
+  return best;
+}
+function capture(e){ try{ svgEl().setPointerCapture(e.pointerId); }catch(_e){} }
+function onDown(e){
+  if(!canEditNow()) return;
+  if(e.button!=null && e.button>0) return;
+  var p=svgPoint(e), t=e.target, objs=objsRef();
+  var hEl=(S.tool===null && t.closest) ? t.closest("[data-h],[data-m]") : null;
+  if(hEl){ e.preventDefault(); capture(e); startHandle(hEl,p); return; }
+  if(S.tool!==null && S.tool.indexOf("path:")===0){
+    e.preventDefault(); capture(e);
+    var type=S.tool.slice(5), info=C.pathInfo(type);
+    var snap=nearestFig(p,objs,function(f){ return info.move ? !!C.HOLDERS[f.type] : (f.type==="ball" || !!C.HOLDERS[f.type]); },C.SNAP);
+    var start = snap ? {x:snap.x,y:snap.y} : p;
+    S.draft={type:type, pts:[start,{x:p.x,y:p.y}], moved:false};
+    renderCanvas(); return;
+  }
+  if(S.tool!==null && S.tool.indexOf("fig:")===0){
+    e.preventDefault(); pushUndo();
+    var ft=S.tool.slice(4), n={id:S.nid++, kind:"fig", type:ft, x:f1(p.x), y:f1(p.y)};
+    if(ft==="unit") n.label="ABC";
+    objs.push(n); S.selected=n.id; dirty(); render(); return;
+  }
+  // markera & flytta
+  var g=t.closest ? t.closest("[data-id]") : null;
+  var obj=g ? findObj(+g.getAttribute("data-id")) : null;
+  if(obj){
+    e.preventDefault(); capture(e);
+    S.selected=obj.id;
+    if(obj.kind==="fig"){
+      var holder=!!C.HOLDERS[obj.type];
+      var carried=holder ? objs.filter(function(b){ return b.kind==="fig" && b.type==="ball" && dist(b,obj)<32; }).map(function(b){ return b.id; }) : [];
+      var starts=objs.filter(function(q){ return q.kind==="path" && q.pts.length && dist(q.pts[0],obj)<4; }).map(function(q){ return q.id; });
+      var ends=objs.filter(function(q){ return q.kind==="path" && q.pts.length>1 && dist(q.pts[q.pts.length-1],obj)<4; }).map(function(q){ return q.id; });
+      S.drag={kind:"fig", id:obj.id, last:p, moved:false, pushed:false, carried:carried, starts:starts, ends:ends};
+    } else S.drag={kind:"path", id:obj.id, last:p, moved:false, pushed:false};
+    render(); return;
+  }
+  S.selected=null; render();
+}
+function startHandle(el,p){
+  var pth=selPath(); if(!pth) return;
+  if(el.hasAttribute("data-m")){
+    var i=+el.getAttribute("data-m"); pushUndo();
+    var a=pth.pts[i], b=pth.pts[i+1], mid={x:f1((a.x+b.x)/2), y:f1((a.y+b.y)/2)};
+    pth.pts.splice(i+1,0,mid);
+    if(pth.pts.length===3) pth.smooth=true;
+    S.drag={kind:"handle", id:pth.id, idx:i+1, last:p, moved:true, pushed:true};
+    dirty(); render(); return;
+  }
+  S.drag={kind:"handle", id:pth.id, idx:+el.getAttribute("data-h"), last:p, moved:false, pushed:false};
+}
+function onMove(e){
+  if(S.draft){
+    var p=svgPoint(e); S.draft.pts[1]={x:p.x,y:p.y}; S.draft.moved=dist(S.draft.pts[0],p)>6; renderCanvas(); return;
+  }
+  var d=S.drag; if(!d) return;
+  var p2=svgPoint(e);
+  if(!d.moved && Math.hypot(p2.x-d.last.x,p2.y-d.last.y)<3) return;
+  d.moved=true;
+  if(!d.pushed){ pushUndo(); d.pushed=true; }
+  var dx=p2.x-d.last.x, dy=p2.y-d.last.y;
+  var o=findObj(d.id); if(!o) return;
+  if(d.kind==="fig"){
+    var nx=f1(Math.max(6,Math.min(594,o.x+dx))), ny=f1(Math.max(6,Math.min(334,o.y+dy)));
+    var rx=nx-o.x, ry=ny-o.y; o.x=nx; o.y=ny;
+    d.carried.forEach(function(id){ var b=findObj(id); if(b){ b.x=f1(b.x+rx); b.y=f1(b.y+ry); } });
+    d.starts.forEach(function(id){ var q=findObj(id); if(q) q.pts[0]={x:o.x,y:o.y}; });
+    d.ends.forEach(function(id){ var q=findObj(id); if(q) q.pts[q.pts.length-1]={x:o.x,y:o.y}; });
+  } else if(d.kind==="path"){
+    o.pts=o.pts.map(function(q){ return {x:f1(q.x+dx), y:f1(q.y+dy)}; });
+  } else if(d.kind==="handle"){
+    o.pts[d.idx]={x:f1(p2.x), y:f1(p2.y)};
+  }
+  d.last=p2; dirty(); renderCanvas();
+}
+function onUp(e){
+  if(S.draft){
+    var dr=S.draft; S.draft=null;
+    if(dr.moved && dist(dr.pts[0],dr.pts[1])>=14){
+      pushUndo();
+      var objs=objsRef(), end=dr.pts[1];
+      if(dr.type!=="shot"){
+        var snapE=nearestFig(end,objs,function(f){ return !!C.HOLDERS[f.type] || f.type==="cone"; },22);
+        if(snapE) end={x:snapE.x,y:snapE.y};
+      }
+      var pth={id:S.nid++, kind:"path", type:dr.type, pts:[{x:f1(dr.pts[0].x),y:f1(dr.pts[0].y)},{x:f1(end.x),y:f1(end.y)}], smooth:false, step:S.activeStep, owner:null};
+      objs.push(pth); S.selected=pth.id; dirty();
+    }
+    render(); return;
+  }
+  var d=S.drag; S.drag=null;
+  if(!d) return;
+  if(d.kind==="handle"){
+    var pth2=findObj(d.id);
+    if(pth2 && !d.moved && d.idx>0 && d.idx<pth2.pts.length-1){ pushUndo(); pth2.pts.splice(d.idx,1); if(pth2.pts.length<3) pth2.smooth=false; dirty(); }
+    if(pth2 && d.moved){
+      var last=pth2.pts.length-1, objs2=objsRef();
+      if(d.idx===last && pth2.type!=="shot"){
+        var sn=nearestFig(pth2.pts[last],objs2,function(f){ return !!C.HOLDERS[f.type]||f.type==="cone"; },18);
+        if(sn) pth2.pts[last]={x:sn.x,y:sn.y};
+      }
+      if(d.idx===0){
+        var ss=nearestFig(pth2.pts[0],objs2,function(f){ return !!C.HOLDERS[f.type]||f.type==="ball"; },16);
+        if(ss) pth2.pts[0]={x:ss.x,y:ss.y};
+      }
+      dirty();
+    }
+  }
+  render();
+}
+
+/* ---------- Åtgärder från gränssnittet ---------- */
+function pickTool(t){
+  if(t==="select") S.tool=null;
+  else S.tool = (S.tool===t) ? null : t;
+  if(S.tool!==null){ S.paletteOpen=false; var sc=document.querySelector(".xd-scroll"); if(sc) sc.scrollTop=0; }
+  render();
+}
+function togglePalette(){ S.paletteOpen=!S.paletteOpen; render(); }
+function setActiveStep(n){ S.activeStep=n; S.stepCount=Math.max(S.stepCount,n); render(); }
+function newStep(){ setActiveStep(Math.max(S.stepCount, maxStep(S.drawing.objects))+1); }
+function bumpStep(d){ var p=selPath(); if(!p) return; pushUndo(); p.step=Math.max(1,(p.step||1)+d); S.activeStep=p.step; S.stepCount=Math.max(S.stepCount,p.step); dirty(); render(); }
+function setPathType(t){
+  var p=selPath(); if(!p) return; pushUndo();
+  var wasMove=C.pathInfo(p.type).move, isMove=C.pathInfo(t).move;
+  p.type=t; if(wasMove!==isMove) p.owner=null;
+  dirty(); render();
+}
+function setOwner(v){ var p=selPath(); if(!p) return; pushUndo(); p.owner = v==="" ? null : +v; dirty(); render(); }
+function setSmooth(on){
+  var p=selPath(); if(!p) return; pushUndo();
+  if(on && p.pts.length===2){
+    var a=p.pts[0], b=p.pts[1], mx=(a.x+b.x)/2, my=(a.y+b.y)/2, l=dist(a,b)||1, nx=-(b.y-a.y)/l, ny=(b.x-a.x)/l;
+    p.pts.splice(1,0,{x:f1(mx+nx*l*0.22), y:f1(my+ny*l*0.22)});
+  }
+  p.smooth=!!on;
+  if(on) S.tool=null;           // så att böjpunkterna syns direkt
+  dirty(); render();
+}
+function toggleHide(on){
+  var p=selPath(); if(!p) return;
+  var mv=getSim().moverByPath[p.id], f=findObj(mv); if(!f) return;
+  pushUndo();
+  if(on) f.hideAfter=p.step||1; else delete f.hideAfter;
+  dirty(); render();
+}
+function setHideAfter(v){
+  var f=selFig(); if(!f) return; pushUndo();
+  if(v==="") delete f.hideAfter; else f.hideAfter=+v;
+  dirty(); render();
+}
+function toggleHideDone(){ S.hideDone=!S.hideDone; render(); }
+function setBreaks(br){ S.drawing.partBreaks=br.sort(function(a,b){ return a-b; }); delete S.drawing.stillLayout; render(); }
+function toggleBreak(sn){
+  var sim=getSim(), br=partBreaksOf(S.drawing,sim), i=br.indexOf(sn);
+  if(i>=0) br.splice(i,1); else br.push(sn);
+  setBreaks(br);
+}
+function setParts(mode){
+  var sim=getSim();
+  setBreaks(mode==="each" ? sim.steps.map(function(s){ return s.sn; }).slice(1) : []);
+}
+function addBallAtStart(){
+  var p=selPath(); if(!p) return;
+  var objs=objsRef(), s=p.pts[0];
+  var h=nearestFig(s,objs,function(f){ return !!C.HOLDERS[f.type]; },8);
+  pushUndo();
+  var b={id:S.nid++, kind:"fig", type:"ball", x:f1(s.x+(h?13:0)), y:f1(s.y+(h?9:0))};
+  objs.push(b); dirty(); render();
+}
+function setLabel(v){ var f=selFig(); if(!f) return; f.label=v; dirty(); renderCanvas(); }
+function deleteSelected(){
+  var a=objsRef(), i=a.findIndex(function(o){ return o.id===S.selected; }); if(i<0) return;
+  pushUndo(); var o=a[i]; a.splice(i,1);
+  if(o.kind==="fig") a.forEach(function(q){ if(q.kind==="path" && q.owner===o.id) q.owner=null; });
+  S.selected=null; dirty(); render();
+}
+function clearAll(){ pushUndo(); objsRef().length=0; S.selected=null; dirty(); render(); }
+function customizeStill(){ pushUndo(); S.drawing.still={objects:cloneJ(S.drawing.objects)}; S.selected=null; render(); }
+function resetStill(){ pushUndo(); S.drawing.still=null; S.selected=null; render(); }
+function switchTab(t){
+  if(S.tab===t) return;
+  stopPlay(); S.T=0; S.tab=t; S.selected=null; S.draft=null; S.drag=null; render();
+}
+
+/* ---------- Uppspelning ---------- */
+function tick(ts){
+  if(!S.playing) return;
+  var dt=(ts-S.lastTs)/1000; S.lastTs=ts;
+  var sim=getSim();
+  S.T=Math.min(sim.total, S.T+dt*S.speed);
+  if(S.T>=sim.total) S.playing=false;
+  render();
+  if(S.playing) S.raf=requestAnimationFrame(tick);
+}
+function togglePlay(){
+  var sim=getSim(); if(!sim.total) return;
+  if(S.playing){ stopPlay(); render(); return; }
+  if(S.T>=sim.total) S.T=0;
+  S.selected=null; S.draft=null; S.playing=true; S.lastTs=performance.now();
+  S.raf=requestAnimationFrame(tick); render();
+}
+function stopPlay(){ S.playing=false; if(S.raf) cancelAnimationFrame(S.raf); S.raf=null; }
+function seek(v){ var sim=getSim(); stopPlay(); S.T=(+v)/1000*sim.total; render(); }
+function stepJump(dir){
+  var sim=getSim(); if(!sim.steps.length) return; stopPlay();
+  var cur=C.stateAt(sim,S.T), i=cur.stepIdx, idx;
+  if(dir>0){
+    idx = i<0 ? 0 : (cur.finished ? i+1 : i);
+    S.T = idx>=sim.steps.length ? sim.total : sim.steps[idx].T0+sim.steps[idx].dur;
+  } else {
+    idx = i-1;
+    S.T = idx<0 ? 0 : sim.steps[idx].T0+sim.steps[idx].dur;
+  }
+  render();
+}
+function cycleSpeed(){ S.speed = S.speed===1 ? 0.5 : (S.speed===0.5 ? 2 : 1); render(); }
+
+/* ---------- Öppna / stäng / spara ---------- */
+function mount(){
+  if($("xd-overlay")) return;
+  var d=document.createElement("div");
+  d.innerHTML=
+'<div class="xd-overlay" id="xd-overlay"><div class="xd-sheet">'+
+' <div class="xd-topbar"><button class="xd-x" onclick="XD.requestClose()" aria-label="Stäng">✕</button><div class="xd-title" id="xd-title"></div><button class="xd-btn small light" id="xd-modebtn" onclick="XD.toggleMode()"></button></div>'+
+' <div class="xd-tabs"><button class="xd-tab" data-tab="anim" onclick="XD.switchTab(\'anim\')">▶ Animation</button><button class="xd-tab" data-tab="still" onclick="XD.switchTab(\'still\')">🖼 Stillbild</button></div>'+
+' <div class="xd-scroll">'+
+'  <div class="xd-canvas-wrap" id="xd-canvaswrap"><svg id="xd-svg" viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg"></svg><div class="xd-steps" id="xd-steps"></div></div>'+
+'  <div class="xd-stillbar" id="xd-stillbar"></div>'+
+'  <div id="xd-parts" style="display:none"></div>'+
+'  <div id="xd-stillgrid" style="display:none"></div>'+
+'  <div class="xd-player" id="xd-player"><div class="xd-pl-row"><button class="xd-btn small" onclick="XD.stepJump(-1)" aria-label="Föregående steg">⏮</button><button class="xd-btn play" id="xd-play" onclick="XD.togglePlay()">▶</button><button class="xd-btn small" onclick="XD.stepJump(1)" aria-label="Nästa steg">⏭</button><input type="range" id="xd-slider" min="0" max="1000" value="0" oninput="XD.seek(this.value)"><button class="xd-btn small" id="xd-speed" onclick="XD.cycleSpeed()">1×</button></div><div class="xd-pl-row2"><div class="xd-steplabel" id="xd-steplabel"></div><button class="xd-btn small xd-tog" id="xd-hidedone" onclick="XD.toggleHideDone()">Dölj avklarade pilar</button></div></div>'+
+'  <div class="xd-empty" id="xd-hint-empty">Den här övningen har ingen ritning ännu. Tryck ✏️ Redigera för att rita.</div>'+
+'  <div id="xd-legend"></div>'+
+'  <div class="xd-edit" id="xd-edit"><div class="xd-toolbar" id="xd-toolbar"></div><div class="xd-toolhint" id="xd-toolhint"></div><div id="xd-sel"></div><div id="xd-tools"></div></div>'+
+' </div>'+
+' <div class="xd-foot" id="xd-foot"><button class="xd-btn ghost" onclick="XD.requestClose()">Avbryt</button><button class="xd-btn primary" onclick="XD.save()">Spara</button></div>'+
+' <div class="xd-confirm" id="xd-confirm"><div class="xd-confirm-box"><p>Du har osparade ändringar.</p><div><button class="xd-btn primary" onclick="XD.confirmSave()">Spara</button> <button class="xd-btn danger" onclick="XD.confirmDiscard()">Kasta</button> <button class="xd-btn ghost" onclick="XD.confirmStay()">Fortsätt redigera</button></div></div></div>'+
+'</div></div>';
+  document.body.appendChild(d.firstChild);
+  var svg=svgEl();
+  svg.addEventListener("pointerdown", onDown);
+  svg.addEventListener("pointermove", onMove);
+  svg.addEventListener("pointerup", onUp);
+  svg.addEventListener("pointercancel", onUp);
+  document.addEventListener("keydown", function(e){
+    var ov=$("xd-overlay"); if(!ov || !ov.classList.contains("open") || S.mode!=="edit") return;
+    var tag=(e.target && e.target.tagName) || "";
+    if(tag==="INPUT" || tag==="SELECT" || tag==="TEXTAREA") return;
+    if(e.key==="Delete" || e.key==="Backspace"){ e.preventDefault(); deleteSelected(); }
+  });
+}
+function open(exId, mode){
+  mount();
+  var dr = host.getDrawing(exId);
+  S.exId=exId; S.drawing = dr ? cloneJ(dr) : emptyDrawing();
+  if(!S.drawing.objects) S.drawing.objects=[];
+  S.base=JSON.stringify(S.drawing);
+  S.mode = mode==="edit" ? "edit" : "view"; S.tab="anim"; S.tool=null; S.selected=null; S.activeStep=1;
+  S.undo=[]; S.T=0; S.playing=false; S.speed=1; S.draft=null; S.drag=null; S.sim=null; S.nid=computeNid(S.drawing);
+  S.stepCount=maxStep(S.drawing.objects); S.toolsBuilt=false; S.paletteOpen=true;
+  ["xd-sel","xd-steps","xd-legend","xd-stillbar","xd-stillgrid","xd-parts","xd-toolbar"].forEach(function(id){ $(id).__xd=undefined; });
+  $("xd-title").textContent = host.getTitle ? host.getTitle(exId) : "Övning";
+  $("xd-overlay").classList.add("open");
+  document.body.classList.add("xd-lock");
+  render();
+}
+function close(){ stopPlay(); var ov=$("xd-overlay"); if(ov) ov.classList.remove("open"); document.body.classList.remove("xd-lock"); $("xd-confirm").classList.remove("open"); S.exId=null; if(host && host.onClosed) host.onClosed(); }
+function isDirty(){ return JSON.stringify(S.drawing)!==S.base; }
+function requestClose(){
+  if(S.mode==="edit" && isDirty()){ $("xd-confirm").classList.add("open"); return; }
+  close();
+}
+function confirmSave(){ $("xd-confirm").classList.remove("open"); save(); }
+function confirmDiscard(){ $("xd-confirm").classList.remove("open"); close(); }
+function confirmStay(){ $("xd-confirm").classList.remove("open"); }
+function toggleMode(){
+  stopPlay(); S.T=0;
+  if(S.mode==="edit" && isDirty()){ $("xd-confirm").classList.add("open"); return; }
+  S.mode = S.mode==="edit" ? "view" : "edit"; S.tool=null; S.selected=null; render();
+}
+function save(){
+  var d=S.drawing;
+  if(!hasContent(d)) d=null;
+  var id=S.exId;
+  var r = host.saveDrawing(id, d ? cloneJ(d) : null);
+  S.base=JSON.stringify(S.drawing); S.undo=[];
+  close();
+  if(host.onSaved) host.onSaved(id);
+  return r;
+}
+function init(h){ host=h; }
+
+/* ---------- Publikt API ---------- */
+return {init:init, open:open, close:close, requestClose:requestClose, toggleMode:toggleMode, save:save,
+  switchTab:switchTab, togglePlay:togglePlay, stepJump:stepJump, seek:seek, cycleSpeed:cycleSpeed,
+  pickTool:pickTool, togglePalette:togglePalette, setActiveStep:setActiveStep, newStep:newStep, bumpStep:bumpStep, setPathType:setPathType, setOwner:setOwner, setSmooth:setSmooth,
+  addBallAtStart:addBallAtStart, toggleHideDone:toggleHideDone, toggleBreak:toggleBreak, setParts:setParts, partsOf:partsOf, toggleHide:toggleHide, setHideAfter:setHideAfter, setLabel:setLabel, deleteSelected:deleteSelected, clearAll:clearAll, undo:undo, customizeStill:customizeStill, resetStill:resetStill,
+  confirmSave:confirmSave, confirmDiscard:confirmDiscard, confirmStay:confirmStay,
+  thumbSVG:thumbSVG, stillImages:stillImages, hasContent:hasContent, legendHTML:legendHTML, core:C, _S:S, _render:render};
+})(XD_CORE);
+
+</script>
 <script>
 /* =========================================================================
    STATIC DATA
@@ -1408,7 +2554,8 @@ let DATA = {
   pairHistory: {Träning:{}, Match:{}}, // per typ: "playerIdA|playerIdB" (sorted) -> antal gånger tillsammans i samma grupp
   goalieHistory: {Träning:{}, Match:{}}, // per typ: playerId -> antal gånger som målvakt (samma räkneregler som pairHistory: bara genomförda pass)
   customExercises: [], // egna, lagspecifika övningar — samma form som EXERCISES-posterna, listas ihop med dem via allExercises()
-  exerciseDiagrams: {}, // ritade diagram per övnings-id (bygga/inbyggd): {"ex-id": [{type,x,y,x2,y2}, ...]}
+  exerciseDiagrams: {}, // ÄLDRE enkla diagram per övnings-id — konverteras till ritningar vid visning: {"ex-id": [{type,x,y,x2,y2}, ...]}
+  exerciseDrawings: {}, // övningsritningar (animerade + stillbilder) per övnings-id: {"ex-id": {v:2, objects, still, partBreaks}}
   icsCalendarUrl: "https://portalweb.sportadmin.se/webcal?id=f47a760a-18f4-4288-af70-d67577ab760a", // lagets kalenderflöde för "Hämta nya händelser"
   templates: [], // sparade träningsmallar: {id, name, blocks, yta, istid, savedAt}
   periods: [], // säsongens block/perioder: {id, label, weekStart, weekEnd, color, description, focus, goal, goalStatus, goalNotes}
@@ -1511,6 +2658,7 @@ function migratePairHistory(){
   if(!DATA.goalieHistory.Match) DATA.goalieHistory.Match = {};
   if(!DATA.customExercises) DATA.customExercises = [];
   if(!DATA.exerciseDiagrams) DATA.exerciseDiagrams = {};
+  if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {};
   DATA.players.forEach(p=>{ if(p.active===undefined) p.active = true; }); // äldre spelare utan fältet räknas som aktiva
   if(!DATA.themeList) DATA.themeList = MAIN_THEME_LIST.slice(); // engångsmigrering — från och med nu är listan fritt redigerbar, inte längre hårdkodad
   if(!DATA.themeCategoryMap) DATA.themeCategoryMap = {...MAIN_THEME_TO_CAT}; // engångsmigrering — samma sak för tema->kategori-kopplingen som styr övningsförslag
@@ -2476,6 +3624,7 @@ function renderSessions(){
             : `<button class="btn ghost small" onclick="toggleInlineLineup('${s.id}')" id="lu-toggle-${s.id}">${groupsUsed.length?'Redigera laguppställning':'Lägg till laguppställning'}</button>`}
           ${s.type!=="Match" ? `<button class="btn ghost small" onclick="toggleBlocksPanel('${s.id}')" id="blk-toggle-${s.id}">${(s.blocks&&s.blocks.length)?`Bygg pass (${s.blocks.length})`:'Bygg pass'}</button>` : ""}
           ${(s.type!=="Match" && s.blocks && s.blocks.length>0) ? `<button class="btn ghost small" onclick="toggleTrainingSummary('${s.id}')" id="ts-toggle-${s.id}">📋 Träningsöversikt</button>` : ""}
+          ${(s.type!=="Match" && ((s.blocks && s.blocks.length>0) || groupsUsed.length>0)) ? `<button class="btn ghost small" onclick="openPdfDialog('${s.id}')">📄 PDF</button>` : ""}
           <button class="btn ghost small" onclick="editSession('${s.id}')">Redigera</button>
           <button class="btn ghost small" onclick="toggleArchiveFromCard('${s.id}')">${archived?'↩ Kommande':'✓ Genomförd'}</button>
         </div>
@@ -3062,6 +4211,424 @@ function toggleTrainingSummary(sid){
     el.innerHTML = trainingSummaryHTML(s); el.style.display = "block";
     if(btn) btn.textContent = "Dölj träningsöversikt";
   }
+}
+
+/* =========================================================================
+   TRÄNINGS-PDF — en delbar PDF per träning (mobilformat, 390 px bred sida):
+   översikt & fokus · tidsplan · lagindelning · övningar med stillbilder.
+   PDF:en skapas i webbläsaren (jsPDF + html2canvas laddas först när du trycker "Skapa PDF")
+   och delas via telefonens delningsmeny (t.ex. WhatsApp) eller sparas som fil.
+   ========================================================================= */
+const PDF_LIBS = {
+  jspdf: ["https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"],
+  html2canvas: ["https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js", "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"]
+};
+const PDF_W = 390;                 // sidbredd i CSS-px (= mobilbredd, texten blir läsbar utan zoom)
+const PDF_SCALE = 2.5;             // skärpa
+let PDF_LAST = null;               // {file, url, pages:[dataUrl], name}
+let PDF_SID = null;
+
+function pdfLoadScript(urls){
+  return new Promise((resolve, reject)=>{
+    let i = 0;
+    const next = ()=>{
+      if(i >= urls.length){ reject(new Error("Kunde inte ladda PDF-biblioteket (kontrollera nätverket).")); return; }
+      const sc = document.createElement("script"); sc.src = urls[i++]; sc.async = true;
+      sc.onload = ()=>resolve(); sc.onerror = ()=>{ sc.remove(); next(); };
+      document.head.appendChild(sc);
+    };
+    next();
+  });
+}
+async function pdfEnsureLibs(){
+  if(!(window.jspdf && window.jspdf.jsPDF)) await pdfLoadScript(PDF_LIBS.jspdf);
+  if(typeof window.html2canvas !== "function") await pdfLoadScript(PDF_LIBS.html2canvas);
+  if(!(window.jspdf && window.jspdf.jsPDF) || typeof window.html2canvas !== "function") throw new Error("PDF-biblioteken laddades inte.");
+}
+
+/* ---------- Data för en träning ---------- */
+function pdfParseTime(t){ const m = /^(\d{1,2}):(\d{2})/.exec(t||""); return m ? (+m[1])*60 + (+m[2]) : null; }
+function pdfFmt(min){ if(min==null) return ""; const h = Math.floor(min/60)%24, m = min%60; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); }
+function pdfCap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+function pdfSessionData(s){
+  const d = new Date(s.date+"T00:00:00");
+  const period = sessionPeriod(s);
+  const start = pdfParseTime(s.start);
+  let t = start;
+  const exList = [], exIdx = {};
+  const addEx = (id, label)=>{
+    const e = exerciseById(id); if(!e) return null;
+    if(!(id in exIdx)){ exIdx[id] = exList.length; exList.push({e, uses:[]}); }
+    exList[exIdx[id]].uses.push(label);
+    return exIdx[id]+1;
+  };
+  const blocks = (s.blocks||[]).map(b=>{
+    const dur = +b.duration || 0;
+    const from = start!=null ? t : null, to = start!=null ? t+dur : null;
+    if(start!=null) t += dur;
+    const label = b.theme + (dur ? " · "+dur+" min" : "");
+    const exNums = [];
+    if(isStationBlock(b)){
+      (b.stations||[]).forEach(st=>{ (st.exerciseIds||[]).forEach(id=>{ const n = addEx(id, (st.name||"Station")+" ("+b.theme+")"+(dur?" · "+dur+" min":"")); if(n) exNums.push({n, st:st}); }); });
+    } else {
+      (b.exerciseIds||[]).forEach(id=>{ const n = addEx(id, label); if(n) exNums.push({n}); });
+    }
+    return {b, dur, from, to, exNums};
+  });
+  const groups = DATA.groups.filter(g=> s.lineup && s.lineup[g.id] && ((s.lineup[g.id].players||[]).length>0 || s.lineup[g.id].goalie)).map(g=>{
+    const lu = s.lineup[g.id];
+    const gp = lu.goalie ? DATA.players.find(p=>p.id===lu.goalie) : null;
+    const names = (lu.players||[]).map(pid=>{ const p = DATA.players.find(x=>x.id===pid); return p ? p.name : null; }).filter(Boolean).sort((a,b)=>a.localeCompare(b,"sv"));
+    const coaches = lineupCoaches(lu).map(cid=>coachById(cid)).filter(Boolean).map(c=>c.name);
+    return {g, goalie: gp ? gp.name : "", names, coaches, gathering: lu.gathering||""};
+  });
+  const coaches = (s.coaches||[]).map(cid=>coachById(cid)).filter(Boolean).map(c=>c.name);
+  const total = blocks.reduce((n,x)=>n+x.dur, 0);
+  return {s, d, period, start, blocks, groups, coaches, exList, total, istid:+s.istid||0};
+}
+
+/* ---------- Sidornas HTML ---------- */
+function pdfStyle(){
+  if(document.getElementById("pdf-style")) return;
+  const st = document.createElement("style"); st.id = "pdf-style";
+  st.textContent = `
+  .pdf-chk{display:flex; align-items:center; gap:11px; padding:7px 0; font-size:15px; cursor:pointer;}
+  .pdf-chk input{width:21px; height:21px; margin:0; flex:0 0 auto; accent-color:#E8621A;}
+  .pdf-chk small{color:#6B5F54; font-size:12.5px;}
+  .pdf-stage{position:fixed; left:-10000px; top:0; width:${PDF_W}px; z-index:-1; pointer-events:none;}
+  .pdfp{width:${PDF_W}px; box-sizing:border-box; background:#fff; color:#1A1508; font-family:'Inter',system-ui,-apple-system,sans-serif; font-size:15px; line-height:1.45; position:relative; overflow:hidden; margin:0 0 20px;}
+  .pdfp *{box-sizing:border-box;}
+  .pdfp .top{background:#1A1A1A; color:#fff; padding:11px 16px; display:flex; justify-content:space-between; align-items:center; font:600 11.5px 'Oswald',sans-serif; letter-spacing:.09em; text-transform:uppercase;}
+  .pdfp .top b{color:#F2934F; font-weight:600;}
+  .pdfp .body{padding:16px 16px 10px;}
+  .pdfp h2{font:700 25px/1.15 'Oswald',sans-serif; margin:0 0 14px; color:#1A1A1A; letter-spacing:.01em;}
+  .pdfp h3{font:700 12.5px 'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.07em; color:#E8621A; margin:16px 0 5px;}
+  .pdfp p{margin:0;}
+  .pdfp .foot{margin:0 16px; padding:9px 0 13px; font-size:11.5px; color:#8A8F86; display:flex; justify-content:space-between; border-top:1px solid #ECE8E2;}
+  .pdfp .hero{background:linear-gradient(135deg,#1A1A1A 0%,#3a1d0c 45%,#E8621A 130%); color:#fff; padding:22px 18px 22px;}
+  .pdfp .hero .club{font:600 11.5px 'Oswald',sans-serif; letter-spacing:.11em; opacity:.85; text-transform:uppercase;}
+  .pdfp .hero .tag{display:inline-block; background:#E8621A; color:#fff; font:700 12px 'Oswald',sans-serif; letter-spacing:.1em; padding:3px 10px; border-radius:11px; margin:10px 0 8px;}
+  .pdfp .hero h1{font:700 32px/1.08 'Oswald',sans-serif; margin:0;}
+  .pdfp .hero .sub{margin-top:9px; font-size:15.5px; line-height:1.4;}
+  .pdfp .card{border:1px solid #E3DED8; border-radius:12px; padding:12px 14px; margin:0 0 12px; background:#fff;}
+  .pdfp .card.accent{border-left:5px solid var(--ac,#E8621A); background:#FFF8F3;}
+  .pdfp .lbl{font:700 11.5px 'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.08em; color:#E8621A; margin-bottom:3px;}
+  .pdfp .big{font-size:17.5px; font-weight:600; line-height:1.35;}
+  .pdfp .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:7px;}
+  .pdfp .chip{display:inline-block; font-size:13px; font-weight:600; padding:3px 10px; border-radius:11px; background:#FFE9DA; color:#B84A0C;}
+  .pdfp .bar{display:flex; height:16px; border-radius:8px; overflow:hidden; margin:2px 0 12px; background:#EEE;}
+  .pdfp .row{display:flex; align-items:center; gap:9px; padding:6px 0; border-bottom:1px solid #F0ECE6; font-size:15px;}
+  .pdfp .row:last-child{border-bottom:none;}
+  .pdfp .row .dot{width:12px; height:12px; border-radius:6px; flex:0 0 12px;}
+  .pdfp .row .tm{font:600 13px 'IBM Plex Mono',monospace; color:#6B5F54; min-width:44px;}
+  .pdfp .row b{flex:1; font-weight:600;}
+  .pdfp .row .mn{color:#6B5F54; font-size:14px; white-space:nowrap;}
+  .pdfp .tl{border:1px solid #E3DED8; border-radius:12px; overflow:hidden; margin:0 0 12px; background:#fff;}
+  .pdfp .tl-h{display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:8px 13px; color:#fff;}
+  .pdfp .tl-h b{font:700 17px 'Oswald',sans-serif; letter-spacing:.02em;}
+  .pdfp .tl-h span{font:600 13px 'IBM Plex Mono',monospace; opacity:.95; white-space:nowrap;}
+  .pdfp .tl-b{padding:9px 13px 11px;}
+  .pdfp .who{font-size:13.5px; color:#6B5F54; margin-bottom:5px;}
+  .pdfp .ex{display:flex; gap:9px; align-items:flex-start; padding:3px 0; font-size:15.5px; font-weight:600; line-height:1.3;}
+  .pdfp .exn{flex:0 0 24px; height:24px; border-radius:12px; background:#E8621A; color:#fff; font:700 13px 'Oswald',sans-serif; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .pdfp .ins{font-size:14px; color:#4A4238; font-style:italic; margin-top:6px; line-height:1.4;}
+  .pdfp .st{background:#F8F6F2; border-radius:9px; padding:8px 10px; margin:8px 0 0;}
+  .pdfp .st b{font-size:15px;} .pdfp .st .sub{font-size:13px; color:#6B5F54;}
+  .pdfp table.rot{border-collapse:collapse; width:100%; margin-top:9px; table-layout:fixed;}
+  .pdfp table.rot th, .pdfp table.rot td{border:1px solid #E3DED8; padding:5px 3px; font-size:12.5px; text-align:center; vertical-align:middle; word-break:break-word;}
+  .pdfp table.rot th{background:#F4F1EC; font-weight:700;}
+  .pdfp table.rot td.lb{color:#6B5F54; font-size:12px; width:46px; background:#FBFAF8;}
+  .pdfp .gp{display:inline-block; color:#fff; font-weight:700; font-size:12.5px; padding:2px 7px; border-radius:9px; line-height:1.3;}
+  .pdfp .team{border:1px solid #E3DED8; border-radius:12px; overflow:hidden; margin:0 0 12px;}
+  .pdfp .team-h{display:flex; justify-content:space-between; align-items:baseline; padding:8px 13px; color:#fff;}
+  .pdfp .team-h b{font:700 20px 'Oswald',sans-serif; letter-spacing:.02em;}
+  .pdfp .team-h span{font-size:13px; font-weight:600; opacity:.95;}
+  .pdfp .team-b{padding:8px 13px 10px;}
+  .pdfp .names{column-count:2; column-gap:14px; margin:4px 0 2px;}
+  .pdfp .names div{font-size:16.5px; padding:4px 0; border-bottom:1px solid #F0ECE6; break-inside:avoid;}
+  .pdfp .names.one{column-count:1;}
+  .pdfp .mv{font-size:15px; padding:2px 0 6px; border-bottom:2px solid #F0ECE6; margin-bottom:2px;}
+  .pdfp .tr{font-size:14px; color:#4A4238; margin-top:8px;}
+  .pdfp .exhead{display:flex; align-items:center; gap:11px; margin-bottom:10px;}
+  .pdfp .exhead .exn{flex:0 0 40px; height:40px; border-radius:20px; font-size:19px;}
+  .pdfp .exhead .s1{font:600 12px 'Oswald',sans-serif; letter-spacing:.08em; color:#8A8F86; text-transform:uppercase;}
+  .pdfp .exhead .s2{font-size:14px; color:#4A4238; line-height:1.3;}
+  .pdfp .extitle{font:700 27px/1.12 'Oswald',sans-serif; margin:0 0 8px; color:#1A1A1A;}
+  .pdfp .cat{display:inline-block; color:#fff; font-size:12.5px; font-weight:600; padding:3px 11px; border-radius:11px; margin-bottom:10px;}
+  .pdfp .img{margin:10px 0 4px;} .pdfp .img .cap{font:700 13px 'Oswald',sans-serif; letter-spacing:.05em; color:#E8621A; margin-bottom:3px;}
+  .pdfp .img svg{display:block; border:1px solid #E3DED8; border-radius:10px; background:#fff;}
+  .pdfp .animlink{display:block; margin:12px 0 2px; background:#E8621A; color:#fff; text-decoration:none; text-align:center; font:700 17px 'Oswald',sans-serif; letter-spacing:.03em; padding:13px 10px; border-radius:11px;}
+  .pdfp .animhint{font-size:12.5px; color:#8A8F86; text-align:center; margin-bottom:2px;}
+  .pdfp .legend{font-size:12.5px; color:#6B5F54; margin-top:6px;}
+  .pdfp ol{margin:2px 0 0; padding-left:22px;} .pdfp ol li{margin:0 0 6px; font-size:15.5px; line-height:1.42;}
+  .pdfp .txt{font-size:15.5px; line-height:1.45;}
+  .pdfp .var{display:flex; gap:8px; margin-top:12px;}
+  .pdfp .var div{flex:1; background:#F4F1EC; border-radius:10px; padding:9px 11px; font-size:14px; line-height:1.4;}
+  .pdfp .var b{display:block; font:700 12px 'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.07em; color:#E8621A; margin-bottom:3px;}
+  `;
+  document.head.appendChild(st);
+}
+function pdfGroupChip(gid){ const g = DATA.groups.find(x=>x.id===gid); return g ? `<span class="gp" style="background:${g.color}">${escapeHtml(g.name)}</span>` : "—"; }
+
+function pdfPageOverview(D){
+  const s = D.s;
+  const dayLabel = pdfCap(D.d.toLocaleDateString("sv-SE",{weekday:"long", day:"numeric", month:"long"}));
+  const week = isoWeekNumber(D.d);
+  const timeTxt = (s.start||s.end) ? `${s.start||"?"}–${s.end||"?"}` : "";
+  const sub = [timeTxt, s.place, s.yta, "vecka "+week].filter(Boolean).map(escapeHtml).join(" · ");
+  const p = D.period;
+  const periodCard = p ? `<div class="card accent" style="--ac:${p.color}">
+      <div class="lbl">Periodens fokus</div><div class="big">${escapeHtml(p.label)}</div>
+      ${(p.focus||[]).length ? `<div class="chips">${p.focus.map(f=>`<span class="chip">${escapeHtml(f)}</span>`).join("")}</div>` : ""}
+      ${p.goal ? `<p style="margin-top:8px;font-size:15px;"><b>Mål:</b> ${escapeHtml(p.goal)}</p>` : ""}
+    </div>` : "";
+  const dayCard = (s.dayFocus||"").trim() ? `<div class="card accent"><div class="lbl">Dagens fokus</div><div class="big" style="white-space:pre-wrap">${escapeHtml(s.dayFocus.trim())}</div></div>` : "";
+  const totalTxt = `${D.total} min planerat${D.istid?` · ${D.istid} min speltid`:""}`;
+  const bar = D.total>0 ? `<div class="bar">${D.blocks.filter(x=>x.dur>0).map(x=>`<div style="width:${(x.dur/D.total*100).toFixed(2)}%;background:${themeColor(x.b.theme)}"></div>`).join("")}</div>` : "";
+  const rows = D.blocks.map(x=>`<div class="row"><span class="dot" style="background:${themeColor(x.b.theme)}"></span>${x.from!=null?`<span class="tm">${pdfFmt(x.from)}</span>`:""}<b>${escapeHtml(x.b.theme)}</b><span class="mn">${x.dur?x.dur+" min":""}</span></div>`).join("");
+  const teamChips = D.groups.length ? `<div class="chips">${D.groups.map(x=>`<span class="gp" style="background:${x.g.color};font-size:13.5px;padding:3px 10px">${escapeHtml(x.g.name)} · ${x.names.length}${x.goalie?" +Mv":""}</span>`).join("")}</div>` : "";
+  const html = `
+    <div class="hero"><div class="club">Höllviken IBF · Pojkar 15/16</div><div class="tag">Träning</div><h1>${escapeHtml(dayLabel)}</h1><div class="sub">${sub}</div></div>
+    <div class="body" style="padding-top:16px">
+      ${dayCard}${periodCard}
+      ${D.blocks.length ? `<h3 style="margin-top:6px">Dagens upplägg</h3>${bar}<div>${rows}</div><div style="font-size:13.5px;color:#6B5F54;margin-top:6px">${escapeHtml(totalTxt)}</div>` : ""}
+      ${D.coaches.length ? `<h3>Tränare</h3><p class="txt">${D.coaches.map(escapeHtml).join(", ")}</p>` : ""}
+      ${D.groups.length ? `<h3>Lag</h3>${teamChips}` : ""}
+      ${s.notes && s.notes.split(" — ")[0] && s.notes.split(" — ")[0]!==s.type ? `<h3>Anteckning</h3><p class="txt">${escapeHtml(s.notes)}</p>` : ""}
+    </div>`;
+  return {kind:"overview", html, hero:true};
+}
+function pdfBlockCard(D, x){
+  const b = x.b, color = themeColor(b.theme);
+  const coach = b.coach ? coachById(b.coach) : null;
+  const timeTxt = x.from!=null ? `${pdfFmt(x.from)}–${pdfFmt(x.to)}` : (x.dur ? x.dur+" min" : "");
+  let inner = "";
+  if(coach) inner += `<div class="who"><b>Ansvarig:</b> ${escapeHtml(coach.name)}</div>`;
+  const nums = x.exNums.filter(z=>!z.st);
+  inner += nums.map(z=>{ const e = D.exList[z.n-1].e; return `<div class="ex"><span class="exn">${z.n}</span><span>${escapeHtml(e.namn)}</span></div>`; }).join("");
+  if(b.instruction) inner += `<div class="ins">${escapeHtml(b.instruction)}</div>`;
+  if(b.material) inner += `<div class="ins" style="font-style:normal"><b>Material:</b> ${escapeHtml(b.material)}</div>`;
+  if(isStationBlock(b)){
+    const stations = b.stations||[];
+    inner += stations.map(st=>{
+      const stCoach = st.coach ? coachById(st.coach) : null;
+      const exs = x.exNums.filter(z=>z.st===st);
+      return `<div class="st"><b>${escapeHtml(st.name||"Station")}</b>${st.subtheme?` <span class="sub">· ${escapeHtml(st.subtheme)}</span>`:""}${stCoach?` <span class="sub">· ${escapeHtml(stCoach.name)}</span>`:""}
+        ${exs.map(z=>`<div class="ex" style="font-size:14.5px"><span class="exn" style="flex:0 0 22px;height:22px;border-radius:11px;font-size:12px">${z.n}</span><span>${escapeHtml(D.exList[z.n-1].e.namn)}</span></div>`).join("")}</div>`;
+    }).join("");
+    if(stations.length && (b.rounds||[]).length){
+      inner += `<table class="rot"><tr><th style="width:46px"></th>${stations.map(st=>`<th>${escapeHtml(st.name||"Station")}</th>`).join("")}</tr>${
+        b.rounds.map((r,ri)=>`<tr><td class="lb">Byte ${ri+1}</td>${stations.map(st=>`<td>${pdfGroupChip(r.assignments[st.id])}</td>`).join("")}</tr>`).join("")}</table>`;
+    }
+  } else if(isSpelBlock(b)){
+    ensurePlanConfigs(b);
+    const numPlans = Math.max(1, +b.numPlans || 1);
+    const labels = Array.from({length:numPlans},(_,i)=>"Plan "+String.fromCharCode(65+i));
+    inner += labels.map((l,pi)=>{ const cfg = b.plans[pi]||{}; return `<div class="who" style="margin:4px 0 0"><b>${l}</b> ${escapeHtml(cfg.yta||"—")} · ${escapeHtml(cfg.maltyp||"—")} · ${escapeHtml(cfg.malvakt||"—")}</div>`; }).join("");
+    if((b.planRounds||[]).length){
+      inner += `<table class="rot"><tr><th style="width:46px"></th>${labels.map(l=>`<th>${l}</th>`).join("")}</tr>${
+        b.planRounds.map((r,ri)=>`<tr><td class="lb">${ri===0?"Start":"Byte "+ri}</td>${labels.map((_,pi)=>{ const a = r.assignments[pi]&&r.assignments[pi].a, bb = r.assignments[pi]&&r.assignments[pi].b; return `<td>${pdfGroupChip(a)}<br><span style="font-size:11px;color:#8A8F86">mot</span><br>${pdfGroupChip(bb)}</td>`; }).join("")}</tr>`).join("")}</table>`;
+    }
+  }
+  return `<div class="tl"><div class="tl-h" style="background:${color}"><b>${escapeHtml(b.theme)}</b><span>${escapeHtml(timeTxt)}</span></div><div class="tl-b">${inner||'<div class="who">—</div>'}</div></div>`;
+}
+function pdfTeamCard(x){
+  const many = x.names.length > 6;
+  return `<div class="team"><div class="team-h" style="background:${x.g.color}"><b>${escapeHtml(x.g.name)}</b><span>${x.gathering?"Samling "+escapeHtml(x.gathering):x.names.length+" spelare"}</span></div>
+    <div class="team-b">${x.goalie?`<div class="mv"><b>Målvakt:</b> ${escapeHtml(x.goalie)}</div>`:""}
+      <div class="names${many?"":" one"}">${x.names.map(n=>`<div>${escapeHtml(n)}</div>`).join("") || '<div style="color:#999">—</div>'}</div>
+      ${x.coaches.length?`<div class="tr"><b>Tränare:</b> ${x.coaches.map(escapeHtml).join(", ")}</div>`:""}</div></div>`;
+}
+function pdfExercisePage(D, i){
+  const item = D.exList[i], e = item.e;
+  const cat = EX_CATS.find(c=>c.id===e.cat) || {label:"", color:"#8A8F86"};
+  const drawing = getExerciseDrawing(e.id);
+  const hasAnim = !!(drawing && drawing.objects && drawing.objects.some(o=>o.kind==="path"));
+  const animUrl = APP_PUBLIC_URL + "#ovning=" + encodeURIComponent(e.id);
+  const imgs = XD.stillImages(drawing).map(im=>{
+    const svg = im.svg.replace("<svg ", `<svg width="${PDF_W-32}" height="${Math.round((PDF_W-32)*340/600)}" `);
+    return `<div class="img"${hasAnim?` data-href="${animUrl}"`:""}>${im.label?`<div class="cap">${escapeHtml(im.label)}</div>`:""}${svg}</div>`;
+  }).join("") + (hasAnim ? `<a class="animlink" data-href="${animUrl}" href="${animUrl}">▶ Se animeringen i appen</a><div class="animhint">Öppnar appen i webbläsaren — logga in om den ber om lösenord</div>` : "");
+  const legend = XD.hasContent(drawing) ? "" : "";
+  const steps = (e.steg||[]).map(t=>`<li>${escapeHtml(t)}</li>`).join("");
+  const html = `<div class="body">
+    <div class="exhead"><span class="exn">${i+1}</span><div><div class="s1">Övning ${i+1} av ${D.exList.length}</div><div class="s2">${item.uses.map(escapeHtml).join(" · ")}</div></div></div>
+    <div class="extitle">${escapeHtml(e.namn)}</div>
+    <span class="cat" style="background:${cat.color}">${escapeHtml(cat.label)}</span>
+    ${imgs}
+    ${e.syfte ? `<h3>Syfte</h3><p class="txt">${escapeHtml(e.syfte)}</p>` : ""}
+    ${e.material ? `<h3>Material &amp; antal spelare</h3><p class="txt">${escapeHtml(e.material)}</p>` : ""}
+    ${steps ? `<h3>Så gör vi</h3><ol>${steps}</ol>` : ""}
+    ${e.coaching ? `<h3>Coachingpunkter</h3><p class="txt">${escapeHtml(e.coaching)}</p>` : ""}
+    ${(e.latt && e.latt!=="—") || (e.svar && e.svar!=="—") ? `<div class="var">${e.latt&&e.latt!=="—"?`<div><b>Enklare</b>${escapeHtml(e.latt)}</div>`:""}${e.svar&&e.svar!=="—"?`<div><b>Svårare</b>${escapeHtml(e.svar)}</div>`:""}</div>` : ""}
+  </div>`;
+  return {kind:"exercise", html};
+}
+
+/* ---------- Sidbygge (paginering i riktig DOM) ---------- */
+function pdfBuildPageEls(D, opts, stage){
+  const pages = [];   // {el, title}
+  const mk = (title, hero)=>{
+    const el = document.createElement("div"); el.className = "pdfp";
+    el.innerHTML = `<div class="top"><span>Höllviken IBF · <b>Träning</b></span><span>${escapeHtml(pdfCap(D.d.toLocaleDateString("sv-SE",{weekday:"short", day:"numeric", month:"short"}).replace(".","")))}</span></div>` +
+      (hero ? "" : `<div class="body" style="padding-bottom:0"><h2>${escapeHtml(title)}</h2></div><div class="body" data-flow style="padding-top:0"></div>`);
+    stage.appendChild(el); pages.push({el, title}); return el;
+  };
+  const flow = (el)=>el.querySelector("[data-flow]");
+  // 1. Översikt
+  if(opts.overview){
+    const ov = pdfPageOverview(D);
+    const el = mk("Översikt", true);
+    el.insertAdjacentHTML("beforeend", ov.html);
+  }
+  // hjälpare för sektioner som kan flöda över flera sidor
+  const flowing = (title, atoms, maxH)=>{
+    let el = mk(title), cont = 0;
+    atoms.forEach(a=>{
+      flow(el).insertAdjacentHTML("beforeend", a);
+      if(el.offsetHeight > maxH && flow(el).children.length > 1){
+        const last = flow(el).lastElementChild; last.remove();
+        el = mk(title+" (forts.)"); flow(el).appendChild(last);
+      }
+    });
+  };
+  if(opts.schedule && D.blocks.length) flowing("Tidsplan", D.blocks.map(x=>pdfBlockCard(D,x)), 1150);
+  if(opts.teams && D.groups.length) flowing("Lag", D.groups.map(pdfTeamCard), 1150);
+  if(opts.exercises){
+    D.exList.forEach((_,i)=>{
+      const ex = pdfExercisePage(D,i);
+      const el = mk(D.exList[i].e.namn, true);
+      el.insertAdjacentHTML("beforeend", ex.html);
+    });
+  }
+  // sidfot med sidnummer
+  pages.forEach((p,i)=>{ p.el.insertAdjacentHTML("beforeend", `<div class="foot"><span>${escapeHtml(pdfCap(D.d.toLocaleDateString("sv-SE",{weekday:"long", day:"numeric", month:"long"})))}</span><span>${i+1} / ${pages.length}</span></div>`); });
+  return pages;
+}
+
+async function pdfRender(sid, opts, onProgress){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) throw new Error("Träningen hittades inte.");
+  await pdfEnsureLibs(); pdfStyle();
+  if(document.fonts && document.fonts.load){
+    try{ await Promise.all(["700 20px Oswald","600 12px Oswald","400 15px Inter","600 15px Inter","700 15px Inter","600 13px 'IBM Plex Mono'"].map(f=>document.fonts.load(f))); await document.fonts.ready; }catch(_){}
+  }
+  const D = pdfSessionData(s);
+  const stage = document.createElement("div"); stage.className = "pdf-stage"; document.body.appendChild(stage);
+  let pageEls;
+  try{
+    pageEls = pdfBuildPageEls(D, opts, stage);
+    if(!pageEls.length) throw new Error("Inga sidor att skapa — välj minst ett avsnitt.");
+    await new Promise(r=>setTimeout(r,60));
+    const {jsPDF} = window.jspdf;
+    let doc = null; const thumbs = [];
+    for(let i=0;i<pageEls.length;i++){
+      if(onProgress) onProgress(i, pageEls.length);
+      await new Promise(r=>setTimeout(r,20));
+      const el = pageEls[i].el;
+      const canvas = await window.html2canvas(el, {scale:PDF_SCALE, backgroundColor:"#ffffff", useCORS:true, logging:false, windowWidth:PDF_W});
+      const w = PDF_W, h = Math.round(canvas.height/PDF_SCALE);
+      const pr = el.getBoundingClientRect(), links = [];
+      el.querySelectorAll("[data-href]").forEach(a=>{ const r = a.getBoundingClientRect(); links.push({x:r.left-pr.left, y:r.top-pr.top, w:r.width, h:r.height, url:a.getAttribute("data-href")}); });
+      const img = canvas.toDataURL("image/jpeg", 0.9);
+      if(!doc) doc = new jsPDF({unit:"px", format:[w,h], orientation:h>w?"p":"l", compress:true, hotfixes:["px_scaling"]});
+      else doc.addPage([w,h], h>w?"p":"l");
+      doc.addImage(img, "JPEG", 0, 0, w, h, undefined, "FAST");
+      links.forEach(l=>doc.link(l.x, l.y, l.w, l.h, {url:l.url}));   // tryck på bilden/knappen öppnar animeringen i appen
+      const tc = document.createElement("canvas"); tc.width = 150; tc.height = Math.round(150*canvas.height/canvas.width);
+      tc.getContext("2d").drawImage(canvas, 0, 0, tc.width, tc.height); thumbs.push(tc.toDataURL("image/jpeg", 0.7));
+    }
+    const dateStr = s.date;
+    doc.setProperties({title:`Träning ${dateStr}`, subject:"Träningsplan", author:"Höllviken IBF", creator:"Höllviken IBF · Träningsplanering"});
+    const blob = doc.output("blob");
+    const name = `traning-${dateStr}.pdf`;
+    const file = new File([blob], name, {type:"application/pdf"});
+    if(onProgress) onProgress(pageEls.length, pageEls.length);
+    return {file, blob, name, pages:thumbs, count:pageEls.length, session:s};
+  } finally { stage.remove(); }
+}
+
+/* ---------- Dialog ---------- */
+function pdfEnsureModal(){
+  let m = document.getElementById("modal-pdf"); if(m) return m;
+  m = document.createElement("div"); m.className = "overlay"; m.id = "modal-pdf";
+  m.innerHTML = `<div class="modal" style="max-width:520px;position:relative;">
+    <button class="close-x" onclick="pdfCloseDialog()" aria-label="Stäng">✕</button>
+    <h3 style="font-size:19px;margin-bottom:4px;">📄 Träning som PDF</h3>
+    <div id="pdf-sub" style="font-size:12.5px;color:var(--muted);margin-bottom:12px;"></div>
+    <div id="pdf-setup">
+      <div class="field"><label>Dagens fokus (valfritt — visas på första sidan)</label><textarea id="pdf-dayfocus" rows="2" placeholder="t.ex. Hålla höga positioner i uppspelet"></textarea></div>
+      <div style="margin-top:12px;"><div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:2px;">Ta med</div>
+        <label class="pdf-chk"><input type="checkbox" id="pdf-o-overview" checked><span>Översikt &amp; fokus</span></label>
+        <label class="pdf-chk"><input type="checkbox" id="pdf-o-schedule" checked><span>Tidsplan <small id="pdf-n-schedule"></small></span></label>
+        <label class="pdf-chk"><input type="checkbox" id="pdf-o-teams" checked><span>Lagindelning <small id="pdf-n-teams"></small></span></label>
+        <label class="pdf-chk"><input type="checkbox" id="pdf-o-exercises" checked><span>Övningar med stillbilder <small id="pdf-n-exercises"></small></span></label>
+      </div>
+      <div class="toolbar" style="margin-top:14px;"><button class="btn" id="pdf-make" onclick="pdfMake()">Skapa PDF</button></div>
+    </div>
+    <div id="pdf-progress" style="display:none;"><div style="font-size:14px;" id="pdf-prog-txt">Skapar…</div><div style="height:8px;border-radius:4px;background:#EEE;margin-top:8px;overflow:hidden;"><div id="pdf-prog-bar" style="height:100%;width:0;background:var(--pine);transition:width .2s;"></div></div></div>
+    <div id="pdf-done" style="display:none;">
+      <div style="font-size:14.5px;font-weight:600;" id="pdf-done-txt"></div>
+      <div id="pdf-thumbs" style="display:flex;gap:8px;overflow-x:auto;margin:10px 0;padding-bottom:4px;"></div>
+      <div class="toolbar" style="gap:8px;flex-wrap:wrap;"><button class="btn" id="pdf-share" onclick="pdfShare()">📤 Dela</button><button class="btn ghost" onclick="pdfSave()">⬇ Spara som fil</button><button class="btn ghost" onclick="pdfBack()">← Ändra</button></div>
+      <div id="pdf-share-note" style="font-size:12px;color:var(--muted);margin-top:8px;"></div>
+    </div>
+    <div id="pdf-error" style="display:none;margin-top:10px;padding:10px 12px;background:#FCECEA;color:#8F2D22;border-radius:8px;font-size:13px;"></div>
+  </div>`;
+  document.body.appendChild(m);
+  return m;
+}
+function pdfShow(state){
+  ["setup","progress","done"].forEach(k=>{ document.getElementById("pdf-"+k).style.display = (k===state) ? "block" : "none"; });
+}
+function openPdfDialog(sid){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  PDF_SID = sid; PDF_LAST = null;
+  pdfStyle(); pdfEnsureModal();
+  const D = pdfSessionData(s);
+  document.getElementById("pdf-sub").textContent = `${pdfCap(D.d.toLocaleDateString("sv-SE",{weekday:"long", day:"numeric", month:"long"}))} · ${D.blocks.length} block · ${D.exList.length} övningar · ${D.groups.length} lag`;
+  document.getElementById("pdf-dayfocus").value = s.dayFocus || "";
+  const set = (k, n)=>{ const cb = document.getElementById("pdf-o-"+k); cb.disabled = !n; cb.checked = !!n; document.getElementById("pdf-n-"+k).textContent = n ? "("+n+")" : "(inget inlagt)"; };
+  document.getElementById("pdf-o-overview").checked = true;
+  set("schedule", D.blocks.length); set("teams", D.groups.length); set("exercises", D.exList.length);
+  document.getElementById("pdf-error").style.display = "none";
+  pdfShow("setup"); openModal("modal-pdf");
+}
+function pdfCloseDialog(){ closeModal("modal-pdf"); if(PDF_LAST && PDF_LAST.url){ try{ URL.revokeObjectURL(PDF_LAST.url); }catch(_){} } PDF_LAST = null; }
+function pdfBack(){ pdfShow("setup"); }
+async function pdfMake(){
+  const s = DATA.sessions.find(x=>x.id===PDF_SID); if(!s) return;
+  const errEl = document.getElementById("pdf-error"); errEl.style.display = "none";
+  const focus = document.getElementById("pdf-dayfocus").value.trim();
+  if((s.dayFocus||"") !== focus){ s.dayFocus = focus; saveData(); }
+  const opts = {overview:document.getElementById("pdf-o-overview").checked, schedule:document.getElementById("pdf-o-schedule").checked,
+    teams:document.getElementById("pdf-o-teams").checked, exercises:document.getElementById("pdf-o-exercises").checked};
+  pdfShow("progress");
+  const txt = document.getElementById("pdf-prog-txt"), bar = document.getElementById("pdf-prog-bar");
+  txt.textContent = "Laddar PDF-verktyg…"; bar.style.width = "4%";
+  try{
+    const res = await pdfRender(PDF_SID, opts, (i,n)=>{ txt.textContent = i<n ? `Skapar sida ${i+1} av ${n}…` : "Färdigställer…"; bar.style.width = Math.max(6, Math.round(i/n*100))+"%"; });
+    if(PDF_LAST && PDF_LAST.url){ try{ URL.revokeObjectURL(PDF_LAST.url); }catch(_){} }
+    PDF_LAST = {file:res.file, name:res.name, url:URL.createObjectURL(res.blob), count:res.count};
+    document.getElementById("pdf-done-txt").textContent = `✅ PDF klar — ${res.count} sidor, ${(res.file.size/1048576).toFixed(1).replace(".",",")} MB`;
+    document.getElementById("pdf-thumbs").innerHTML = res.pages.map((u,i)=>`<img src="${u}" alt="Sida ${i+1}" style="height:150px;border:1px solid var(--line);border-radius:6px;flex:0 0 auto;">`).join("");
+    const canShare = !!(navigator.canShare && navigator.canShare({files:[res.file]}));
+    document.getElementById("pdf-share").style.display = canShare ? "" : "none";
+    document.getElementById("pdf-share-note").textContent = canShare ? "Dela öppnar telefonens delningsmeny — välj WhatsApp och gruppen." : "Den här webbläsaren kan inte dela filer direkt — spara filen och skicka den i WhatsApp.";
+    pdfShow("done");
+  }catch(e){
+    console.error("PDF-fel", e);
+    errEl.textContent = "Kunde inte skapa PDF: " + (e && e.message ? e.message : e);
+    errEl.style.display = "block"; pdfShow("setup");
+  }
+}
+async function pdfShare(){
+  if(!PDF_LAST) return;
+  try{ await navigator.share({files:[PDF_LAST.file], title:PDF_LAST.name}); }
+  catch(e){ if(e && e.name!=="AbortError"){ document.getElementById("pdf-error").textContent = "Kunde inte dela: "+(e.message||e); document.getElementById("pdf-error").style.display = "block"; } }
+}
+function pdfSave(){
+  if(!PDF_LAST) return;
+  const a = document.createElement("a"); a.href = PDF_LAST.url; a.download = PDF_LAST.name; document.body.appendChild(a); a.click(); a.remove();
 }
 
 /* ---- Mallar: spara ett träningspass block-för-block, återanvänd i en annan träning ---- */
@@ -4219,11 +5786,7 @@ function renderExercises(){
           <div class="var-box"><b>Svårare</b>${e.svar}</div>
         </div>
         ${e.link ? `<a class="ex-link" href="${e.link}" target="_blank" rel="noopener">Se referens / video ↗</a>` : ""}
-        <div style="margin-top:10px;">
-          <h5>Diagram</h5>
-          ${(DATA.exerciseDiagrams||{})[e.id] ? diagramThumbSVG(DATA.exerciseDiagrams[e.id]) : ""}
-          <button class="btn ghost small" style="margin-top:6px;" onclick="event.stopPropagation();openDiagramEditor('${e.id}')">${(DATA.exerciseDiagrams||{})[e.id] ? "🖊 Redigera diagram" : "🖊 Rita diagram"}</button>
-        </div>
+        ${exerciseDrawingHTML(e)}
         ${isCustom ? `<div style="margin-top:10px;display:flex;gap:6px;">
           <button class="btn ghost small" onclick="event.stopPropagation();openExerciseModal('${e.id}')">Redigera</button>
           <button class="btn ghost small" onclick="event.stopPropagation();deleteCustomExercise('${e.id}')">Ta bort</button>
@@ -4332,124 +5895,66 @@ const RINK_BACKGROUND_SVG = `
   <path d="M508,286 h14 M515,279 v14" stroke="#8A8F86" stroke-width="1.5"></path>
   <path d="M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5"></path>
 `;
-const DIAGRAM_TOOL_HINTS = {
-  player: "Klicka på planen för att placera en spelare.",
-  opponent: "Klicka på planen för att placera en motståndare.",
-  cone: "Klicka på planen för att placera en kon.",
-  puck: "Klicka på planen för att placera bollen.",
-  arrow: "Klicka en startpunkt, sedan en slutpunkt för att rita en pil.",
-  erase: "Klicka på ett objekt för att ta bort det.",
-};
-let diagramExId = null;
-let diagramObjects = [];
-let diagramIdCounter = 0;
-let diagramTool = null;
-let diagramArrowStart = null;
-let diagramDragging = null;
-let diagramListenersBound = false;
-
-function diagramSvgPoint(evt){
-  const svg = document.getElementById("diagram-svg");
-  const rect = svg.getBoundingClientRect();
-  const scaleX = 600 / rect.width, scaleY = 340 / rect.height;
-  return { x: (evt.clientX - rect.left) * scaleX, y: (evt.clientY - rect.top) * scaleY };
-}
-function setDiagramTool(tool){
-  diagramTool = tool;
-  diagramArrowStart = null;
-  document.querySelectorAll(".diag-tool[data-tool]").forEach(b=>b.classList.toggle("active", b.dataset.tool===tool));
-}
-function openDiagramEditor(exId){
-  const e = exerciseById(exId); if(!e) return;
-  diagramExId = exId;
-  diagramObjects = JSON.parse(JSON.stringify((DATA.exerciseDiagrams||{})[exId] || []));
-  diagramIdCounter = diagramObjects.length ? Math.max(...diagramObjects.map(o=>o.id||0))+1 : 0;
-  diagramTool = null; diagramArrowStart = null; diagramDragging = null;
-  document.getElementById("diagram-ex-name").textContent = e.namn;
-  document.querySelectorAll(".diag-tool[data-tool]").forEach(b=>b.classList.remove("active"));
-  const svg = document.getElementById("diagram-svg");
-  svg.innerHTML = `<defs><marker id="arrowhead-d" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}<g id="diagram-objects-layer"></g>`;
-  if(!diagramListenersBound){
-    svg.addEventListener("pointerdown", onDiagramCanvasPointerDown);
-    document.addEventListener("pointermove", onDiagramPointerMove);
-    document.addEventListener("pointerup", onDiagramPointerUp);
-    diagramListenersBound = true;
-  }
-  renderDiagramObjects();
-  openModal("modal-diagram");
-}
-function closeDiagramEditor(){ closeModal("modal-diagram"); diagramExId = null; }
-function clearDiagram(){ diagramObjects = []; diagramArrowStart = null; renderDiagramObjects(); }
-function onDiagramCanvasPointerDown(evt){
-  if(evt.target.closest(".diag-obj")) return;
-  if(!diagramTool || diagramTool==="erase") return;
-  const p = diagramSvgPoint(evt);
-  if(diagramTool==="arrow"){
-    if(!diagramArrowStart){ diagramArrowStart = p; }
-    else {
-      diagramObjects.push({id:diagramIdCounter++, type:"arrow", x:diagramArrowStart.x, y:diagramArrowStart.y, x2:p.x, y2:p.y});
-      diagramArrowStart = null;
-      renderDiagramObjects();
-    }
-    return;
-  }
-  diagramObjects.push({id:diagramIdCounter++, type:diagramTool, x:p.x, y:p.y});
-  renderDiagramObjects();
-}
-function onDiagramObjectPointerDown(obj, evt){
-  evt.stopPropagation();
-  if(diagramTool==="erase"){
-    diagramObjects = diagramObjects.filter(o=>o.id!==obj.id);
-    renderDiagramObjects();
-    return;
-  }
-  diagramDragging = obj;
-}
-function onDiagramPointerMove(evt){
-  if(!diagramDragging) return;
-  const p = diagramSvgPoint(evt);
-  diagramDragging.x = p.x; diagramDragging.y = p.y;
-  renderDiagramObjects();
-}
-function onDiagramPointerUp(){ diagramDragging = null; }
-function diagramObjectMarkup(o, arrowMarkerId){
-  if(o.type==="player" || o.type==="opponent"){
-    return `<circle cx="${o.x}" cy="${o.y}" r="11" fill="${o.type==='player'?'#2E6C9E':'#C24A3A'}" class="diag-obj" data-id="${o.id}"></circle>`;
-  }
-  if(o.type==="cone"){
-    return `<polygon points="${o.x-9},${o.y+9} ${o.x+9},${o.y+9} ${o.x},${o.y-11}" fill="#EF9F27" class="diag-obj" data-id="${o.id}"></polygon>`;
-  }
-  if(o.type==="puck"){
-    return `<circle cx="${o.x}" cy="${o.y}" r="6" fill="#2C2C2A" class="diag-obj" data-id="${o.id}"></circle>`;
-  }
-  if(o.type==="arrow"){
-    return `<line x1="${o.x}" y1="${o.y}" x2="${o.x2}" y2="${o.y2}" stroke="#0C447C" stroke-width="2.5" marker-end="url(#${arrowMarkerId})" class="diag-obj" data-id="${o.id}"></line>`;
-  }
-  return "";
-}
-function renderDiagramObjects(){
-  const layer = document.getElementById("diagram-objects-layer"); if(!layer) return;
-  layer.innerHTML = diagramObjects.map(o=>diagramObjectMarkup(o,"arrowhead-d")).join("");
-  layer.querySelectorAll(".diag-obj").forEach(el=>{
-    const id = +el.dataset.id;
-    const obj = diagramObjects.find(o=>o.id===id);
-    el.style.cursor = "grab";
-    el.addEventListener("pointerdown", ev=>onDiagramObjectPointerDown(obj, ev));
+/* =========================================================================
+   ÖVNINGSRITARE — animerade övningar + stillbilder (modulen XD ligger i skriptet ovanför).
+   Ritningar lagras i DATA.exerciseDrawings. Äldre enkla diagram (DATA.exerciseDiagrams)
+   konverteras automatiskt vid visning och ersätts första gången ritningen sparas.
+   ========================================================================= */
+function legacyDiagramToDrawing(list){
+  const map = {player:"attack", opponent:"defense", cone:"cone", puck:"ball"};
+  let id = 1; const objects = [];
+  (list||[]).forEach(o=>{
+    if(o.type==="arrow") objects.push({id:id++, kind:"path", type:"fwd", pts:[{x:o.x,y:o.y},{x:o.x2,y:o.y2}], smooth:false, step:1, owner:null});
+    else if(map[o.type]) objects.push({id:id++, kind:"fig", type:map[o.type], x:o.x, y:o.y});
   });
+  return {v:2, objects, still:null};
 }
-async function saveDiagram(){
-  if(!diagramExId) return;
-  if(!DATA.exerciseDiagrams) DATA.exerciseDiagrams = {};
-  if(diagramObjects.length===0) delete DATA.exerciseDiagrams[diagramExId];
-  else DATA.exerciseDiagrams[diagramExId] = diagramObjects;
-  closeDiagramEditor();
-  renderExercises();
-  await saveData();
+function getExerciseDrawing(id){
+  const d = (DATA.exerciseDrawings||{})[id];
+  if(d) return d;
+  const old = (DATA.exerciseDiagrams||{})[id];
+  return (old && old.length) ? legacyDiagramToDrawing(old) : null;
 }
-function diagramThumbSVG(objects){
-  const arrowId = "ah-"+Math.random().toString(36).slice(2,8);
-  const objs = objects.map(o=>diagramObjectMarkup(o, arrowId)).join("");
-  return `<svg viewBox="0 0 600 340" class="diag-thumb"><defs><marker id="${arrowId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0C447C"></path></marker></defs>${RINK_BACKGROUND_SVG}${objs}</svg>`;
+XD.init({
+  getDrawing: getExerciseDrawing,
+  saveDrawing: (id, d)=>{
+    if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {};
+    if(d){ DATA.exerciseDrawings[id] = d; }
+    else { delete DATA.exerciseDrawings[id]; if(DATA.exerciseDiagrams) delete DATA.exerciseDiagrams[id]; }
+    saveData();
+  },
+  getTitle: id=>{ const e = exerciseById(id); return e ? e.namn : "Övning"; },
+  canEdit: ()=>true,
+  onSaved: ()=>{ renderExercises(); },
+  onClosed: ()=>{ deepLinkClosed(); }
+});
+/* ---- Djuplänk: #ovning=<id> öppnar övningens animering. Används av länkarna under stillbilderna i träningens PDF. ---- */
+const APP_PUBLIC_URL = "https://johansandahl1984-hash.github.io/Innebandy-2015/";
+let APP_DATA_READY = false, DEEPLINK_OPEN = null;
+function deepLinkExerciseId(){ const m = /[#&]ovning=([^&]+)/.exec(location.hash||""); try{ return m ? decodeURIComponent(m[1]) : null; }catch(e){ return null; } }
+function handleDeepLink(){
+  if(!APP_DATA_READY) return;
+  const id = deepLinkExerciseId(); if(!id || DEEPLINK_OPEN===id) return;
+  const lock = document.getElementById("lock-screen");
+  if(lock && getComputedStyle(lock).display !== "none") return;      // väntar på lösenordet — körs igen när appen låsts upp
+  DEEPLINK_OPEN = id;
+  const tab = document.querySelector('nav.tabs button[data-view="ovningar"]'); if(tab) tab.click();
+  if(exerciseById(id)){ try{ toggleEx(id); }catch(e){} XD.open(id, "view"); }
+}
+function deepLinkClosed(){
+  if(deepLinkExerciseId()){ try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){ location.hash = ""; } }
+  DEEPLINK_OPEN = null;
+}
+window.addEventListener("hashchange", handleDeepLink);
+function exerciseDrawingHTML(e){
+  const d = getExerciseDrawing(e.id), has = XD.hasContent(d);
+  return `<div style="margin-top:10px;"><h5>Ritning</h5>
+    ${has ? `<div onclick="event.stopPropagation();XD.open('${e.id}','view')" style="cursor:pointer;">${XD.thumbSVG(d)}</div>` : ""}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+      ${has ? `<button class="btn small" onclick="event.stopPropagation();XD.open('${e.id}','view')">▶ Animera</button>` : ""}
+      <button class="btn ghost small" onclick="event.stopPropagation();XD.open('${e.id}','edit')">${has ? "✏️ Redigera ritning" : "🖊 Rita övning"}</button>
+    </div>
+  </div>`;
 }
 
 function escapeHtml(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -6006,6 +7511,7 @@ async function checkLockPassword(){
     try{ localStorage.setItem("t18-lock-ok", hash); }
     catch(e){ console.warn("Kunde inte spara inloggning lokalt (localStorage blockerat i denna vy)", e); }
     document.getElementById("lock-screen").style.display = "none";
+    handleDeepLink();
   } else {
     document.getElementById("lock-error").style.display = "block";
   }
@@ -6029,7 +7535,7 @@ document.querySelectorAll(".overlay").forEach(o=>{
   o.addEventListener("click", e=>{ if(e.target===o) o.classList.remove("open"); });
 });
 
-loadData();
+loadData().then(()=>{ APP_DATA_READY = true; handleDeepLink(); });
 </script>
 </body>
 </html>
