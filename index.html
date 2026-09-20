@@ -394,8 +394,8 @@
     <div class="headnote">Delad tränarplan — alla ändringar sparas och syns för hela tränarstaben.</div>
   </div>
   <nav class="tabs" id="tabnav">
-    <button data-view="oversikt" class="active">Årsöversikt</button>
-    <button data-view="kalender">Kalender</button>
+    <button data-view="oversikt">Årsöversikt</button>
+    <button data-view="kalender" class="active">Planera</button>
     <button data-view="ovningar">Övningsbank</button>
     <button data-view="laget">Laget</button>
     <button data-view="playbook">Playbook</button>
@@ -405,7 +405,7 @@
 <main>
 
   <!-- ============ ÖVERSIKT ============ -->
-  <section class="view active" id="view-oversikt">
+  <section class="view" id="view-oversikt">
     <div class="section-title">
       <h2>Säsongens block, augusti–december</h2>
       <span class="hint">Redigerbara perioder — vecka 32–52, kan inte överlappa</span>
@@ -421,7 +421,7 @@
   </section>
 
   <!-- ============ KALENDER & PLANERING ============ -->
-  <section class="view" id="view-kalender">
+  <section class="view active" id="view-kalender">
     <div class="section-title">
       <h2>Kalender &amp; planering</h2>
       <span class="hint">Kommande, pågående period och genomförda pass i ett</span>
@@ -1085,7 +1085,7 @@ const ROSTER_SEED = [
 
 const KNOWN_EVENTS = [
   // Tom vid start — ingen manuellt underhållen händelselista behövs längre.
-  // Använd "📅 Hämta nya händelser" i Kalender-fliken (kopplat till DATA.icsCalendarUrl)
+  // Använd "📅 Hämta nya händelser" i Planera-fliken (kopplat till DATA.icsCalendarUrl)
   // för att hämta riktiga träningar/matcher direkt från lagets kalender.
 ];
 
