@@ -1139,6 +1139,13 @@ var RINK = '<rect x="10" y="10" width="580" height="320" rx="52" fill="#fff" str
 '<rect x="62" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="62" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="50" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
 '<rect x="452" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="504" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="538" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
 '<path d="M78,54 h14 M85,47 v14 M78,286 h14 M85,279 v14 M508,54 h14 M515,47 v14 M508,286 h14 M515,279 v14 M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5" fill="none"></path>';
+function goal(cx, cy, k, col){          // innebandymål sett uppifrån (samma storlek som målet i banan), öppning åt höger — roteras med rotera-handtaget
+  var w=18*k, d=12*k, x1=cx+d/2, x0=x1-d, c=col||INK, sw=2.4;
+  var f=function(n){ return Math.round(n*10)/10; };
+  return '<g><path d="M'+f(x1)+','+f(cy-w)+' L'+f(x0)+','+f(cy-w)+' L'+f(x0)+','+f(cy+w)+' L'+f(x1)+','+f(cy+w)+'" fill="#fff" stroke="'+c+'" stroke-width="'+f(sw)+'" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<path d="M'+f(x0+d*0.5)+','+f(cy-w)+' L'+f(x0+d*0.5)+','+f(cy+w)+' M'+f(x0)+','+f(cy-w*0.5)+' L'+f(x1)+','+f(cy-w*0.5)+' M'+f(x0)+','+f(cy)+' L'+f(x1)+','+f(cy)+' M'+f(x0)+','+f(cy+w*0.5)+' L'+f(x1)+','+f(cy+w*0.5)+'" stroke="#8A8F86" stroke-width="0.9" fill="none"/>'+
+    '<circle cx="'+f(x1)+'" cy="'+f(cy-w)+'" r="'+f(2.7*Math.max(k,0.8))+'" fill="'+c+'"/><circle cx="'+f(x1)+'" cy="'+f(cy+w)+'" r="'+f(2.7*Math.max(k,0.8))+'" fill="'+c+'"/></g>';
+}
 return {
   sport:"floorball", R:13, ballType:"ball",
   features:{zones:true, text:true, transform:true, colors:true, stations:true}, areaWord:"planen",
@@ -1148,7 +1155,7 @@ return {
   figTypes:[
     {id:"attackBack", label:"Anfallande back"}, {id:"defense", label:"Försvarsspelare"}, {id:"attack", label:"Anfallsspelare"},
     {id:"goalie", label:"Målvakt"}, {id:"unit", label:"Spelarled"}, {id:"leader", label:"Ledare"},
-    {id:"cone", label:"Kon"}, {id:"ball", label:"Boll"}, {id:"bench", label:"Bänk"}
+    {id:"cone", label:"Kon"}, {id:"ball", label:"Boll"}, {id:"goal", label:"Mål"}, {id:"mingoal", label:"Litet mål"}, {id:"bench", label:"Bänk"}
   ],
   pathTypes:[
     {id:"fwd",      label:"Rörelse framåt utan boll",           move:true,  carry:false, speed:105},
@@ -1164,7 +1171,8 @@ return {
     {id:"gk",       label:"Målvaktsutkast",                     move:false, speed:230}
   ],
   holders:{attackBack:1, defense:1, attack:1, goalie:1, unit:1, leader:1},
-  stoppers:{cone:1},
+  stoppers:{cone:1, goal:1, mingoal:1},
+  iconScale:{goal:1.0, mingoal:1.3},
   figBody:function(f, c){
     var x=c.x, y=c.y, R=c.R, f1=c.f1, esc=c.esc, body="", hitR=R+7, sw=2.4;
     var stroke='stroke="'+INK+'" stroke-width="'+sw+'"';
@@ -1195,6 +1203,8 @@ return {
         body='<polygon points="'+f1(x-R*0.95)+','+f1(y+R*0.78)+' '+f1(x+R*0.95)+','+f1(y+R*0.78)+' '+x+','+f1(y-R*0.95)+'" fill="#fff" stroke="'+INK+'" stroke-width="2.2" stroke-linejoin="round"/>'; break;
       case "ball":
         body='<circle cx="'+x+'" cy="'+y+'" r="6" fill="'+INK+'"/>'; hitR=14; break;
+      case "goal": body=goal(x, y, 1, c.color); hitR=24; break;
+      case "mingoal": body=goal(x, y, 0.62, c.color); hitR=16; break;
       case "bench":
         body='<path d="M'+x+','+(y-17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y-17)+' L'+x+','+(y-17)+' M'+(x-11)+','+(y+17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y+3)+' L'+x+','+(y+3)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; hitR=20; break;
     }
