@@ -478,6 +478,66 @@ body.xd-lock{overflow:hidden;}
 .xd-toolbar .xd-tb.on{background:#E8621A;}
 .xd-toolbar .xd-tb:disabled{opacity:.4;}
 
+/* --- isyta, färger, rotera/storlek --- */
+.xd-rinks{display:none; flex-wrap:wrap; align-items:center; gap:6px; margin:6px 0 4px;}
+.xd-rinks .xd-chip{font-size:12.5px; padding:5px 10px;}
+.xd-colors{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; color:#6B5F54;}
+.xd-cdot{width:26px; height:26px; border-radius:13px; border:2px solid #fff; box-shadow:0 0 0 1px #C9C2B8; padding:0; cursor:pointer;}
+.xd-cdot.on{box-shadow:0 0 0 2.5px #E8621A;}
+.xd-cdot.xd-cdef{background:#fff; font-size:13px; color:#6B5F54;}
+.xd-tf{display:flex; align-items:center; gap:5px; font-size:12px; color:#6B5F54;}
+.xd-tf button{width:34px; height:32px; border-radius:8px; border:1px solid #E3DED8; background:#fff; font-size:16px; cursor:pointer;}
+.xd-selbox textarea{font-size:16px; padding:7px 8px; border:1px solid #E3DED8; border-radius:8px; background:#fff; max-width:100%; font-family:inherit;}
+
+/* --- ritytans storlek: kvadratiska ytor (halv is) får inte täcka hela skärmen --- */
+#xd-svg{max-width:calc(40vh * var(--ar,1.76)); margin-left:auto; margin-right:auto;}
+.xd-side{display:contents;}
+/* --- desktop: plan till vänster, figurer/knappar/paneler till höger --- */
+@media(min-width:900px){
+  .xd-overlay{align-items:stretch;}
+  .xd-sheet.xd-wide{max-width:1360px; box-shadow:0 0 40px rgba(0,0,0,.35);}
+  .xd-scroll.xd-two{display:grid; grid-template-columns:minmax(0,1fr) 440px; overflow:hidden; padding-bottom:0;}
+  .xd-scroll.xd-two .xd-canvas-wrap{position:static; grid-column:1; overflow-y:auto; border-bottom:none; border-right:1px solid #E3DED8; padding:14px 16px; background:#F4F2EE;}
+  .xd-scroll.xd-two .xd-side{display:block; grid-column:2; overflow-y:auto; padding:4px 14px 28px; background:#fff;}
+  .xd-scroll.xd-two #xd-svg{max-width:calc((100vh - 250px) * var(--ar,1.76));}
+  .xd-scroll.xd-two .xd-canvas-wrap .xd-steps{margin-top:10px;}
+  .xd-palbtn{display:none !important;}
+  .xd-scroll.xd-two .xd-toolhint{min-height:34px;}
+}
+
+/* --- stationer --- */
+.xd-chip-st{border-style:dashed;}
+.xd-stations{display:none; margin:6px 0 8px; padding:10px; border:1.5px solid #E3DED8; border-radius:12px; background:#FBFAF8;}
+.xd-strow{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:6px 0;}
+.xd-strow>span{font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#E8621A; min-width:62px;}
+.xd-lay{display:flex; flex-direction:column; align-items:center; gap:2px; padding:5px 7px 4px; border:1.5px solid #E3DED8; border-radius:10px; background:#fff; cursor:pointer;}
+.xd-lay em{font-style:normal; font-size:10.5px; color:#6B5F54;}
+.xd-lay.active{border-color:#E8621A; background:#FFF3EA;}
+.xd-stlist{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+.xd-stitem{display:flex; align-items:center; flex-wrap:wrap; gap:6px; padding:5px 8px; border:1px solid #E3DED8; border-radius:10px; background:#fff;}
+.xd-stitem b{font-family:'Oswald',sans-serif; font-size:17px; color:#111; min-width:16px;}
+.xd-picker{display:none; position:absolute; left:0; right:0; top:0; bottom:0; z-index:30; background:rgba(18,20,15,.55); align-items:center; justify-content:center; padding:14px;}
+.xd-picker.open{display:flex;}
+.xd-picker-box{background:#fff; border-radius:14px; padding:14px; width:100%; max-width:520px; max-height:88%; display:flex; flex-direction:column;}
+.xd-picker-h{font-family:'Oswald',sans-serif; font-size:17px; margin-bottom:8px;}
+.xd-picker-box input{font-size:16px; padding:8px 10px; border:1px solid #E3DED8; border-radius:9px; margin-bottom:8px;}
+.xd-picker-list{overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:6px;}
+.xd-pick{display:flex; align-items:center; gap:10px; text-align:left; padding:6px; border:1px solid #E3DED8; border-radius:10px; background:#fff; cursor:pointer;}
+.xd-pick:hover{border-color:#E8621A; background:#FFF8F2;}
+.xd-pick-th{width:104px; flex:0 0 104px;}
+.xd-pick-th svg{width:100%; height:auto; display:block; border-radius:6px;}
+.xd-pick-t{display:flex; flex-direction:column; gap:2px; font-size:14px; color:#1A1508;}
+.xd-pick-t span{font-size:11.5px; color:#8A8F86;}
+
+.xd-picker-box label{display:flex; flex-direction:column; gap:3px; font-size:12px; color:#6B5F54; margin-bottom:8px;}
+.xd-picker-box label input,.xd-picker-box label select,.xd-picker-box label textarea{font-size:16px; padding:8px 10px; border:1px solid #E3DED8; border-radius:9px; background:#fff; font-family:inherit; color:#1A1508;}
+.xd-btn.ghost{background:#fff; color:#1A1A1A; border:1.5px solid #D8D2C9;}
+
+.xd-stmore{flex:1 0 100%; display:flex; align-items:center; gap:10px; margin-top:2px;}
+.xd-stopt{display:flex; align-items:center; gap:5px; font-size:12px; color:#6B5F54;}
+.xd-stflag{flex:1 0 100%; font-size:12px; color:#6B5F54; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:2px;}
+.xd-stflag.warn{color:#9A4A0C;}
+
 </style>
 </head>
 <body>
@@ -1055,36 +1115,114 @@ body.xd-lock{overflow:hidden;}
 </div>
 
 <script>
-/* ===================== ÖVNINGSRITARE (XD) — geometri, tecken, pilar, simulering ===================== */
-var XD_CORE = (function(){
-"use strict";
-var R = 13, INK = "#111", ORANGE = "#E8621A", HL = 13, HW = 5.4, SNAP = 26;
+/* ===================== SPORTPAKET: INNEBANDY (tecken enligt "Innebandyns tecken") ===================== */
+var XD_PACK = (function(){
+var INK = "#111";
+var RINK = '<rect x="10" y="10" width="580" height="320" rx="52" fill="#fff" stroke="#8A8F86" stroke-width="2.5"></rect>'+
+'<line x1="300" y1="10" x2="300" y2="330" stroke="#8A8F86" stroke-width="2"></line><circle cx="300" cy="170" r="5.5" fill="#8A8F86"></circle>'+
+'<rect x="62" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="62" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="50" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
+'<rect x="452" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="504" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="538" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
+'<path d="M78,54 h14 M85,47 v14 M78,286 h14 M85,279 v14 M508,54 h14 M515,47 v14 M508,286 h14 M515,279 v14 M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5" fill="none"></path>';
+return {
+  sport:"floorball", R:13, ballType:"ball",
+  features:{zones:true, text:true, transform:true, colors:true, stations:true}, areaWord:"planen",
+  rinks:[{id:"court", label:"Innebandyplan", svg:RINK, area:{x0:10,y0:10,x1:590,y1:330}}], defaultRink:"court",
+  colors:["#E8621A","#2E6C9E","#1F4D3A","#C24A3A","#C9A24B","#8A6BAF","#1A1A1A","#8A8F86"],
+  labelTypes:{unit:4, leader:2}, iconLabels:{unit:"ABC"},
+  figTypes:[
+    {id:"attackBack", label:"Anfallande back"}, {id:"defense", label:"Försvarsspelare"}, {id:"attack", label:"Anfallsspelare"},
+    {id:"goalie", label:"Målvakt"}, {id:"unit", label:"Spelarled"}, {id:"leader", label:"Ledare"},
+    {id:"cone", label:"Kon"}, {id:"ball", label:"Boll"}, {id:"bench", label:"Bänk"}
+  ],
+  pathTypes:[
+    {id:"fwd",      label:"Rörelse framåt utan boll",           move:true,  carry:false, speed:105},
+    {id:"fwdBall",  label:"Rörelse framåt med boll",            move:true,  carry:true,  speed:105},
+    {id:"back",     label:"Rörelse bakåt utan boll",            move:true,  carry:false, speed:85},
+    {id:"backBall", label:"Rörelse bakåt med boll",             move:true,  carry:true,  speed:85},
+    {id:"turn",     label:"Vändning 360° under rörelse framåt", move:true,  carry:true,  speed:105},
+    {id:"stop",     label:"Rörelse framåt med stopp",           move:true,  carry:true,  speed:105},
+    {id:"tempo",    label:"Tempo växling framåt",               move:true,  carry:true,  speed:105},
+    {id:"pass",     label:"Passning",                           move:false, speed:240},
+    {id:"lift",     label:"Lyftpassning",                       move:false, speed:200},
+    {id:"shot",     label:"Skott",                              move:false, speed:380},
+    {id:"gk",       label:"Målvaktsutkast",                     move:false, speed:230}
+  ],
+  holders:{attackBack:1, defense:1, attack:1, goalie:1, unit:1, leader:1},
+  stoppers:{cone:1},
+  figBody:function(f, c){
+    var x=c.x, y=c.y, R=c.R, f1=c.f1, esc=c.esc, body="", hitR=R+7, sw=2.4;
+    var stroke='stroke="'+INK+'" stroke-width="'+sw+'"';
+    switch(f.type){
+      case "defense":
+        body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'; break;
+      case "attack": {
+        var a=R*0.86;
+        body='<path d="M'+f1(x-a)+','+f1(y-a)+' L'+f1(x+a)+','+f1(y+a)+' M'+f1(x-a)+','+f1(y+a)+' L'+f1(x+a)+','+f1(y-a)+'" stroke="'+INK+'" stroke-width="2.9" stroke-linecap="round" fill="none"/>'; break; }
+      case "attackBack": {
+        var b=R*0.58;
+        body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
+          '<path d="M'+f1(x-b)+','+f1(y-b)+' L'+f1(x+b)+','+f1(y+b)+' M'+f1(x-b)+','+f1(y+b)+' L'+f1(x+b)+','+f1(y-b)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; break; }
+      case "goalie":
+        body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/><circle cx="'+x+'" cy="'+y+'" r="'+f1(R*0.42)+'" fill="'+INK+'"/>'; break;
+      case "unit": {
+        var letters=String(f.label||"ABC").toUpperCase().slice(0,4).split(""), n=letters.length, sp=R*1.45, x0=x-(n-1)*sp/2;
+        letters.forEach(function(ch,i){
+          var cx=x0+i*sp;
+          body+='<circle cx="'+f1(cx)+'" cy="'+y+'" r="'+f1(R*0.95)+'" fill="#fff" '+stroke+'/>'+
+            '<text x="'+f1(cx)+'" y="'+f1(y+4.6)+'" text-anchor="middle" font-size="13" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(ch)+'</text>';
+        });
+        hitR = Math.max(R+7, (n-1)*sp/2+R+5); break; }
+      case "leader":
+        body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
+          '<text x="'+x+'" y="'+f1(y+4.8)+'" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(String(f.label||"L").slice(0,2))+'</text>'; break;
+      case "cone":
+        body='<polygon points="'+f1(x-R*0.95)+','+f1(y+R*0.78)+' '+f1(x+R*0.95)+','+f1(y+R*0.78)+' '+x+','+f1(y-R*0.95)+'" fill="#fff" stroke="'+INK+'" stroke-width="2.2" stroke-linejoin="round"/>'; break;
+      case "ball":
+        body='<circle cx="'+x+'" cy="'+y+'" r="6" fill="'+INK+'"/>'; hitR=14; break;
+      case "bench":
+        body='<path d="M'+x+','+(y-17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y-17)+' L'+x+','+(y-17)+' M'+(x-11)+','+(y+17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y+3)+' L'+x+','+(y+3)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; hitR=20; break;
+    }
+    return {body:body, hitR:hitR};
+  },
+  pathParts:function(t, K){
+    var L=K.L, tip=K.tip, ang=K.ang, bodyEnd=K.bodyEnd, dash=K.dash, dl=15, sw=K.sw, col=K.col, HL=K.HL, parts="";
+    switch(t){
+      case "fwd":      parts=K.line(K.sub(0,bodyEnd))+K.headFilled(tip,ang); break;
+      case "fwdBall":  parts=K.line(K.zig(0,bodyEnd))+K.headFilled(tip,ang); break;
+      case "back": case "backBall": {
+        var c0=K.at(7), dm=K.rot(c0,c0.ang,[[-7,0],[0,-5.2],[7,0],[0,5.2]]);
+        var dia='<polygon points="'+K.ptsStr(dm)+'" fill="'+(t==="back"?col:"#fff")+'" stroke="'+col+'" stroke-width="'+(sw-0.4)+'" stroke-linejoin="round"/>';
+        parts=dia+(t==="back"?K.line(K.sub(dl-1,bodyEnd)):K.line(K.zig(dl-1,bodyEnd)))+K.headFilled(tip,ang); break; }
+      case "turn": {
+        var s0=K.at(0), ts=K.rot(s0,s0.ang,[[0,-4.6],[9,0],[0,4.6]]);
+        var m=K.at(L*0.42), cc=K.perp(m,m.ang,-9.5);
+        parts=K.line(K.sub(0,bodyEnd))+'<polygon points="'+K.ptsStr(ts)+'" fill="'+col+'"/>'+
+          '<circle cx="'+K.f1(cc.x)+'" cy="'+K.f1(cc.y)+'" r="5.6" fill="#fff" stroke="'+col+'" stroke-width="'+(sw-0.6)+'"/>'+K.headFilled(tip,ang); break; }
+      case "stop": {
+        var tipD=Math.max(HL+4, L-10), tp=K.at(tipD), ta=K.hAng(tipD);
+        parts=K.line(K.sub(0,tipD-HL+1))+K.headFilled(tp,ta)+K.bar(Math.max(0,L-5.5),13,2.4)+K.bar(Math.max(0,L-0.8),13,2.4); break; }
+      case "tempo": {
+        var mm=L*0.5; parts=K.line(K.sub(0,bodyEnd));
+        for(var k=-1.5;k<=1.5;k+=1) parts+=K.bar(mm+k*3.2,15,2.1);
+        parts+=K.headFilled(tip,ang); break; }
+      case "pass":  parts=K.line(K.sub(0,bodyEnd),dash)+K.headFilled(tip,ang); break;
+      case "lift":  parts=K.line(K.sub(0,bodyEnd),dash)+K.headOpen(tip,ang); break;
+      case "shot": {
+        var sb=K.sub(0,bodyEnd); parts=K.line(K.offs(sb,2.5))+K.line(K.offs(sb,-2.5))+K.headOpen(tip,ang); break; }
+      case "gk": {
+        var gb=K.sub(0,bodyEnd); parts=K.line(K.offs(gb,2.5),dash)+K.line(K.offs(gb,-2.5),dash)+K.headOpen(tip,ang); break; }
+    }
+    return parts;
+  }
+};
+})();
 
-var FIG_TYPES = [
-  {id:"attackBack", label:"Anfallande back"},
-  {id:"defense",    label:"Försvarsspelare"},
-  {id:"attack",     label:"Anfallsspelare"},
-  {id:"goalie",     label:"Målvakt"},
-  {id:"unit",       label:"Spelarled"},
-  {id:"leader",     label:"Ledare"},
-  {id:"cone",       label:"Kon"},
-  {id:"ball",       label:"Boll"},
-  {id:"bench",      label:"Bänk"}
-];
-var PATH_TYPES = [
-  {id:"fwd",      label:"Rörelse framåt utan boll",           move:true,  carry:false, speed:105},
-  {id:"fwdBall",  label:"Rörelse framåt med boll",            move:true,  carry:true,  speed:105},
-  {id:"back",     label:"Rörelse bakåt utan boll",            move:true,  carry:false, speed:85},
-  {id:"backBall", label:"Rörelse bakåt med boll",             move:true,  carry:true,  speed:85},
-  {id:"turn",     label:"Vändning 360° under rörelse framåt", move:true,  carry:true,  speed:105},
-  {id:"stop",     label:"Rörelse framåt med stopp",           move:true,  carry:true,  speed:105},
-  {id:"tempo",    label:"Tempo växling framåt",               move:true,  carry:true,  speed:105},
-  {id:"pass",     label:"Passning",                           move:false, speed:240},
-  {id:"lift",     label:"Lyftpassning",                       move:false, speed:200},
-  {id:"shot",     label:"Skott",                              move:false, speed:380},
-  {id:"gk",       label:"Målvaktsutkast",                     move:false, speed:230}
-];
-var HOLDERS = {attackBack:1, defense:1, attack:1, goalie:1, unit:1, leader:1};
+/* ===================== ÖVNINGSRITARE (XD) — geometri, tecken, pilar, simulering ===================== */
+var XD_CORE = (function(PACK){
+"use strict";
+var R = PACK.R || 13, INK = "#111", ORANGE = "#E8621A", HL = 13, HW = 5.4, SNAP = 26;
+
+var FIG_TYPES = PACK.figTypes, PATH_TYPES = PACK.pathTypes, HOLDERS = PACK.holders, STOPPERS = PACK.stoppers || {cone:1};
 function figLabel(id){ for(var i=0;i<FIG_TYPES.length;i++) if(FIG_TYPES[i].id===id) return FIG_TYPES[i].label; return id; }
 function pathInfo(id){ for(var i=0;i<PATH_TYPES.length;i++) if(PATH_TYPES[i].id===id) return PATH_TYPES[i]; return PATH_TYPES[0]; }
 
@@ -1154,6 +1292,14 @@ function zigzag(poly, cum, d0, d1){
   pts.push(at(poly,cum,d1));
   return pts;
 }
+function wavePts(poly, cum, d0, d1, amp, wl){
+  amp=amp||3.6; wl=wl||17; var pts=[], n=Math.max(2,Math.ceil((d1-d0)/2.6));
+  for(var i=0;i<=n;i++){
+    var d=d0+(d1-d0)*i/n, q=at(poly,cum,d), env=Math.min(1, Math.min(d-d0, d1-d)/8), off=Math.sin((d-d0)/wl*2*Math.PI)*amp*env;
+    pts.push({x:q.x - Math.sin(q.ang)*off, y:q.y + Math.cos(q.ang)*off});
+  }
+  return pts;
+}
 function headAngle(poly, cum, L){
   var a=at(poly,cum,Math.max(0,L-9)), b=at(poly,cum,L);
   return Math.atan2(b.y-a.y, b.x-a.x);
@@ -1164,52 +1310,45 @@ function headPoly(tip, ang){
   return f1(tip.x)+","+f1(tip.y)+" "+f1(bx+nx)+","+f1(by+ny)+" "+f1(bx-nx)+","+f1(by-ny);
 }
 
-/* ---------- Figurer (spelare, kon, boll ...) ---------- */
+/* ---------- Figurer (ritas av sportpaketet PACK.figBody) + gemensam ram: rotation, storlek, markering ---------- */
 function figMarkup(f, o){
   o = o||{};
-  var x=f.x, y=f.y, sw=2.4, id=f.id;
-  var body="", hit="", sel="", op = o.opacity==null ? 1 : o.opacity;
-  var stroke = 'stroke="'+INK+'" stroke-width="'+sw+'"';
-  var hitR = R+7;
-  switch(f.type){
-    case "defense":
-      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'; break;
-    case "attack": {
-      var a=R*0.86;
-      body='<path d="M'+f1(x-a)+','+f1(y-a)+' L'+f1(x+a)+','+f1(y+a)+' M'+f1(x-a)+','+f1(y+a)+' L'+f1(x+a)+','+f1(y-a)+'" stroke="'+INK+'" stroke-width="2.9" stroke-linecap="round" fill="none"/>'; break; }
-    case "attackBack": {
-      var b=R*0.58;
-      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
-        '<path d="M'+f1(x-b)+','+f1(y-b)+' L'+f1(x+b)+','+f1(y+b)+' M'+f1(x-b)+','+f1(y+b)+' L'+f1(x+b)+','+f1(y-b)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; break; }
-    case "goalie":
-      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/><circle cx="'+x+'" cy="'+y+'" r="'+f1(R*0.42)+'" fill="'+INK+'"/>'; break;
-    case "unit": {
-      var letters=String(f.label||"ABC").toUpperCase().slice(0,4).split(""), n=letters.length, sp=R*1.45, x0=x-(n-1)*sp/2;
-      letters.forEach(function(ch,i){
-        var cx=x0+i*sp;
-        body+='<circle cx="'+f1(cx)+'" cy="'+y+'" r="'+f1(R*0.95)+'" fill="#fff" '+stroke+'/>'+
-          '<text x="'+f1(cx)+'" y="'+f1(y+4.6)+'" text-anchor="middle" font-size="13" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(ch)+'</text>';
-      });
-      hitR = Math.max(R+7, (n-1)*sp/2+R+5); break; }
-    case "leader":
-      body='<circle cx="'+x+'" cy="'+y+'" r="'+R+'" fill="#fff" '+stroke+'/>'+
-        '<text x="'+x+'" y="'+f1(y+4.8)+'" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+INK+'" style="pointer-events:none">'+esc(String(f.label||"L").slice(0,2))+'</text>'; break;
-    case "cone":
-      body='<polygon points="'+f1(x-R*0.95)+','+f1(y+R*0.78)+' '+f1(x+R*0.95)+','+f1(y+R*0.78)+' '+x+','+f1(y-R*0.95)+'" fill="#fff" stroke="'+INK+'" stroke-width="2.2" stroke-linejoin="round"/>'; break;
-    case "ball":
-      body='<circle cx="'+x+'" cy="'+y+'" r="6" fill="'+INK+'"/>'; hitR=14; break;
-    case "bench":
-      body='<path d="M'+x+','+(y-17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y-17)+' L'+x+','+(y-17)+' M'+(x-11)+','+(y+17)+' L'+x+','+(y+17)+' M'+(x-11)+','+(y+3)+' L'+x+','+(y+3)+'" stroke="'+INK+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'; hitR=20; break;
+  var x=f.x, y=f.y, id=f.id, op = o.opacity==null ? 1 : o.opacity;
+  var r = PACK.figBody(f, {x:x, y:y, R:R, INK:INK, esc:esc, f1:f1, color:f.color});
+  var body=r.body, hitR=r.hitR||(R+7), hit="", sel="";
+  var sc=f.scale||1, rot=f.rot||0;
+  if(sc!==1 || rot){
+    body='<g transform="translate('+x+' '+y+') rotate('+rot+') scale('+sc+') translate('+(-x)+' '+(-y)+')">'+body+'</g>';
+    hitR*=sc;
   }
-  if(!o.noHit) hit='<circle cx="'+x+'" cy="'+y+'" r="'+hitR+'" fill="transparent"/>';
+  if(!o.noHit) hit='<circle cx="'+x+'" cy="'+y+'" r="'+f1(hitR)+'" fill="transparent"/>';
   var hb="";
   if(o.hideBadge!=null){
-    var bx=x+R*0.95, by=y-R*1.15, lab="×"+o.hideBadge;
+    var bx=x+R*0.95*sc, by=y-R*1.15*sc, lab="×"+o.hideBadge;
     hb='<g style="pointer-events:none"><rect x="'+f1(bx-11)+'" y="'+f1(by-7.5)+'" width="22" height="15" rx="7.5" fill="#fff" stroke="'+ORANGE+'" stroke-width="1.6"/>'+
        '<text x="'+f1(bx)+'" y="'+f1(by+3.6)+'" text-anchor="middle" font-size="9.5" font-weight="700" font-family="Inter,Arial,sans-serif" fill="'+ORANGE+'">'+esc(lab)+'</text></g>';
   }
-  if(o.selected) sel='<circle cx="'+x+'" cy="'+y+'" r="'+(hitR+1)+'" fill="none" stroke="'+ORANGE+'" stroke-width="2" stroke-dasharray="4 3" style="pointer-events:none"/>';
+  if(o.selected) sel='<circle cx="'+x+'" cy="'+y+'" r="'+f1(hitR+1)+'" fill="none" stroke="'+ORANGE+'" stroke-width="2" stroke-dasharray="4 3" style="pointer-events:none"/>';
   return '<g class="xd-fig" data-id="'+id+'"'+(op<1?' opacity="'+op+'"':'')+'>'+hit+body+sel+hb+'</g>';
+}
+
+/* ---------- Markeringar (zon) och text — valfria verktyg (PACK.features) ---------- */
+function zoneMarkup(z, o){
+  o=o||{}; var col=z.color||ORANGE, w=z.w||140, h=z.h||90, op=o.opacity==null?1:o.opacity, rot=z.rot||0;
+  var shape = z.shape==="oval"
+    ? '<ellipse cx="'+z.x+'" cy="'+z.y+'" rx="'+f1(w/2)+'" ry="'+f1(h/2)+'" fill="'+col+'" fill-opacity="0.18" stroke="'+col+'" stroke-width="2.2" stroke-dasharray="7 4"/>'
+    : '<rect x="'+f1(z.x-w/2)+'" y="'+f1(z.y-h/2)+'" width="'+f1(w)+'" height="'+f1(h)+'" rx="8" fill="'+col+'" fill-opacity="0.18" stroke="'+col+'" stroke-width="2.2" stroke-dasharray="7 4"/>';
+  var selEl = o.selected ? '<rect x="'+f1(z.x-w/2-5)+'" y="'+f1(z.y-h/2-5)+'" width="'+f1(w+10)+'" height="'+f1(h+10)+'" rx="10" fill="none" stroke="'+ORANGE+'" stroke-width="1.6" stroke-dasharray="3 3" style="pointer-events:none"/>' : "";
+  return '<g class="xd-zone" data-id="'+z.id+'"'+(op<1?' opacity="'+op+'"':'')+'><g transform="rotate('+rot+' '+z.x+' '+z.y+')">'+shape+selEl+'</g></g>';
+}
+function textMarkup(t, o){
+  o=o||{}; var size=t.size||15, col=t.color||INK, op=o.opacity==null?1:o.opacity;
+  var lines=String(t.text==null?"":t.text).split("\n").slice(0,4), lh=size*1.25;
+  var wmax=Math.max.apply(null,lines.map(function(l){ return l.length; }).concat([1]))*size*0.58+12, h=lines.length*lh+8;
+  var tsp=lines.map(function(l,i){ return '<tspan x="'+t.x+'" y="'+f1(t.y-h/2+lh*0.82+4+i*lh)+'">'+esc(l)+'</tspan>'; }).join("");
+  var selEl = o.selected ? '<rect x="'+f1(t.x-wmax/2-3)+'" y="'+f1(t.y-h/2-3)+'" width="'+f1(wmax+6)+'" height="'+f1(h+6)+'" rx="8" fill="none" stroke="'+ORANGE+'" stroke-width="1.6" stroke-dasharray="3 3" style="pointer-events:none"/>' : "";
+  return '<g class="xd-text" data-id="'+t.id+'"'+(op<1?' opacity="'+op+'"':'')+'><rect x="'+f1(t.x-wmax/2)+'" y="'+f1(t.y-h/2)+'" width="'+f1(wmax)+'" height="'+f1(h)+'" rx="6" fill="#fff" fill-opacity="0.88" stroke="'+col+'" stroke-width="1.2"/>'+
+    '<text text-anchor="middle" font-size="'+size+'" font-weight="600" font-family="Inter,Arial,sans-serif" fill="'+col+'" style="pointer-events:none">'+tsp+'</text>'+selEl+'</g>';
 }
 
 /* ---------- Pilar / rörelsemönster ---------- */
@@ -1228,54 +1367,32 @@ function trimsFor(p, objs, L){
   for(var i=0;i<objs.length;i++){
     var f=objs[i];
     if(f.kind!=="fig") continue;
-    if((HOLDERS[f.type] || f.type==="cone") && dist(last,f)<4){ t1=R+3; break; }
+    if((HOLDERS[f.type] || STOPPERS[f.type]) && dist(last,f)<4){ t1=R+3; break; }
   }
   if(t0+t1 > L-26){ t0=0; t1=0; }
   return [t0,t1];
 }
 function pathMarkup(p, o){
   o = o||{};
-  var col=o.color||INK, sw=o.sw||2.6, op=o.opacity==null?1:o.opacity;
+  var col=o.color||p.color||INK, sw=o.sw||2.6, op=o.opacity==null?1:o.opacity;
   var poly0=polylineOf(p); if(poly0.length<2) return "";
   var cum0=measure(poly0), L0=cum0[cum0.length-1]; if(L0<6) return "";
   var tr=trimsFor(p,o.objs,L0), poly=poly0, cum=cum0, L=L0;
   if(tr[0]||tr[1]){ poly=sub(poly0,cum0,tr[0],L0-tr[1]); cum=measure(poly); L=cum[cum.length-1]; }
   var st='stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linejoin="round"';
-  function line(pts, extra){ return pts.length<2?"":'<polyline points="'+ptsStr(pts)+'" '+st+(extra||"")+'/>'; }
-  var tip=at(poly,cum,L), ang=headAngle(poly,cum,L);
-  var parts="", t=p.type, bodyEnd=Math.max(0,L-HL+1), dash=' stroke-dasharray="7 5"';
-  function headFilled(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="'+col+'" stroke="'+col+'" stroke-width="1" stroke-linejoin="round"/>'; }
-  function headOpen(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="#fff" stroke="'+col+'" stroke-width="'+sw+'" stroke-linejoin="round"/>'; }
   function perp(pt,a,off){ return {x:pt.x-Math.sin(a)*off, y:pt.y+Math.cos(a)*off}; }
-  function bar(d,len,w){ var c=at(poly,cum,d), a=c.ang, u=perp(c,a,len/2), v=perp(c,a,-len/2);
-    return '<line x1="'+f1(u.x)+'" y1="'+f1(u.y)+'" x2="'+f1(v.x)+'" y2="'+f1(v.y)+'" stroke="'+col+'" stroke-width="'+(w||2.4)+'" stroke-linecap="round"/>'; }
-  var dl=15;
-  switch(t){
-    case "fwd":      parts=line(sub(poly,cum,0,bodyEnd))+headFilled(tip,ang); break;
-    case "fwdBall":  parts=line(zigzag(poly,cum,0,bodyEnd))+headFilled(tip,ang); break;
-    case "back": case "backBall": {
-      var c0=at(poly,cum,7), a0=c0.ang, dm=[[ -7,0],[0,-5.2],[7,0],[0,5.2]].map(function(q){ return {x:c0.x+q[0]*Math.cos(a0)-q[1]*Math.sin(a0), y:c0.y+q[0]*Math.sin(a0)+q[1]*Math.cos(a0)}; });
-      var dia='<polygon points="'+ptsStr(dm)+'" fill="'+(t==="back"?col:"#fff")+'" stroke="'+col+'" stroke-width="'+(sw-0.4)+'" stroke-linejoin="round"/>';
-      parts=dia+(t==="back"?line(sub(poly,cum,dl-1,bodyEnd)):line(zigzag(poly,cum,dl-1,bodyEnd)))+headFilled(tip,ang); break; }
-    case "turn": {
-      var s0=at(poly,cum,0), ts=[[0,-4.6],[9,0],[0,4.6]].map(function(q){ return {x:s0.x+q[0]*Math.cos(s0.ang)-q[1]*Math.sin(s0.ang), y:s0.y+q[0]*Math.sin(s0.ang)+q[1]*Math.cos(s0.ang)}; });
-      var cc=perp(at(poly,cum,L*0.42), at(poly,cum,L*0.42).ang, -9.5);
-      parts=line(sub(poly,cum,0,bodyEnd))+'<polygon points="'+ptsStr(ts)+'" fill="'+col+'"/>'+
-        '<circle cx="'+f1(cc.x)+'" cy="'+f1(cc.y)+'" r="5.6" fill="#fff" stroke="'+col+'" stroke-width="'+(sw-0.6)+'"/>'+headFilled(tip,ang); break; }
-    case "stop": {
-      var tipD=Math.max(HL+4, L-10), tp=at(poly,cum,tipD), ta=headAngle(poly,cum,tipD);
-      parts=line(sub(poly,cum,0,tipD-HL+1))+headFilled(tp,ta)+bar(Math.max(0,L-5.5),13,2.4)+bar(Math.max(0,L-0.8),13,2.4); break; }
-    case "tempo": {
-      var m=L*0.5; parts=line(sub(poly,cum,0,bodyEnd));
-      for(var k=-1.5;k<=1.5;k+=1) parts+=bar(m+k*3.2,15,2.1);
-      parts+=headFilled(tip,ang); break; }
-    case "pass":  parts=line(sub(poly,cum,0,bodyEnd),dash)+headFilled(tip,ang); break;
-    case "lift":  parts=line(sub(poly,cum,0,bodyEnd),dash)+headOpen(tip,ang); break;
-    case "shot": {
-      var sb=sub(poly,cum,0,bodyEnd); parts=line(offsetPts(sb,2.5))+line(offsetPts(sb,-2.5))+headOpen(tip,ang); break; }
-    case "gk": {
-      var gb=sub(poly,cum,0,bodyEnd); parts=line(offsetPts(gb,2.5),dash)+line(offsetPts(gb,-2.5),dash)+headOpen(tip,ang); break; }
-  }
+  // verktygslåda som sportpaketets pilritning använder
+  var K = {poly:poly, cum:cum, L:L, col:col, sw:sw, HL:HL, HW:HW, tip:at(poly,cum,L), ang:headAngle(poly,cum,L), bodyEnd:Math.max(0,L-HL+1), dash:' stroke-dasharray="7 5"', f1:f1, esc:esc, ptsStr:ptsStr, perp:perp,
+    at:function(d){ return at(poly,cum,d); }, hAng:function(d){ return headAngle(poly,cum,d); }, sub:function(d0,d1){ return sub(poly,cum,d0,d1); },
+    zig:function(d0,d1){ return zigzag(poly,cum,d0,d1); }, wave:function(d0,d1,amp,wl){ return wavePts(poly,cum,d0,d1,amp,wl); }, offs:offsetPts,
+    line:function(pts, extra){ return pts.length<2?"":'<polyline points="'+ptsStr(pts)+'" '+st+(extra||"")+'/>'; },
+    headFilled:function(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="'+col+'" stroke="'+col+'" stroke-width="1" stroke-linejoin="round"/>'; },
+    headOpen:function(pt,a){ return '<polygon points="'+headPoly(pt,a)+'" fill="#fff" stroke="'+col+'" stroke-width="'+sw+'" stroke-linejoin="round"/>'; },
+    bar:function(d,len,w){ var c=at(poly,cum,d), a=c.ang, u=perp(c,a,len/2), v=perp(c,a,-len/2);
+      return '<line x1="'+f1(u.x)+'" y1="'+f1(u.y)+'" x2="'+f1(v.x)+'" y2="'+f1(v.y)+'" stroke="'+col+'" stroke-width="'+(w||2.4)+'" stroke-linecap="round"/>'; },
+    rot:function(pt,a,pts){ return pts.map(function(q){ return {x:pt.x+q[0]*Math.cos(a)-q[1]*Math.sin(a), y:pt.y+q[0]*Math.sin(a)+q[1]*Math.cos(a)}; }); }
+  };
+  var parts = PACK.pathParts(p.type, K) || "";
   var hit = o.noHit ? "" : '<polyline points="'+ptsStr(poly0)+'" fill="none" stroke="transparent" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>';
   var badge="";
   if(o.badge){
@@ -1287,7 +1404,8 @@ function pathMarkup(p, o){
 
 /* ---------- Ikoner för paletten och teckenförklaring ---------- */
 function figIcon(type, label){
-  return '<svg viewBox="-34 -19 68 38" width="46" height="26" aria-hidden="true">'+figMarkup({id:0,type:type,x:0,y:0,label:label},{noHit:true})+'</svg>';
+  var sc=(PACK.iconScale && PACK.iconScale[type]) || 1;      // t.ex. mål ritas mindre i paletten så stolparna inte klipps
+  return '<svg viewBox="-34 -19 68 38" width="46" height="26" aria-hidden="true">'+figMarkup({id:0,type:type,x:0,y:0,label:label,scale:sc},{noHit:true})+'</svg>';
 }
 function pathIcon(type){
   return '<svg viewBox="0 -6 88 34" width="88" height="28" aria-hidden="true">'+pathMarkup({id:0,type:type,pts:[{x:6,y:12},{x:82,y:12}],smooth:false,step:1},{noHit:true})+'</svg>';
@@ -1448,22 +1566,93 @@ function stateAt(sim, T){
   return {pos:pos, stepIdx:stepIdx, finished:finished, transient:trans, vis:vis};
 }
 
-return {R:R, INK:INK, ORANGE:ORANGE, SNAP:SNAP, FIG_TYPES:FIG_TYPES, PATH_TYPES:PATH_TYPES, HOLDERS:HOLDERS, PAUSE:PAUSE,
+return {PACK:PACK, figMarkup:figMarkup, zoneMarkup:zoneMarkup, textMarkup:textMarkup, R:R, INK:INK, ORANGE:ORANGE, SNAP:SNAP, FIG_TYPES:FIG_TYPES, PATH_TYPES:PATH_TYPES, HOLDERS:HOLDERS, PAUSE:PAUSE,
   figLabel:figLabel, pathInfo:pathInfo, dist:dist, esc:esc, f1:f1, polylineOf:polylineOf, measure:measure, at:at,
-  figMarkup:figMarkup, pathMarkup:pathMarkup, figIcon:figIcon, pathIcon:pathIcon, autoOwner:autoOwner,
+  pathMarkup:pathMarkup, figIcon:figIcon, pathIcon:pathIcon, autoOwner:autoOwner,
   buildSim:buildSim, stateAt:stateAt, ease:ease};
-})();
+})(XD_PACK);
 
 /* ===================== ÖVNINGSRITARE (XD) — gränssnitt: visa, animera, rita ===================== */
 var XD = (function(C){
 "use strict";
 var esc=C.esc, f1=C.f1, dist=C.dist;
-var RINK = '<rect x="10" y="10" width="580" height="320" rx="52" fill="#fff" stroke="#8A8F86" stroke-width="2.5"></rect>'+
-'<line x1="300" y1="10" x2="300" y2="330" stroke="#8A8F86" stroke-width="2"></line><circle cx="300" cy="170" r="5.5" fill="#8A8F86"></circle>'+
-'<rect x="62" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="62" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="50" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
-'<rect x="452" y="105" width="86" height="130" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="504" y="140" width="34" height="60" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect><rect x="538" y="152" width="12" height="36" fill="none" stroke="#8A8F86" stroke-width="1.5"></rect>'+
-'<path d="M78,54 h14 M85,47 v14 M78,286 h14 M85,279 v14 M508,54 h14 M515,47 v14 M508,286 h14 M515,279 v14 M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5" fill="none"></path>';
+var PACK = C.PACK;
+function rinkObj(d){
+  var id=(d && d.rink) || PACK.defaultRink, rs=PACK.rinks;
+  for(var i=0;i<rs.length;i++) if(rs[i].id===id) return rs[i];
+  return rs[0];
+}
+function rinkOf(d){ return rinkObj(d).svg + stationsMarkup(d); }
+var FEAT = PACK.features || {}, AREA = PACK.areaWord || "ytan";
+function isDesk(){ return typeof window.matchMedia==="function" && window.matchMedia("(min-width:900px)").matches; }
+function dimOf(d){ var r=rinkObj(d); return {w:r.w||600, h:r.h||340}; }
+function areaOf(d){ var r=rinkObj(d); return r.area || {x0:10, y0:10, x1:(r.w||600)-10, y1:(r.h||340)-10}; }
 
+/* ---------- Stationer: isytan delas in i rutor (A, B, C ...) med tjocka streckade linjer ---------- */
+var ST_LAYOUTS = {
+  1:[{id:"s1",label:"1 ruta",dir:"rows",parts:[[1]]}],
+  2:[{id:"c2",label:"2 kolumner",dir:"rows",parts:[[1,1]]},{id:"r2",label:"2 rader",dir:"rows",parts:[[1],[1]]}],
+  3:[{id:"c3",label:"3 kolumner",dir:"rows",parts:[[1,1,1]]},{id:"r3",label:"3 rader",dir:"rows",parts:[[1],[1],[1]]},{id:"bl",label:"1 stor + 2",dir:"cols",parts:[[1],[1,1]]},{id:"bt",label:"1 bred + 2",dir:"rows",parts:[[1],[1,1]]}],
+  4:[{id:"g22",label:"Rutnät 2×2",dir:"rows",parts:[[1,1],[1,1]]},{id:"c4",label:"4 kolumner",dir:"rows",parts:[[1,1,1,1]]},{id:"r4",label:"4 rader",dir:"rows",parts:[[1],[1],[1],[1]]}],
+  5:[{id:"g32",label:"3 + 2",dir:"rows",parts:[[1,1,1],[1,1]]},{id:"g23",label:"2 + 3",dir:"rows",parts:[[1,1],[1,1,1]]}],
+  6:[{id:"g32b",label:"3 × 2",dir:"rows",parts:[[1,1,1],[1,1,1]]},{id:"g23b",label:"2 × 3",dir:"rows",parts:[[1,1],[1,1],[1,1]]}]
+};
+function layoutOf(st){ var l=ST_LAYOUTS[st.n]||[]; for(var i=0;i<l.length;i++) if(l[i].id===st.layout) return l[i]; return l[0]||null; }
+function sumArr(arr){ return arr.reduce(function(t,v){ return t+v; },0); }
+function cumPos(start, total, weights){ var tot=sumArr(weights), pos=[start], acc=start; weights.forEach(function(w){ acc+=total*w/tot; pos.push(acc); }); return pos; }
+function geomFor(lay, a, custom){
+  var W=a.x1-a.x0, H=a.y1-a.y0, cells=[], lines=[];
+  var parts=(custom && custom.parts) || lay.parts, outer=(custom && custom.outer && custom.outer.length===parts.length) ? custom.outer : parts.map(function(){ return 1; });
+  if(lay.dir==="rows"){
+    var ys=cumPos(a.y0,H,outer);
+    parts.forEach(function(cols,ri){
+      var xs=cumPos(a.x0,W,cols), y=ys[ri], rh=ys[ri+1]-ys[ri];
+      cols.forEach(function(w,ci){ cells.push({x:xs[ci],y:y,w:xs[ci+1]-xs[ci],h:rh,row:ri,col:ci}); if(ci<cols.length-1) lines.push({x1:xs[ci+1],y1:y,x2:xs[ci+1],y2:y+rh,axis:"x",lo:xs[ci],hi:xs[ci+2],ref:{k:"parts",i:ri,j:ci}}); });
+      if(ri<parts.length-1) lines.push({x1:a.x0,y1:ys[ri+1],x2:a.x1,y2:ys[ri+1],axis:"y",lo:ys[ri],hi:ys[ri+2],ref:{k:"outer",i:ri}});
+    });
+  } else {
+    var xo=cumPos(a.x0,W,outer);
+    parts.forEach(function(rowsArr,ci){
+      var yy=cumPos(a.y0,H,rowsArr), x=xo[ci], cw=xo[ci+1]-xo[ci];
+      rowsArr.forEach(function(h,ri){ cells.push({x:x,y:yy[ri],w:cw,h:yy[ri+1]-yy[ri],row:ri,col:ci}); if(ri<rowsArr.length-1) lines.push({x1:x,y1:yy[ri+1],x2:x+cw,y2:yy[ri+1],axis:"y",lo:yy[ri],hi:yy[ri+2],ref:{k:"parts",i:ci,j:ri}}); });
+      if(ci<parts.length-1) lines.push({x1:xo[ci+1],y1:a.y0,x2:xo[ci+1],y2:a.y1,axis:"x",lo:xo[ci],hi:xo[ci+2],ref:{k:"outer",i:ci}});
+    });
+  }
+  if(lay.dir==="rows" && parts.length===2){          // två rader: bokstäverna går medurs (A B / D C)
+    var top=cells.filter(function(c){ return c.row===0; }), bot=cells.filter(function(c){ return c.row===1; }).reverse();
+    cells=top.concat(bot);
+  }
+  cells.forEach(function(c,i){ c.label=String.fromCharCode(65+i); });
+  return {cells:cells, lines:lines, area:a};
+}
+function stationGeom(d){
+  if(!d || !d.stations) return null;
+  var lay=layoutOf(d.stations); if(!lay) return null;
+  return geomFor(lay, areaOf(d), d.stations);
+}
+function stationsMarkup(d){
+  var g=stationGeom(d); if(!g) return "";
+  var a=g.area, h='<rect x="'+(a.x0+2)+'" y="'+(a.y0+2)+'" width="'+(a.x1-a.x0-4)+'" height="'+(a.y1-a.y0-4)+'" fill="#fff" fill-opacity=".4"/>';
+  g.lines.forEach(function(l){ h+='<line x1="'+f1(l.x1)+'" y1="'+f1(l.y1)+'" x2="'+f1(l.x2)+'" y2="'+f1(l.y2)+'" stroke="#111" stroke-width="5" stroke-dasharray="26 14"/>'; });
+  g.cells.forEach(function(c,ci){ h+='<text x="'+f1(c.x+c.w-12)+'" y="'+f1(c.y+28)+'" text-anchor="end" font-size="24" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#111" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">'+c.label+'</text>';
+    var bd=d.stations.bdg && d.stations.bdg[cellKey(d.stations,ci)];
+    if(bd){                                                          // lagbricka(or): en (station) eller två (spel: lag mot lag)
+      var list=Array.isArray(bd) ? bd : [bd], px=c.x+8, py=c.y+c.h-28;
+      list.forEach(function(b1,bi){
+        var bw=Math.min((c.w-16)/list.length-4, String(b1.t).length*7.4+22);
+        h+='<g><rect x="'+f1(px)+'" y="'+f1(py)+'" width="'+f1(bw)+'" height="20" rx="10" fill="'+esc(b1.c||"#666")+'" stroke="#fff" stroke-width="1.6"/><text x="'+f1(px+bw/2)+'" y="'+f1(py+14)+'" text-anchor="middle" font-size="12.5" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#fff">'+esc(b1.t)+'</text></g>';
+        px+=bw+6;
+      });
+    } });
+  return h;
+}
+function layoutIcon(lay, on){
+  var g=geomFor(lay,{x0:3,y0:3,x1:43,y1:23}), h='<svg viewBox="0 0 46 26" width="46" height="26" aria-hidden="true"><rect x="3" y="3" width="40" height="20" rx="4" fill="#F6FAFD" stroke="'+(on?"#E8621A":"#8A8F86")+'" stroke-width="1.4"/>';
+  g.lines.forEach(function(l){ h+='<line x1="'+f1(l.x1)+'" y1="'+f1(l.y1)+'" x2="'+f1(l.x2)+'" y2="'+f1(l.y2)+'" stroke="#111" stroke-width="1.6" stroke-dasharray="4 2"/>'; });
+  return h+'</svg>';
+}
+function vbOf(d){ var m=dimOf(d); return "0 0 "+m.w+" "+m.h; }
+var WD = PACK.words || {ball:"boll", ballDef:"bollen", Ball:"Boll", icon:"⚽"};
 var host = null;
 var S = {exId:null, mode:"view", tab:"anim", drawing:null, base:"", tool:null, selected:null, activeStep:1, stepCount:1,
   undo:[], playing:false, T:0, speed:1, hideDone:false, paletteOpen:true, raf:null, lastTs:0, drag:null, draft:null, sim:null, nid:1, toolsBuilt:false};
@@ -1497,6 +1686,7 @@ function paintObjs(objs, o){
   var multi = maxStep(objs)>1;
   var paths=objs.filter(function(x){ return x.kind==="path"; }), figs=objs.filter(function(x){ return x.kind==="fig"; });
   var html="";
+  objs.forEach(function(z){ if(z.kind==="zone") html+=C.zoneMarkup(z,{selected:o.selected===z.id}); });
   paths.forEach(function(p){
     var st=(o.pathStyle && o.pathStyle(p))||{};
     if(st.hidden) return;
@@ -1510,6 +1700,7 @@ function paintObjs(objs, o){
     var g=pos[f.id]?Object.assign({},f,{x:pos[f.id].x,y:pos[f.id].y}):f;
     html+=C.figMarkup(g,{noHit:o.noHit, selected:o.selected===f.id, opacity:v, hideBadge:(o.showHide && f.hideAfter!=null) ? f.hideAfter : null});
   });
+  objs.forEach(function(t){ if(t.kind==="text") html+=C.textMarkup(t,{selected:o.selected===t.id}); });
   return html;
 }
 var GREY = "#9B9B95";
@@ -1552,31 +1743,31 @@ function thumbSVG(drawing){
     var sim=C.buildSim(drawing.objects), parts=partsOf(drawing,sim);
     if(parts.length>=2){
       var n=Math.min(parts.length,4), g="";
-      for(var k=0;k<n;k++) g+='<div class="xd-thumbcell"><span class="xd-thumbcap">Del '+(k+1)+'</span><svg viewBox="0 0 600 340" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+RINK+partImageInner(sim,drawing.objects,parts[k])+'</svg></div>';
+      for(var k=0;k<n;k++) g+='<div class="xd-thumbcell"><span class="xd-thumbcap">Del '+(k+1)+'</span><svg viewBox="'+vbOf(drawing)+'" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+rinkOf(drawing)+partImageInner(sim,drawing.objects,parts[k])+'</svg></div>';
       return '<div class="xd-thumbgrid">'+g+'</div>';
     }
   }
   var objs = drawing.still ? drawing.still.objects : drawing.objects;
-  return '<svg viewBox="0 0 600 340" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+RINK+paintObjs(objs,{noHit:true})+'</svg>';
+  return '<svg viewBox="'+vbOf(drawing)+'" class="xd-thumb" xmlns="http://www.w3.org/2000/svg">'+rinkOf(drawing)+paintObjs(objs,{noHit:true})+'</svg>';
 }
 /* Stillbilder som färdig SVG-text (för PDF/utskrift): en bild, eller en per del om ritningen är delad. */
 function stillImages(drawing){
   if(!drawing || !drawing.objects || !drawing.objects.length) return [];
-  var open='<svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg">';
+  var dm=dimOf(drawing), open='<svg viewBox="'+vbOf(drawing)+'" xmlns="http://www.w3.org/2000/svg">';
   if(!drawing.still){
     var sim=C.buildSim(drawing.objects), parts=partsOf(drawing,sim);
-    if(parts.length>=2) return parts.map(function(part,pi){ return {label:partLabel(sim,part,pi), svg:open+RINK+partImageInner(sim,drawing.objects,part)+'</svg>'}; });
+    if(parts.length>=2) return parts.map(function(part,pi){ return {label:partLabel(sim,part,pi), w:dm.w, h:dm.h, svg:open+rinkOf(drawing)+partImageInner(sim,drawing.objects,part)+'</svg>'}; });
   }
   var objs = drawing.still ? drawing.still.objects : drawing.objects;
-  return [{label:null, svg:open+RINK+paintObjs(objs,{noHit:true})+'</svg>'}];
+  return [{label:null, w:dm.w, h:dm.h, svg:open+rinkOf(drawing)+paintObjs(objs,{noHit:true})+'</svg>'}];
 }
-function hasContent(d){ return !!(d && d.objects && d.objects.length); }
+function hasContent(d){ return !!(d && ((d.objects && d.objects.length) || d.stations)); }
 
 function legendHTML(objs){
   var figT={}, pathT={};
-  objs.forEach(function(o){ if(o.kind==="fig") figT[o.type]=1; else pathT[o.type]=1; });
+  objs.forEach(function(o){ if(o.kind==="fig") figT[o.type]=1; else if(o.kind==="path") pathT[o.type]=1; });
   var items="";
-  C.FIG_TYPES.forEach(function(t){ if(figT[t.id]) items+='<div class="xd-leg-item">'+C.figIcon(t.id, t.id==="unit"?"ABC":undefined)+'<span>'+esc(t.label)+'</span></div>'; });
+  C.FIG_TYPES.forEach(function(t){ if(figT[t.id]) items+='<div class="xd-leg-item">'+C.figIcon(t.id, PACK.iconLabels && PACK.iconLabels[t.id])+'<span>'+esc(t.label)+'</span></div>'; });
   C.PATH_TYPES.forEach(function(t){ if(pathT[t.id]) items+='<div class="xd-leg-item">'+C.pathIcon(t.id)+'<span>'+esc(t.label)+'</span></div>'; });
   return items ? '<div class="xd-legend"><b>Tecken i den här övningen</b>'+items+'</div>' : "";
 }
@@ -1610,16 +1801,33 @@ function renderCanvas(){
   } else {
     var objs=displayObjs();
     body=paintObjs(objs,{selected: canEditNow()?S.selected:null, showHide: canEditNow() && S.tab==="anim"});
-    if(canEditNow() && S.tool===null) body+=overlayHandles(objs);
+    if(S.zone!=null) body+=zoneDim();
+    if(canEditNow() && S.tool===null) body+=overlayHandles(objs)+(S.zone==null ? stationHandles() : "");
   }
-  if(S.draft){
+  if(S.draft && S.draft.pts){
     body+=C.pathMarkup({id:-1,type:S.draft.type,pts:S.draft.pts,smooth:false,step:S.activeStep},{objs:objsRef(),noHit:true,color:C.ORANGE,opacity:0.85});
+  } else if(S.draft && S.draft.zone){
+    var dz=S.draft; body+=C.zoneMarkup({id:-1,shape:dz.shape,x:(dz.x0+dz.x1)/2,y:(dz.y0+dz.y1)/2,w:Math.abs(dz.x1-dz.x0),h:Math.abs(dz.y1-dz.y0),color:C.ORANGE,rot:0},{opacity:0.9});
   }
-  svg.innerHTML = RINK+body;
+  var vw=viewRect(); svg.setAttribute("viewBox", f1(vw.x)+" "+f1(vw.y)+" "+f1(vw.w)+" "+f1(vw.h));
+  svg.style.setProperty("--ar", (vw.w/vw.h).toFixed(4));
+  svg.innerHTML = rinkOf(S.drawing)+body;
   svg.style.touchAction = (S.mode==="edit") ? "none" : "pan-y";
 }
 function render(){ renderCanvas(); renderChrome(); }
 
+function stationHandles(){
+  if(!S.drawing.stations) return "";
+  var g=stationGeom(S.drawing); if(!g) return "";
+  var h="";
+  g.lines.forEach(function(l,i){
+    var mx=f1((l.x1+l.x2)/2), my=f1((l.y1+l.y2)/2), x=l.axis==="x";
+    var arrows = x ? 'M'+(mx-8)+','+my+' H'+(mx+8)+' M'+(mx-8)+','+my+' l4,-4 M'+(mx-8)+','+my+' l4,4 M'+(mx+8)+','+my+' l-4,-4 M'+(mx+8)+','+my+' l-4,4'
+                   : 'M'+mx+','+(my-8)+' V'+(my+8)+' M'+mx+','+(my-8)+' l-4,4 M'+mx+','+(my-8)+' l4,4 M'+mx+','+(my+8)+' l-4,-4 M'+mx+','+(my+8)+' l4,-4';
+    h+='<g data-sl="'+i+'" style="cursor:'+(x?"ew-resize":"ns-resize")+'"><circle cx="'+mx+'" cy="'+my+'" r="15" fill="#fff" stroke="'+C.ORANGE+'" stroke-width="2.4"/><path d="'+arrows+'" fill="none" stroke="'+C.ORANGE+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+mx+'" cy="'+my+'" r="24" fill="transparent"/></g>';
+  });
+  return h;
+}
 function overlayHandles(objs){
   var p=selPath(objs); if(!p) return "";
   var h="";
@@ -1679,12 +1887,14 @@ function renderChrome(){
     setHTML(partsEl, (edit && canSplit) ? partsEditorHTML(sim2, parts2) : "");
   } else { stillBar.style.display="none"; partsEl.style.display="none"; }
   $("xd-canvaswrap").style.display = split ? "none" : "";
+  $("xd-scroll").classList.toggle("xd-two", !split);          // ritytan till vänster, allt annat till höger (desktop)
+  $("xd-sheet").classList.toggle("xd-wide", !split);
   var grid=$("xd-stillgrid");
   grid.style.display = split ? "block" : "none";
   if(split){
     var sm=getSim(), pp=partsOf(S.drawing,sm), gh="";
     pp.forEach(function(part,pi){
-      gh+='<div class="xd-stillimg"><div class="xd-stillcap">'+esc(partLabel(sm,part,pi))+'</div><svg viewBox="0 0 600 340" class="xd-stillsvg" xmlns="http://www.w3.org/2000/svg">'+RINK+partImageInner(sm,S.drawing.objects,part)+'</svg></div>';
+      gh+='<div class="xd-stillimg"><div class="xd-stillcap">'+esc(partLabel(sm,part,pi))+'</div><svg viewBox="'+vbOf(S.drawing)+'" class="xd-stillsvg" xmlns="http://www.w3.org/2000/svg">'+rinkOf(S.drawing)+partImageInner(sm,S.drawing.objects,part)+'</svg></div>';
     });
     setHTML(grid,'<div class="xd-stillgrid-in">'+gh+'</div>');
   }
@@ -1712,32 +1922,54 @@ function partsEditorHTML(sim, parts){
 }
 function toolHint(){
   if(S.tool===null) return "✋ Markera & flytta: tryck på en figur eller pil för att markera, dra för att flytta. På en markerad pil kan du dra i ringarna för att böja den.";
+  if(S.tool==="text") return "Tryck på planen där texten ska stå. Skriv sedan i rutan som visas.";
+  if(S.tool.indexOf("zone:")===0) return "Dra på planen för att rita zonen. Ändra färg och storlek efteråt.";
   if(S.tool.indexOf("fig:")===0) return "Tryck på planen för att placera: "+C.figLabel(S.tool.slice(4))+". Tryck ✋ Markera & flytta när du vill flytta saker.";
-  return "Dra på planen för att rita: "+C.pathInfo(S.tool.slice(5)).label+". Börja på en spelare (eller bollen) så följer den pilen. Tryck ✋ för att böja eller flytta pilen.";
+  return "Dra på planen för att rita: "+C.pathInfo(S.tool.slice(5)).label+". Börja på en spelare (eller "+WD.ballDef+") så följer den pilen. Tryck ✋ för att böja eller flytta pilen.";
+}
+function markHTML(){
+  if(!(FEAT.zones || FEAT.text)) return "";
+  var h='<div class="xd-group"><div class="xd-group-t">Markeringar &amp; text</div><div class="xd-palette xd-figs">';
+  if(FEAT.zones){
+    h+='<button class="xd-tool" data-tool="zone:oval" onclick="XD.pickTool(\'zone:oval\')"><svg viewBox="-34 -19 68 38" width="46" height="26"><ellipse cx="0" cy="0" rx="22" ry="12" fill="#E8621A" fill-opacity=".2" stroke="#E8621A" stroke-width="2.2" stroke-dasharray="6 3"/></svg><span>Zon (oval)</span></button>'+
+       '<button class="xd-tool" data-tool="zone:rect" onclick="XD.pickTool(\'zone:rect\')"><svg viewBox="-34 -19 68 38" width="46" height="26"><rect x="-22" y="-12" width="44" height="24" rx="4" fill="#E8621A" fill-opacity=".2" stroke="#E8621A" stroke-width="2.2" stroke-dasharray="6 3"/></svg><span>Zon (rektangel)</span></button>';
+  }
+  if(FEAT.text) h+='<button class="xd-tool" data-tool="text" onclick="XD.pickTool(\'text\')"><svg viewBox="-34 -19 68 38" width="46" height="26"><rect x="-22" y="-10" width="44" height="20" rx="4" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="0" y="5" text-anchor="middle" font-size="13" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#111">Aa</text></svg><span>Text</span></button>';
+  return h+'</div></div>';
 }
 function toolName(){
   if(S.tool===null) return null;
+  if(S.tool==="text") return "Text";
+  if(S.tool.indexOf("zone:")===0) return S.tool==="zone:oval" ? "Zon (oval)" : "Zon (rektangel)";
   return S.tool.indexOf("fig:")===0 ? C.figLabel(S.tool.slice(4)) : C.pathInfo(S.tool.slice(5)).label;
 }
 function renderEditor(){
   var tools=$("xd-tools");
   if(!S.toolsBuilt){
     var h='<div class="xd-group"><div class="xd-group-t">Figurer</div><div class="xd-palette xd-figs">';
-    C.FIG_TYPES.forEach(function(t){ h+='<button class="xd-tool" data-tool="fig:'+t.id+'" onclick="XD.pickTool(\'fig:'+t.id+'\')">'+C.figIcon(t.id, t.id==="unit"?"ABC":undefined)+'<span>'+esc(t.label)+'</span></button>'; });
-    h+='</div></div><div class="xd-group"><div class="xd-group-t">Pilar &amp; rörelsemönster</div><div class="xd-palette xd-paths">';
+    C.FIG_TYPES.forEach(function(t){ h+='<button class="xd-tool" data-tool="fig:'+t.id+'" onclick="XD.pickTool(\'fig:'+t.id+'\')">'+C.figIcon(t.id, PACK.iconLabels && PACK.iconLabels[t.id])+'<span>'+esc(t.label)+'</span></button>'; });
+    h+='</div></div>'+markHTML()+'<div class="xd-group"><div class="xd-group-t">Pilar &amp; rörelsemönster</div><div class="xd-palette xd-paths">';
     C.PATH_TYPES.forEach(function(t){ h+='<button class="xd-tool" data-tool="path:'+t.id+'" onclick="XD.pickTool(\'path:'+t.id+'\')">'+C.pathIcon(t.id)+'<span>'+esc(t.label)+'</span></button>'; });
     h+='</div></div>';
     tools.innerHTML=h; S.toolsBuilt=true;
   }
-  tools.style.display = S.paletteOpen ? "block" : "none";
+  tools.style.display = (S.paletteOpen || isDesk()) ? "block" : "none";
   tools.querySelectorAll(".xd-tool").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tool")===S.tool); });
   var tn=toolName();
   setHTML($("xd-toolbar"),
     '<button class="xd-tool xd-select'+(S.tool===null?' active':'')+'" data-tool="select" onclick="XD.pickTool(\'select\')"><span class="xd-ico">✋</span><span>Markera &amp; flytta</span></button>'+
-    '<button class="xd-btn small xd-tb'+(S.paletteOpen?' on':'')+'" onclick="XD.togglePalette()">'+(tn ? esc(tn)+' ' : 'Välj verktyg ')+(S.paletteOpen?'▴':'▾')+'</button>'+
+    '<button class="xd-btn small xd-tb xd-palbtn'+(S.paletteOpen?' on':'')+'" onclick="XD.togglePalette()">'+(tn ? esc(tn)+' ' : 'Välj verktyg ')+(S.paletteOpen?'▴':'▾')+'</button>'+
     '<button class="xd-btn small xd-tb" id="xd-undo" onclick="XD.undo()"'+(S.undo.length?'':' disabled')+'>↶ Ångra</button>'+
     '<button class="xd-btn small xd-tb" onclick="XD.clearAll()">Rensa allt</button>');
   $("xd-toolhint").textContent=toolHint();
+  var rk=$("xd-rinks");
+  if(PACK.rinks.length>1 || FEAT.stations){
+    var cur=S.drawing.rink||PACK.defaultRink;
+    rk.style.display="flex";
+    setHTML(rk,'<span class="xd-group-t" style="margin:0 8px 0 0;white-space:nowrap">Isyta</span>'+PACK.rinks.map(function(r){ return '<button class="xd-chip'+(r.id===cur?' active':'')+'" onclick="XD.setRink(\''+r.id+'\')">'+esc(r.label)+'</button>'; }).join("")+
+      (FEAT.stations ? '<button class="xd-chip xd-chip-st'+((S.drawing.stations||S.stationsOpen)?' active':'')+'" onclick="XD.stationsToggle()">▦ Stationer</button>' : ""));
+  } else rk.style.display="none";
+  renderStations();
   S.stepCount=Math.max(S.stepCount, maxStep(S.drawing.objects), S.activeStep);
   if(S.tab==="anim"){
     var chips="";
@@ -1748,15 +1980,27 @@ function renderEditor(){
   } else $("xd-steps").style.display="none";
   renderSelPanel();
 }
+function colorRow(cur){
+  if(!FEAT.colors) return "";
+  var cs=PACK.colors||[];
+  return '<div class="xd-colors"><span>Färg</span><button class="xd-cdot xd-cdef'+(!cur?' on':'')+'" onclick="XD.setColor(\'\')" aria-label="Standardfärg">↺</button>'+
+    cs.map(function(c){ return '<button class="xd-cdot'+(cur===c?' on':'')+'" style="background:'+c+'" onclick="XD.setColor(\''+c+'\')" aria-label="Färg '+c+'"></button>'; }).join("")+'</div>';
+}
+function transformRow(zone){
+  if(!FEAT.transform) return "";
+  return '<div class="xd-row"><div class="xd-tf"><span>Rotera</span><button onclick="XD.rotSel(-30)" aria-label="Rotera vänster">⟲</button><button onclick="XD.rotSel(30)" aria-label="Rotera höger">⟳</button></div>'+
+    (zone ? '<div class="xd-tf"><span>Bredd</span><button onclick="XD.zoneSize(\'w\',0.85)">−</button><button onclick="XD.zoneSize(\'w\',1.18)">+</button></div><div class="xd-tf"><span>Höjd</span><button onclick="XD.zoneSize(\'h\',0.85)">−</button><button onclick="XD.zoneSize(\'h\',1.18)">+</button></div>'
+          : '<div class="xd-tf"><span>Storlek</span><button onclick="XD.scaleSel(0.85)" aria-label="Mindre">−</button><button onclick="XD.scaleSel(1.18)" aria-label="Större">+</button></div>')+'</div>';
+}
 function renderSelPanel(){
-  var el=$("xd-sel"), objs=objsRef(), p=selPath(objs), f=selFig(), html="";
+  var el=$("xd-sel"), objs=objsRef(), p=selPath(objs), f=selFig(), so=findObj(S.selected), html="";
   if(p){
     var info=C.pathInfo(p.type);
     var typeOpts=C.PATH_TYPES.map(function(t){ return '<option value="'+t.id+'"'+(t.id===p.type?' selected':'')+'>'+esc(t.label)+'</option>'; }).join("");
     var cands=objs.filter(function(o){ return o.kind==="fig" && (info.move ? C.HOLDERS[o.type] : o.type==="ball"); });
     var sim=getSim(), resId = info.move ? sim.moverByPath[p.id] : sim.ballByPath[p.id], resF=null;
     objs.forEach(function(o){ if(o.id===resId) resF=o; });
-    var autoTxt = (p.owner==null && resF) ? figName(resF,objs) : (p.owner==null ? (info.move ? "ingen hittad" : "en boll tonas fram") : "närmaste");
+    var autoTxt = (p.owner==null && resF) ? figName(resF,objs) : (p.owner==null ? (info.move ? "ingen hittad" : "en '+WD.ball+' tonas fram") : "närmaste");
     var hideRow="";
     if(S.tab==="anim" && info.move){
       var mvF = null; objs.forEach(function(o){ if(o.id===sim.moverByPath[p.id]) mvF=o; });
@@ -1769,25 +2013,31 @@ function renderSelPanel(){
       '<option value="-1"'+(p.owner===-1?' selected':'')+'>Ingen (bara en pil)</option>';
     var hasBall = !!ballNear(p.pts[0],objs,36) || (p.owner!=null && p.owner>=0 && !info.move);
     var ballBtn = (S.tab==="anim" && (info.carry || !info.move) && !hasBall)
-      ? '<button class="xd-btn small primary" onclick="XD.addBallAtStart()">⚽ Lägg till boll vid pilens start</button>' : '';
+      ? '<button class="xd-btn small primary" onclick="XD.addBallAtStart()">'+WD.icon+' Lägg till '+WD.ball+' vid pilens start</button>' : '';
     html='<div class="xd-selbox"><div class="xd-selh">Markerad pil</div>'+
       '<label>Typ<select onchange="XD.setPathType(this.value)">'+typeOpts+'</select></label>'+
       '<div class="xd-row"><div class="xd-seg"><button class="'+(p.smooth?'':'on')+'" onclick="XD.setSmooth(false)">Rak</button><button class="'+(p.smooth?'on':'')+'" onclick="XD.setSmooth(true)">Böjd</button></div>'+
       (S.tab==="anim" ? '<div class="xd-stepper"><span>Steg</span><button onclick="XD.bumpStep(-1)">−</button><b>'+(p.step||1)+'</b><button onclick="XD.bumpStep(1)">+</button></div>' : '')+'</div>'+
-      (S.tab==="anim" ? '<label>'+(info.move?'Spelare som följer pilen':'Boll som skickas')+'<select onchange="XD.setOwner(this.value)">'+ownOpts+'</select></label>' : '')+
-      hideRow+ballBtn+
+      (S.tab==="anim" ? '<label>'+(info.move?'Spelare som följer pilen':WD.Ball+' som skickas')+'<select onchange="XD.setOwner(this.value)">'+ownOpts+'</select></label>' : '')+
+      hideRow+ballBtn+colorRow(p.color)+
       '<div class="xd-note">Tryck ✋ Markera &amp; flytta och dra i ringen mitt på pilen för att böja den. Tryck på en böjpunkt för att ta bort den.</div>'+
       '<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort pil</button></div>';
   } else if(f){
-    var lab = (f.type==="unit"||f.type==="leader")
-      ? '<label>'+(f.type==="unit"?'Bokstäver (t.ex. ABC)':'Bokstav')+'<input type="text" maxlength="'+(f.type==="unit"?4:2)+'" value="'+esc(f.label||(f.type==="unit"?"ABC":"L"))+'" oninput="XD.setLabel(this.value)"></label>' : "";
+    var lmax = PACK.labelTypes && PACK.labelTypes[f.type];
+    var lab = lmax
+      ? '<label>'+(lmax>2?'Text/bokstäver':'Bokstav')+'<input type="text" maxlength="'+lmax+'" value="'+esc(f.label!=null?f.label:(PACK.iconLabels&&PACK.iconLabels[f.type])||"")+'" oninput="XD.setLabel(this.value)"></label>' : "";
     var hideSel="";
     if(S.tab==="anim"){
       var opts='<option value="">Aldrig — syns hela tiden</option>';
       for(var n=1;n<=Math.max(S.stepCount,maxStep(S.drawing.objects));n++) opts+='<option value="'+n+'"'+(f.hideAfter===n?' selected':'')+'>Försvinner när steg '+n+' är klart</option>';
       hideSel='<label>Visas i animeringen<select onchange="XD.setHideAfter(this.value)">'+opts+'</select></label>';
     }
-    html='<div class="xd-selbox"><div class="xd-selh">Markerad: '+esc(figName(f,objs))+'</div>'+lab+hideSel+'<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort</button></div>';
+    html='<div class="xd-selbox"><div class="xd-selh">Markerad: '+esc(figName(f,objs))+'</div>'+lab+transformRow(false)+colorRow(f.color)+hideSel+'<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort</button></div>';
+  } else if(so && so.kind==="zone"){
+    html='<div class="xd-selbox"><div class="xd-selh">Markerad: Zon ('+(so.shape==="oval"?"oval":"rektangel")+')</div>'+transformRow(true)+colorRow(so.color)+'<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort zon</button></div>';
+  } else if(so && so.kind==="text"){
+    html='<div class="xd-selbox"><div class="xd-selh">Markerad: Text</div><label>Text<textarea rows="2" maxlength="120" oninput="XD.setText(this.value)">'+esc(so.text)+'</textarea></label>'+
+      '<div class="xd-row"><div class="xd-tf"><span>Storlek</span><button onclick="XD.textSize(0.85)" aria-label="Mindre">−</button><button onclick="XD.textSize(1.18)" aria-label="Större">+</button></div></div>'+colorRow(so.color)+'<button class="xd-btn small danger" onclick="XD.deleteSelected()">🗑 Ta bort text</button></div>';
   }
   setHTML(el, html);
 }
@@ -1801,10 +2051,34 @@ function undo(){
 function dirty(){ S.sim=null; }
 
 /* ---------- Pekare (allt på själva SVG:en med pointer capture, så tryck/dragning fungerar på mobil) ---------- */
+function zoneCell(){
+  if(S.zone==null) return null;
+  var g=stationGeom(S.drawing); return (g && g.cells[S.zone]) || null;
+}
+function viewRect(){
+  var dm=dimOf(S.drawing), r={x:0,y:0,w:dm.w,h:dm.h}, c=zoneCell();
+  if(c){                                                        // zonläge: zooma till den valda stationsrutan
+    var pad=16; r={x:c.x-pad, y:c.y-pad, w:c.w+2*pad, h:c.h+2*pad};
+    var ar=r.w/r.h;
+    if(ar<0.85){ var nw=r.h*0.85; r.x-=(nw-r.w)/2; r.w=nw; } else if(ar>1.9){ var nh=r.w/1.9; r.y-=(nh-r.h)/2; r.h=nh; }
+    r.x=Math.max(0,Math.min(dm.w-r.w,r.x)); r.y=Math.max(0,Math.min(dm.h-r.h,r.y));
+  }
+  return r;
+}
+function boundsRect(){
+  var dm=dimOf(S.drawing), c=zoneCell();
+  return c ? {x0:c.x+6,y0:c.y+6,x1:c.x+c.w-6,y1:c.y+c.h-6} : {x0:6,y0:6,x1:dm.w-6,y1:dm.h-6};
+}
 function svgPoint(e){
-  var r=svgEl().getBoundingClientRect(), w=r.width||600, h=r.height||340;
-  var x=(e.clientX-r.left)*600/w, y=(e.clientY-r.top)*340/h;
-  return {x:Math.max(6,Math.min(594,x)), y:Math.max(6,Math.min(334,y))};
+  var v=viewRect(), b=boundsRect(), r=svgEl().getBoundingClientRect(), w=r.width||v.w, h=r.height||v.h;
+  var x=v.x+(e.clientX-r.left)*v.w/w, y=v.y+(e.clientY-r.top)*v.h/h;
+  return {x:Math.max(b.x0,Math.min(b.x1,x)), y:Math.max(b.y0,Math.min(b.y1,y))};
+}
+function zoneDim(){
+  var c=zoneCell(); if(!c) return "";
+  var dm=dimOf(S.drawing);
+  return '<path d="M0,0 H'+dm.w+' V'+dm.h+' H0 Z M'+f1(c.x)+','+f1(c.y)+' H'+f1(c.x+c.w)+' V'+f1(c.y+c.h)+' H'+f1(c.x)+' Z" fill="#fff" fill-opacity=".66" fill-rule="evenodd" style="pointer-events:none"/>'+
+    '<rect x="'+f1(c.x+2)+'" y="'+f1(c.y+2)+'" width="'+f1(c.w-4)+'" height="'+f1(c.h-4)+'" fill="none" stroke="'+C.ORANGE+'" stroke-width="3" stroke-dasharray="9 6" rx="6" style="pointer-events:none"/>';
 }
 function nearestFig(p, objs, filterFn, maxD){
   var best=null, bd=maxD;
@@ -1816,6 +2090,8 @@ function onDown(e){
   if(!canEditNow()) return;
   if(e.button!=null && e.button>0) return;
   var p=svgPoint(e), t=e.target, objs=objsRef();
+  var slEl=(S.tool===null && t.closest) ? t.closest("[data-sl]") : null;
+  if(slEl){ e.preventDefault(); capture(e); S.drag={kind:"stline", idx:+slEl.getAttribute("data-sl"), last:p, moved:false, pushed:false}; return; }
   var hEl=(S.tool===null && t.closest) ? t.closest("[data-h],[data-m]") : null;
   if(hEl){ e.preventDefault(); capture(e); startHandle(hEl,p); return; }
   if(S.tool!==null && S.tool.indexOf("path:")===0){
@@ -1825,6 +2101,18 @@ function onDown(e){
     var start = snap ? {x:snap.x,y:snap.y} : p;
     S.draft={type:type, pts:[start,{x:p.x,y:p.y}], moved:false};
     renderCanvas(); return;
+  }
+  if(S.tool==="zone:oval" || S.tool==="zone:rect"){
+    e.preventDefault(); capture(e);
+    S.draft={zone:true, shape:S.tool==="zone:oval"?"oval":"rect", x0:p.x, y0:p.y, x1:p.x, y1:p.y};
+    renderCanvas(); return;
+  }
+  if(S.tool==="text"){
+    e.preventDefault(); pushUndo();
+    var tn={id:S.nid++, kind:"text", x:f1(p.x), y:f1(p.y), text:"Text", size:15};
+    objs.push(tn); S.selected=tn.id; dirty(); render();
+    setTimeout(function(){ var ta=document.querySelector("#xd-sel textarea"); if(ta){ try{ ta.focus(); ta.select(); }catch(_e){} } },60);
+    return;
   }
   if(S.tool!==null && S.tool.indexOf("fig:")===0){
     e.preventDefault(); pushUndo();
@@ -1844,7 +2132,8 @@ function onDown(e){
       var starts=objs.filter(function(q){ return q.kind==="path" && q.pts.length && dist(q.pts[0],obj)<4; }).map(function(q){ return q.id; });
       var ends=objs.filter(function(q){ return q.kind==="path" && q.pts.length>1 && dist(q.pts[q.pts.length-1],obj)<4; }).map(function(q){ return q.id; });
       S.drag={kind:"fig", id:obj.id, last:p, moved:false, pushed:false, carried:carried, starts:starts, ends:ends};
-    } else S.drag={kind:"path", id:obj.id, last:p, moved:false, pushed:false};
+    } else if(obj.kind==="path"){ S.drag={kind:"path", id:obj.id, last:p, moved:false, pushed:false}; }
+    else { S.drag={kind:"plain", id:obj.id, last:p, moved:false, pushed:false}; }
     render(); return;
   }
   S.selected=null; render();
@@ -1863,7 +2152,10 @@ function startHandle(el,p){
 }
 function onMove(e){
   if(S.draft){
-    var p=svgPoint(e); S.draft.pts[1]={x:p.x,y:p.y}; S.draft.moved=dist(S.draft.pts[0],p)>6; renderCanvas(); return;
+    var p=svgPoint(e);
+    if(S.draft.zone){ S.draft.x1=p.x; S.draft.y1=p.y; }
+    else { S.draft.pts[1]={x:p.x,y:p.y}; S.draft.moved=dist(S.draft.pts[0],p)>6; }
+    renderCanvas(); return;
   }
   var d=S.drag; if(!d) return;
   var p2=svgPoint(e);
@@ -1871,13 +2163,16 @@ function onMove(e){
   d.moved=true;
   if(!d.pushed){ pushUndo(); d.pushed=true; }
   var dx=p2.x-d.last.x, dy=p2.y-d.last.y;
+  if(d.kind==="stline"){ var gg=stationGeom(S.drawing), ln=gg && gg.lines[d.idx]; if(ln){ applyLineDrag(S.drawing.stations, ln, ln.axis==="x" ? p2.x : p2.y); d.last=p2; dirty(); renderCanvas(); } return; }
   var o=findObj(d.id); if(!o) return;
   if(d.kind==="fig"){
-    var nx=f1(Math.max(6,Math.min(594,o.x+dx))), ny=f1(Math.max(6,Math.min(334,o.y+dy)));
+    var bd=boundsRect(), nx=f1(Math.max(bd.x0,Math.min(bd.x1,o.x+dx))), ny=f1(Math.max(bd.y0,Math.min(bd.y1,o.y+dy)));
     var rx=nx-o.x, ry=ny-o.y; o.x=nx; o.y=ny;
     d.carried.forEach(function(id){ var b=findObj(id); if(b){ b.x=f1(b.x+rx); b.y=f1(b.y+ry); } });
     d.starts.forEach(function(id){ var q=findObj(id); if(q) q.pts[0]={x:o.x,y:o.y}; });
     d.ends.forEach(function(id){ var q=findObj(id); if(q) q.pts[q.pts.length-1]={x:o.x,y:o.y}; });
+  } else if(d.kind==="plain"){
+    var dq=boundsRect(); o.x=f1(Math.max(dq.x0,Math.min(dq.x1,o.x+dx))); o.y=f1(Math.max(dq.y0,Math.min(dq.y1,o.y+dy)));
   } else if(d.kind==="path"){
     o.pts=o.pts.map(function(q){ return {x:f1(q.x+dx), y:f1(q.y+dy)}; });
   } else if(d.kind==="handle"){
@@ -1888,6 +2183,14 @@ function onMove(e){
 function onUp(e){
   if(S.draft){
     var dr=S.draft; S.draft=null;
+    if(dr.zone){
+      var zw=Math.abs(dr.x1-dr.x0), zh=Math.abs(dr.y1-dr.y0);
+      if(zw>=18 && zh>=18){
+        pushUndo(); var zn={id:S.nid++, kind:"zone", shape:dr.shape, x:f1((dr.x0+dr.x1)/2), y:f1((dr.y0+dr.y1)/2), w:f1(zw), h:f1(zh), color:C.ORANGE, rot:0};
+        objsRef().push(zn); S.selected=zn.id; dirty();
+      }
+      render(); return;
+    }
     if(dr.moved && dist(dr.pts[0],dr.pts[1])>=14){
       pushUndo();
       var objs=objsRef(), end=dr.pts[1];
@@ -1923,9 +2226,9 @@ function onUp(e){
 
 /* ---------- Åtgärder från gränssnittet ---------- */
 function pickTool(t){
-  if(t==="select") S.tool=null;
-  else S.tool = (S.tool===t) ? null : t;
-  if(S.tool!==null){ S.paletteOpen=false; var sc=document.querySelector(".xd-scroll"); if(sc) sc.scrollTop=0; }
+  if(t==="select" || t===null) S.tool=null;
+  else S.tool = t;                       // tryck på samma verktyg igen behåller det (✋ Markera & flytta är enda sättet att släppa verktyget)
+  if(S.tool!==null && !isDesk()){ S.paletteOpen=false; var sc=document.querySelector(".xd-scroll"); if(sc) sc.scrollTop=0; }
   render();
 }
 function togglePalette(){ S.paletteOpen=!S.paletteOpen; render(); }
@@ -1961,6 +2264,394 @@ function setHideAfter(v){
   if(v==="") delete f.hideAfter; else f.hideAfter=+v;
   dirty(); render();
 }
+function renderStations(){
+  var el=$("xd-stations"); if(!el) return;
+  if(!FEAT.stations || !(S.stationsOpen || S.drawing.stations)){ el.style.display="none"; return; }
+  el.style.display="block";
+  var st=S.drawing.stations, n=st ? st.n : 0, h="";
+  var zc=zoneCell();
+  if(zc){
+    var zl=zc.label;
+    h='<div class="xd-group-t">Zon '+zl+' — rita fritt</div>'+
+      '<div class="xd-note" style="margin:4px 0 8px">Du ritar bara i zon '+zl+'. Använd figurerna, pilarna och texterna nedan. När du är klar kan du spara det som en ny övning i övningsbanken, eller gå tillbaka till översikten.</div>'+
+      '<div class="xd-strow">'+(host && host.newExercise ? '<button class="xd-btn small primary" onclick="XD.zoneSaveDialog()">💾 Spara som ny övning …</button>' : '')+'<button class="xd-btn small" onclick="XD.zoneExit()">✓ Klar med zon '+zl+'</button></div>';
+    setHTML(el,h); return;
+  }
+  h='<div class="xd-group-t">Stationer — hur många och hur ska '+AREA+' delas?</div>';
+  h+='<div class="xd-strow"><span>Antal</span>'+[0,1,2,3,4,5,6].map(function(k){ return '<button class="xd-chip'+((k===n)?' active':'')+'" onclick="XD.setStationsN('+k+')">'+(k===0?'Inga':k)+'</button>'; }).join("")+'</div>';
+  if(st){
+    var lays=ST_LAYOUTS[st.n]||[], cur=layoutOf(st);
+    h+='<div class="xd-strow"><span>Indelning</span>'+lays.map(function(l){ var on=cur && cur.id===l.id; return '<button class="xd-lay'+(on?' active':'')+'" onclick="XD.setStationLayout(\''+l.id+'\')" title="'+esc(l.label)+'">'+layoutIcon(l,on)+'<em>'+esc(l.label)+'</em></button>'; }).join("")+'</div>';
+    var g=stationGeom(S.drawing);
+    h+='<div class="xd-stlist">'+g.cells.map(function(c,i){
+      var key=cellKey(st,i), has = st.exs && st.exs[key] && st.exs[key].length, tagged=S.drawing.objects.some(function(o){ return o.st===key && !o.lb; });
+      var flag="";
+      if(st.stale && st.stale[key]) flag='<div class="xd-stflag warn">⚠ Övningen har ändrats. <button class="xd-btn small" onclick="XD.stationRefresh('+i+')">↻ Uppdatera från övningen</button></div>';
+      else if(has && cellTouched(key)) flag='<div class="xd-stflag">✎ Du har ändrat innehållet. <button class="xd-btn small" onclick="XD.edChoiceOpen('+i+')">Vad ska hända med ändringen?</button></div>';
+      var more = '';
+      if(tagged || (st.lbls && st.lbls[key]!==undefined)) more='<label class="xd-stopt"><input type="checkbox" '+((st.lblOff && st.lblOff[key])?'':'checked')+' onchange="XD.stationLabelToggle('+i+')"> Rubrik</label>'+(tagged ? '<button class="xd-btn small ghost" onclick="XD.stationFit('+i+')" title="Anpassa innehållet till rutans storlek">⤢ Anpassa</button>' : '');
+      return '<div class="xd-stitem"><b>'+c.label+'</b>'+
+        '<button class="xd-btn small primary" onclick="XD.zoneEnter('+i+')" aria-label="Rita ny övning i zon '+c.label+'">✏️ Ny övning</button>'+
+        (host && host.listDrawings ? '<button class="xd-btn small" onclick="XD.stationInsert('+i+')" aria-label="Lägg in sparad övning i zon '+c.label+'">'+(has ? '⇄ Byt övning' : '📂 Sparad övning')+'</button>' : '')+
+        '<button class="xd-btn small ghost" onclick="XD.stationClear('+i+')">Töm</button>'+(more ? '<div class="xd-stmore">'+more+'</div>' : '')+flag+'</div>';
+    }).join("")+'</div>'+
+      (st.parts||st.outer ? '<button class="xd-btn small" style="margin-top:6px" onclick="XD.stationsReset()">↺ Standardstorlek på rutorna</button>' : '')+
+      '<div class="xd-note">Välj <b>✏️ Ny övning</b> för att rita fritt i en zon (och spara den som övning), eller <b>📂 Sparad övning</b> för att lägga in en tidigare övning. Dra i de orange handtagen på planen för att ändra rutornas storlek. Alla zoner spelas samtidigt: steg 1 på A, B, C … körs tillsammans.</div>';
+  }
+  setHTML(el,h);
+}
+function applyLineDrag(st, ln, coord){
+  var lay=layoutOf(st); if(!lay) return;
+  var f=Math.max(0.15, Math.min(0.85, (coord-ln.lo)/(ln.hi-ln.lo)));
+  function r4(v){ return Math.round(v*10000)/10000; }
+  if(ln.ref.k==="outer"){
+    var o=(st.outer && st.outer.length===lay.parts.length) ? st.outer.slice() : lay.parts.map(function(){ return 1; });
+    var tot=o[ln.ref.i]+o[ln.ref.i+1]; o[ln.ref.i]=r4(tot*f); o[ln.ref.i+1]=r4(tot*(1-f)); st.outer=o;
+  } else {
+    var pr=st.parts ? cloneJ(st.parts) : cloneJ(lay.parts), row=pr[ln.ref.i], t2=row[ln.ref.j]+row[ln.ref.j+1];
+    row[ln.ref.j]=r4(t2*f); row[ln.ref.j+1]=r4(t2*(1-f)); st.parts=pr;
+  }
+}
+function stationsReset(){ var st=S.drawing.stations; if(!st || (!st.parts && !st.outer)) return; pushUndo(); delete st.parts; delete st.outer; dirty(); render(); }
+function insideCell(o,c){ var p=cellRef(o); return p.x>=c.x && p.x<=c.x+c.w && p.y>=c.y && p.y<=c.y+c.h; }
+function zoneEnter(i){
+  var g=stationGeom(S.drawing); if(!g || !g.cells[i]) return;
+  S.zone=i; S.tool=null; S.selected=null; S.paletteOpen=true; S.stationsOpen=true; render();
+  var sc=document.querySelector(".xd-scroll"); if(sc) sc.scrollTop=0;
+}
+function zoneExit(){ if(S.zone==null) return; S.zone=null; S.selected=null; S.tool=null; render(); }
+function extractCell(c){
+  // Zonens innehåll som en fristående ritning (förstoras så den fyller ytan)
+  var objs=S.drawing.objects.filter(function(o){ return !o.lb && insideCell(o,c); }).map(cloneJ);
+  var b=bboxOf(objs), a=areaOf(S.drawing), pad=24;
+  var bw=Math.max(b.x1-b.x0,20), bh=Math.max(b.y1-b.y0,20);
+  var k=Math.max(1, Math.min((a.x1-a.x0-2*pad)/bw, (a.y1-a.y0-2*pad)/bh, 2.4));
+  var ox=(a.x0+a.x1)/2-((b.x0+b.x1)/2)*k, oy=(a.y0+a.y1)/2-((b.y0+b.y1)/2)*k, idMap={}, nid=1;
+  objs.forEach(function(o){ idMap[o.id]=nid++; });
+  objs.forEach(function(o){
+    var old=o.id; o.id=idMap[old]; delete o.st; delete o.ex; delete o.lb;
+    if(o.kind==="path"){ o.pts=o.pts.map(function(p){ return {x:f1(p.x*k+ox), y:f1(p.y*k+oy)}; }); if(o.owner!=null && o.owner>0) o.owner=idMap[o.owner]||null; }
+    else {
+      o.x=f1(o.x*k+ox); o.y=f1(o.y*k+oy);
+      if(o.kind==="zone"){ o.w=f1(o.w*k); o.h=f1(o.h*k); }
+      else if(o.kind==="text"){ if(k>1.2) o.size=Math.min(28,Math.round((o.size||15)*Math.min(k,1.5))); }
+      else if(o.kind==="fig" && o.scale && o.scale<1){ var ns=Math.min(1,o.scale*k); if(ns>=0.98) delete o.scale; else o.scale=f1(ns); }
+    }
+  });
+  return {v:2, rink:S.drawing.rink||PACK.defaultRink, still:null, objects:objs};
+}
+function zoneSaveDialog(){ if(S.zone!=null) openNewExFor(S.zone); }
+function openNewExFor(i){
+  var g=stationGeom(S.drawing), c=g && g.cells[i]; if(!c || !(host && host.newExercise)) return; S.newexCell=i;
+  if(!S.drawing.objects.some(function(o){ return !o.lb && insideCell(o,c); })){ alert("Rita något i zon "+c.label+" först."); return; }
+  var sel=$("xd-newex-cat"), cats=(host.exerciseCats && host.exerciseCats()) || [], def=(host.exerciseCatFor && host.exerciseCatFor(cellKey(S.drawing.stations,i))) || "";
+  sel.innerHTML=cats.map(function(k){ return '<option value="'+esc(k.id)+'"'+(k.id===def?' selected':'')+'>'+esc(k.label)+'</option>'; }).join("");
+  $("xd-newex-name").value=""; $("xd-newex-syfte").value="";
+  $("xd-newex-h").textContent="Spara zon "+c.label+" som ny övning";
+  $("xd-newex").classList.add("open"); setTimeout(function(){ try{ $("xd-newex-name").focus(); }catch(_e){} },40);
+}
+function newexClose(){ $("xd-newex").classList.remove("open"); }
+function zoneSaveConfirm(){
+  var gi=stationGeom(S.drawing), zi=(S.newexCell!=null ? S.newexCell : S.zone), c=gi && gi.cells[zi]; if(!c) return;
+  var name=$("xd-newex-name").value.trim(); if(!name){ $("xd-newex-name").focus(); return; }
+  var id=host.newExercise({title:name, cat:$("xd-newex-cat").value, syfte:$("xd-newex-syfte").value.trim(), drawing:extractCell(c)});
+  if(!id) return;
+  var st=S.drawing.stations, key=cellKey(st,zi);
+  pushUndo();
+  S.drawing.objects.forEach(function(o){ if(!o.lb && insideCell(o,c)){ o.st=key; o.ex=id; } });     // zonens innehåll är nu den nya övningen
+  if(!st.exs) st.exs={}; st.exs[key]=[id];
+  stAux(st,"chash")[key]=contentHash(S.drawing,key); stAux(st,"shash")[key]=hashDrawing(host.getDrawing ? host.getDrawing(id) : null);
+  if(st.stale) delete st.stale[key]; if(st.keep) delete st.keep[key];
+  dirty(); newexClose(); S.newexCell=null; S.zoneSaved=name; render();
+}
+function stationsToggle(){
+  if(S.zone!=null) S.zone=null;
+  if(!FEAT.stations) return;
+  if(S.drawing.stations){ S.stationsOpen=!S.stationsOpen; if(!S.stationsOpen){ /* dölj bara panelen */ } render(); return; }
+  S.stationsOpen=true; pushUndo(); S.drawing.stations={n:4, layout:"g22"}; dirty(); render();
+}
+function setStationsN(n){
+  if(S.zone!=null) S.zone=null;
+  pushUndo();
+  var old=S.drawing.stations;
+  if(old && n && n<old.n){                                   // stationer försvinner: deras innehåll och koppling tas bort
+    for(var ci=n; ci<old.n; ci++){ var kk=cellKey(old,ci); S.drawing.objects=S.drawing.objects.filter(function(o){ return o.st!==kk; }); if(old.exs) delete old.exs[kk]; if(old.lbls) delete old.lbls[kk]; }
+  }
+  if(!n){ delete S.drawing.stations; S.stationsOpen=false; }
+  else { var lays=ST_LAYOUTS[n]||[], keep=S.drawing.stations && S.drawing.stations.n===n && lays.some(function(l){ return l.id===S.drawing.stations.layout; }); var prev=S.drawing.stations; S.drawing.stations = keep ? prev : {n:n, layout: (prev && lays.some(function(l){ return l.id===prev.layout; })) ? prev.layout : lays[0].id, ids:prev && prev.ids ? prev.ids.slice(0,n) : undefined, exs:prev && prev.exs, exsBase:prev && prev.exsBase, lbls:prev && prev.lbls}; Object.keys(S.drawing.stations).forEach(function(k){ if(S.drawing.stations[k]===undefined) delete S.drawing.stations[k]; }); S.stationsOpen=true; }
+  dirty(); render();
+}
+function setStationLayout(id){
+  if(S.zone!=null) S.zone=null; var p=S.drawing.stations; if(!p) return; pushUndo(); var nw={n:p.n, layout:id}; ['ids','exs','exsBase','lbls'].forEach(function(k){ if(p[k]) nw[k]=p[k]; }); S.drawing.stations=nw; dirty(); render(); }
+function cellRef(o){ if(o.kind==="path") return o.pts[0]; return {x:o.x, y:o.y}; }
+function stationClear(i){
+  var g=stationGeom(S.drawing); if(!g || !g.cells[i]) return; var c=g.cells[i], st=S.drawing.stations, key=cellKey(st,i);
+  var objs=S.drawing.objects, gone={};
+  var keep=objs.filter(function(o){
+    if(o.lb && o.st===key) return true;                                   // stationens rubrik ligger kvar
+    var p=cellRef(o), inside=p.x>=c.x && p.x<=c.x+c.w && p.y>=c.y && p.y<=c.y+c.h, mine=(o.st===key);
+    if(inside || mine) gone[o.id]=1; return !(inside || mine);
+  });
+  var hadRoster = st.exs && st.exs[key] && st.exs[key].length;
+  if(keep.length===objs.length && !hadRoster) return;
+  pushUndo(); keep.forEach(function(o){ if(o.kind==="path" && o.owner!=null && o.owner>0 && gone[o.owner]) o.owner=null; });
+  S.drawing.objects=keep; if(!st.exs) st.exs={}; st.exs[key]=[]; if(st.chash) delete st.chash[key]; if(st.shash) delete st.shash[key]; if(st.stale) delete st.stale[key]; if(st.keep) delete st.keep[key]; S.selected=null; dirty(); render();
+}
+function bboxOf(objs){
+  var b={x0:1e9,y0:1e9,x1:-1e9,y1:-1e9};
+  function add(x,y){ if(x<b.x0)b.x0=x; if(y<b.y0)b.y0=y; if(x>b.x1)b.x1=x; if(y>b.y1)b.y1=y; }
+  objs.forEach(function(o){
+    if(o.kind==="path") o.pts.forEach(function(p){ add(p.x,p.y); });
+    else if(o.kind==="zone"){ add(o.x-o.w/2,o.y-o.h/2); add(o.x+o.w/2,o.y+o.h/2); }
+    else if(o.kind==="text"){ var tl=String(o.text==null?"":o.text).split("\n"), tw=Math.max.apply(null,tl.map(function(l){ return l.length; }).concat([1]))*(o.size||15)*0.58+12, th=tl.length*(o.size||15)*1.25+8; add(o.x-tw/2,o.y-th/2); add(o.x+tw/2,o.y+th/2); }
+    else { var r=22*(o.scale||1); add(o.x-r,o.y-r); add(o.x+r,o.y+r); }
+  });
+  return b;
+}
+function wrapText(str, maxChars){
+  var words=String(str==null?"":str).replace(/\s+/g," ").trim().split(" "), lines=[], cur="";
+  words.forEach(function(w){ var t=cur ? cur+" "+w : w; if(t.length<=maxChars || !cur) cur=t; else { lines.push(cur); cur=w; } });
+  if(cur) lines.push(cur);
+  return lines.slice(0,4).join("\n");
+}
+function cellKey(st,i){ return (st && st.ids && st.ids[i]) || String(i); }
+function sameArr(a,b){ if(a.length!==b.length) return false; for(var i=0;i<a.length;i++) if(a[i]!==b[i]) return false; return true; }
+function insertIntoCell(src, c, tag){
+  var objs=(src.objects||[]).map(cloneJ); if(!objs.length) return 0;
+  var b=bboxOf(objs), bw=Math.max(b.x1-b.x0,20), bh=Math.max(b.y1-b.y0,20);
+  var padX=12, padTop=34, padBot=12, aw=c.w-2*padX, ah=c.h-padTop-padBot;
+  var sc=Math.min(aw/bw, ah/bh, 1);
+  var ox=c.x+c.w/2-((b.x0+b.x1)/2)*sc, oy=c.y+padTop+ah/2-((b.y0+b.y1)/2)*sc;
+  var fs=Math.max(0.55, Math.min(1, sc)), idMap={};
+  objs.forEach(function(o){ idMap[o.id]=S.nid++; });
+  objs.forEach(function(o){
+    var old=o.id; o.id=idMap[old];
+    if(o.kind==="path"){ o.pts=o.pts.map(function(p){ return {x:f1(p.x*sc+ox), y:f1(p.y*sc+oy)}; }); if(o.owner!=null && o.owner>0) o.owner=idMap[o.owner]||null; }
+    else {
+      o.x=f1(o.x*sc+ox); o.y=f1(o.y*sc+oy);
+      if(o.kind==="zone"){ o.w=f1(o.w*sc); o.h=f1(o.h*sc); }
+      else if(o.kind==="text"){
+        o.size=Math.max(9, Math.round((o.size||15)*Math.max(sc,0.7)));
+        o.text=wrapText(o.text, Math.max(8, Math.floor((c.w-2*padX-12)/(o.size*0.58))));            // långa texter radbryts så de ryms i rutan
+        var tl=o.text.split("\n"), tw=Math.max.apply(null,tl.map(function(l){ return l.length; }).concat([1]))*o.size*0.58+12, th=tl.length*o.size*1.25+8;
+        o.x=f1(Math.max(c.x+padX+tw/2, Math.min(c.x+c.w-padX-tw/2, o.x))); o.y=f1(Math.max(c.y+padTop*0.6+th/2, Math.min(c.y+c.h-padBot-th/2, o.y)));
+      }
+      else if(o.kind==="fig" && sc<1){ o.scale=f1((o.scale||1)*fs); }
+    }
+    if(tag){ o.st=tag.st; if(tag.ex) o.ex=tag.ex; }
+    S.drawing.objects.push(o);
+  });
+  return objs.length;
+}
+function hashStr(t){ var h=5381; for(var i=0;i<t.length;i++){ h=((h<<5)+h+t.charCodeAt(i))|0; } return (h>>>0).toString(36); }
+function hashDrawing(d){ return d ? hashStr(JSON.stringify([d.rink||"", d.objects||[]])) : ""; }
+function contentHash(d,key){
+  var a=d.objects.filter(function(o){ return o.st===key && !o.lb; }).map(function(o){
+    return o.kind==="path" ? [o.id,o.type,o.step,o.smooth?1:0,o.pts.map(function(p){ return p.x+","+p.y; }).join(";")] : [o.id,o.kind,o.type,o.x,o.y,o.w,o.h,o.rot,o.scale,o.text,o.color,o.hideAfter];
+  });
+  return hashStr(JSON.stringify(a));
+}
+function cellLabelObj(c, key, text){
+  var avail=c.w-10-38-8, longest=Math.max.apply(null,String(text).split(/\s+/).map(function(w){ return w.length; }).concat([1]));
+  var sz=Math.max(10, Math.min(13, Math.floor(avail/(longest*0.6))));                   // långa ord => lite mindre text så bokstaven uppe till höger inte täcks
+  var txt=wrapText(text, Math.max(8,Math.floor((avail-12)/(sz*0.58)))), tl=txt.split("\n"), tw=Math.max.apply(null,tl.map(function(l){ return l.length; }).concat([1]))*sz*0.58+12, th=tl.length*sz*1.25+8;
+  return {id:S.nid++, kind:"text", x:f1(c.x+10+tw/2), y:f1(c.y+8+th/2), text:txt, size:sz, st:key, lb:1};
+}
+function setCellLabel(d,c,key,text){                    // (S.drawing === d)
+  d.objects=d.objects.filter(function(o){ return !(o.st===key && o.lb); });
+  if(text) d.objects.push(cellLabelObj(c,key,text));
+  var st=d.stations; if(st){ if(!st.lbls) st.lbls={}; st.lbls[key]=text||""; }
+}
+function stAux(st,name){ if(!st[name]) st[name]={}; return st[name]; }
+function fillCell(d, c, key, cs, contentOnly){          // (S.drawing === d) bygger om en stations synkade innehåll (och rubrik)
+  d.objects=d.objects.filter(function(o){ return !(o.st===key && (!o.lb || !contentOnly)); });
+  var alive={}; d.objects.forEach(function(o){ alive[o.id]=1; });
+  d.objects.forEach(function(o){ if(o.kind==="path" && o.owner!=null && o.owner>0 && !alive[o.owner]) o.owner=null; });
+  if(cs.drawing && cs.drawing.objects && cs.drawing.objects.length) insertIntoCell(cs.drawing, c, {st:key, ex:cs.exId});
+  var st=d.stations;
+  if(!contentOnly){ var want=(st && st.lblOff && st.lblOff[key]) ? "" : (cs.label||""); setCellLabel(d,c,key,want); }
+  if(st){
+    stAux(st,"exs")[key]=cs.exId ? [cs.exId] : [];
+    stAux(st,"shash")[key]=cs.srcHash || (cs.drawing ? hashDrawing(cs.drawing) : "");
+    stAux(st,"chash")[key]=contentHash(d,key);
+    if(st.stale) delete st.stale[key];
+    if(st.keep) delete st.keep[key];
+  }
+}
+function setBadges(d, cells){
+  var st=d.stations; st.bdg={};
+  cells.forEach(function(cs){ if(cs.badge) st.bdg[cs.key]=cs.badge; });
+  if(!Object.keys(st.bdg).length) delete st.bdg;
+}
+function compose(opts){
+  // Bygger en stationsritning utanför ritaren: opts {rink, n, layout, cells:[{key, exId, drawing, label, srcHash, badge}]}
+  var sd=S.drawing, sn=S.nid, cells=opts.cells||[];
+  var d=emptyDrawing(); d.rink=opts.rink||PACK.defaultRink;
+  d.stations={n:opts.n, layout:opts.layout||((ST_LAYOUTS[opts.n]||[{}])[0].id)};
+  d.stations.ids=cells.slice(0,opts.n).map(function(cl,i){ return cl.key || String(i); }); d.stations.exs={}; d.stations.lbls={};
+  S.drawing=d; S.nid=1;
+  try{
+    var g=stationGeom(d);
+    cells.forEach(function(cl,i){ var c=g.cells[i]; if(!c) return; fillCell(d, c, d.stations.ids[i], cl); });
+    setBadges(d, cells.map(function(cl,i){ return {key:d.stations.ids[i], badge:cl.badge}; }));
+    d.stations.exsBase=cloneJ(d.stations.exs);
+  } finally { S.drawing=sd; S.nid=sn; }
+  return d;
+}
+function moveCellContent(d, key, from, to){              // ordningen på stationerna ändrades: flytta zonens innehåll med
+  var sc=Math.min(to.w/from.w, to.h/from.h), fcx=from.x+from.w/2, fcy=from.y+from.h/2, tcx=to.x+to.w/2, tcy=to.y+to.h/2;
+  d.objects.forEach(function(o){
+    if(o.st!==key) return;
+    if(o.kind==="path") o.pts=o.pts.map(function(p){ return {x:f1(tcx+(p.x-fcx)*sc), y:f1(tcy+(p.y-fcy)*sc)}; });
+    else { o.x=f1(tcx+(o.x-fcx)*sc); o.y=f1(tcy+(o.y-fcy)*sc); if(o.kind==="zone"){ o.w=f1(o.w*sc); o.h=f1(o.h*sc); } else if(o.kind==="fig" && sc<0.99 && !o.lb){ o.scale=f1(Math.max(0.5,(o.scale||1)*Math.max(sc,0.75))); } }
+  });
+}
+function syncStations(d0, spec){
+  // Synkar en kopplad översikt mot en ny stationslista (spec.cells i stationsordning).
+  // Ändrar bara det som ändrats: egna tillägg, och inlagda övningar du ändrat själv, rörs inte.
+  var cells=spec.cells||[], n=cells.length, keys=cells.map(function(c){ return c.key; }), st0=d0 && d0.stations;
+  if(n===0){
+    var d0c=cloneJ(d0||emptyDrawing()); d0c.objects=(d0c.objects||[]).filter(function(o){ return o.st==null; }); delete d0c.stations; return d0c;
+  }
+  if(st0 && !st0.ids) return compose({rink:(d0 && d0.rink)||PACK.defaultRink, n:n, layout:st0.layout, cells:cells});
+  var sd=S.drawing, sn=S.nid, d=cloneJ(d0||emptyDrawing());
+  S.drawing=d; S.nid=computeNid(d);
+  try{
+    if(!d.stations) d.stations={n:n, layout:(ST_LAYOUTS[n]||[{}])[0].id, ids:[], exs:{}, lbls:{}};
+    var st=d.stations, oldIds=(st.ids||[]).slice(), oldN=st.n, oldG=stationGeom(d);
+    var sameSet=oldIds.length===keys.length && keys.every(function(k){ return oldIds.indexOf(k)>=0; });
+    var reorder=sameSet && !sameArr(oldIds,keys);
+    var structural = oldN!==n || !sameSet;
+    if(oldN!==n){ var lays=ST_LAYOUTS[n]||[]; if(!lays.some(function(l){ return l.id===st.layout; })) st.layout=lays[0].id; delete st.parts; delete st.outer; }
+    oldIds.forEach(function(k){ if(keys.indexOf(k)<0){                          // stationer som försvunnit
+      d.objects=d.objects.filter(function(o){ return o.st!==k; });
+      ["exs","lbls","shash","chash","stale","keep","lblOff","bdg"].forEach(function(f){ if(st[f]) delete st[f][k]; });
+    } });
+    st.n=n; st.ids=keys; stAux(st,"exs"); stAux(st,"lbls");
+    var g=stationGeom(d);
+    if(reorder){
+      keys.forEach(function(k,i){
+        var oi=oldIds.indexOf(k), from=oldG && oldG.cells[oi], to=g.cells[i]; if(!from || !to || oi===i) return;
+        var was=(st.chash && st.chash[k]!==undefined) ? contentHash(d,k)===st.chash[k] : false;
+        moveCellContent(d,k,from,to);
+        if(was) st.chash[k]=contentHash(d,k);
+      });
+    }
+    cells.forEach(function(cs,i){
+      var key=cs.key, cell=g.cells[i], want=cs.exId ? [cs.exId] : [], have=st.exs[key], fresh=(have===undefined);
+      var exChanged = !fresh && !sameArr(want,have);
+      if(fresh || exChanged || (structural && !reorder)){ fillCell(d,cell,key,cs); return; }
+      var lblWanted=(st.lblOff && st.lblOff[key]) ? "" : (cs.label||"");
+      if((st.lbls[key]||"")!==lblWanted) setCellLabel(d,cell,key,lblWanted);
+      if(cs.exId && cs.srcHash && stAux(st,"shash")[key]!==cs.srcHash){
+        if(st.keep && st.keep[key]){ st.shash[key]=cs.srcHash; }
+        else if(st.chash && contentHash(d,key)===st.chash[key]){ fillCell(d,cell,key,cs,true); }           // orörd ruta: uppdatera automatiskt
+        else { stAux(st,"stale")[key]=true; }                                                              // ändrad ruta: markera, uppdatera på begäran
+      }
+    });
+    setBadges(d, cells);
+    st.exsBase=cloneJ(st.exs);
+  } finally { S.drawing=sd; S.nid=sn; }
+  return d;
+}
+function cellTouched(key){ var st=S.drawing.stations; return !!(st && st.chash && st.chash[key]!==undefined && contentHash(S.drawing,key)!==st.chash[key]); }
+function stationRefresh(i){                                // ↻ Uppdatera från övningen (skriver över zonens innehåll)
+  var g=stationGeom(S.drawing), st=S.drawing.stations; if(!g || !g.cells[i] || !(host && host.getDrawing)) return;
+  var key=cellKey(st,i), ex=st.exs && st.exs[key] && st.exs[key][0]; if(!ex) return;
+  var src=host.getDrawing(ex); if(!src) return; pushUndo();
+  fillCell(S.drawing, g.cells[i], key, {exId:ex, drawing:src, srcHash:hashDrawing(src), label:st.lbls && st.lbls[key]}, true);
+  S.selected=null; dirty(); render();
+}
+function stationFit(i){                                     // ⤢ Anpassa innehållet till rutan efter att den ändrats
+  var g=stationGeom(S.drawing), st=S.drawing.stations; if(!g || !g.cells[i]) return;
+  var key=cellKey(st,i), c=g.cells[i], objs=S.drawing.objects.filter(function(o){ return o.st===key && !o.lb; });
+  if(!objs.length) return; pushUndo();
+  var b=bboxOf(objs), bw=Math.max(b.x1-b.x0,20), bh=Math.max(b.y1-b.y0,20), padX=12, padTop=34, padBot=12;
+  var aw=c.w-2*padX, ah=c.h-padTop-padBot, sc=Math.min(aw/bw, ah/bh, 1.6);
+  var ox=c.x+c.w/2-((b.x0+b.x1)/2)*sc, oy=c.y+padTop+ah/2-((b.y0+b.y1)/2)*sc, fs=Math.max(0.55, Math.min(1, sc));
+  objs.forEach(function(o){
+    if(o.kind==="path") o.pts=o.pts.map(function(p){ return {x:f1(p.x*sc+ox), y:f1(p.y*sc+oy)}; });
+    else { o.x=f1(o.x*sc+ox); o.y=f1(o.y*sc+oy); if(o.kind==="zone"){ o.w=f1(o.w*sc); o.h=f1(o.h*sc); } else if(o.kind==="fig"){ var ns=f1(Math.min(1,(o.scale||1)*(sc<1?fs:1))); if(ns>=0.98) delete o.scale; else o.scale=ns; } }
+  });
+  if(st.chash && st.chash[key]!==undefined) st.chash[key]=contentHash(S.drawing,key);
+  dirty(); render();
+}
+function stationLabelToggle(i){
+  var g=stationGeom(S.drawing), st=S.drawing.stations; if(!g || !g.cells[i]) return;
+  var key=cellKey(st,i); pushUndo(); var off=stAux(st,"lblOff");
+  if(off[key]){ delete off[key]; var t=(st.lblWanted && st.lblWanted[key]) || ""; setCellLabel(S.drawing,g.cells[i],key,t); }
+  else { off[key]=true; if(!st.lblWanted) st.lblWanted={}; var cur=S.drawing.objects.find(function(o){ return o.st===key && o.lb; }); st.lblWanted[key]=cur ? cur.text.replace(/\n/g," ") : (st.lbls && st.lbls[key]) || ""; setCellLabel(S.drawing,g.cells[i],key,""); }
+  dirty(); render();
+}
+function edChoiceOpen(i){ S.edCell=i; var g=stationGeom(S.drawing), st=S.drawing.stations, key=cellKey(st,i), ex=st.exs && st.exs[key] && st.exs[key][0]; var el=$("xd-edchoice"); if(!el) return;
+  $("xd-edchoice-h").textContent="Zon "+g.cells[i].label+": innehållet är ändrat";
+  var title=(host && host.exerciseTitle && ex) ? host.exerciseTitle(ex) : "";
+  $("xd-edchoice-t").textContent=(title?"Du har ändrat övningen «"+title+"» i den här zonen. ":"Du har ändrat innehållet i den här zonen. ")+"Vad ska hända med ändringarna?";
+  $("xd-edchoice-src").style.display=(ex && host && host.saveDrawing) ? "" : "none";
+  el.classList.add("open"); }
+function edChoiceClose(){ var el=$("xd-edchoice"); if(el) el.classList.remove("open"); S.edCell=null; }
+function edChoice(kind){
+  var i=S.edCell; if(i==null) return; var g=stationGeom(S.drawing), st=S.drawing.stations, key=cellKey(st,i), c=g.cells[i], ex=st.exs && st.exs[key] && st.exs[key][0];
+  if(kind==="keep"){ pushUndo(); stAux(st,"keep")[key]=true; if(st.chash) st.chash[key]=contentHash(S.drawing,key); if(st.stale) delete st.stale[key]; edChoiceClose(); dirty(); render(); return; }
+  if(kind==="new"){ edChoiceClose(); openNewExFor(i); return; }
+  if(kind==="source" && ex && host && host.saveDrawing){
+    if(!window.confirm("Skriva över ritningen för den ursprungliga övningen med det du gjort i zonen? Övningen får då "+AREA+" «"+((rinkObj(S.drawing).label)||"")+"».")) return;
+    var nd=extractCell(c); host.saveDrawing(ex,nd); if(host.onSaved) host.onSaved(ex);
+    pushUndo(); stAux(st,"shash")[key]=hashDrawing(nd); st.chash[key]=contentHash(S.drawing,key); if(st.stale) delete st.stale[key]; edChoiceClose(); dirty(); render();
+  }
+}
+function stationInsert(i){ if(!(host && host.listDrawings)) return; S.pickerFor=i; var q=$("xd-picker-q"); if(q) q.value=""; $("xd-picker").classList.add("open"); pickerRender(); }
+function pickerClose(){ $("xd-picker").classList.remove("open"); S.pickerFor=null; }
+function pickerRender(){
+  var g=stationGeom(S.drawing); if(!g || S.pickerFor==null) return;
+  var cell=g.cells[S.pickerFor]; $("xd-picker-h").textContent="Lägg in övning på station "+(cell?cell.label:"");
+  var q=($("xd-picker-q").value||"").toLowerCase(), list=(host.listDrawings(S.exId)||[]).filter(function(e){ return !q || (e.title||"").toLowerCase().indexOf(q)>=0 || (e.cat||"").toLowerCase().indexOf(q)>=0; });
+  var h=list.map(function(e){ var d=host.getDrawing(e.id); return '<button class="xd-pick" onclick="XD.pickerChoose(\''+esc(e.id)+'\')"><div class="xd-pick-th">'+(d?thumbSVG(d):'')+'</div><div class="xd-pick-t"><b>'+esc(e.title)+'</b><span>'+esc(e.cat||"")+'</span></div></button>'; }).join("");
+  setHTML($("xd-picker-list"), h || '<div class="xd-note">Inga övningar med ritning hittades.</div>');
+}
+function pickerChoose(id){
+  var g=stationGeom(S.drawing), src=host.getDrawing(id); if(!g || !src || S.pickerFor==null) return;
+  var c=g.cells[S.pickerFor], st=S.drawing.stations, key=cellKey(st,S.pickerFor); pushUndo();
+  // en inlagd övning per ruta: en tidigare inlagd övning byts ut (egna ritade tillägg ligger kvar)
+  var alive={}, prevObjs=S.drawing.objects.slice();
+  S.drawing.objects=S.drawing.objects.filter(function(o){ return !(o.st===key && !o.lb); });
+  S.drawing.objects.forEach(function(o){ alive[o.id]=1; });
+  S.drawing.objects.forEach(function(o){ if(o.kind==="path" && o.owner!=null && o.owner>0 && !alive[o.owner]) o.owner=null; });
+  var n=insertIntoCell(src, c, {st:key, ex:id});
+  pickerClose(); if(!n){ S.undo.pop(); S.drawing.objects=prevObjs; render(); return; }
+  if(!st.exs) st.exs={}; st.exs[key]=[id];
+  stAux(st,"shash")[key]=hashDrawing(src); stAux(st,"chash")[key]=contentHash(S.drawing,key); if(st.stale) delete st.stale[key]; if(st.keep) delete st.keep[key];
+  S.stepCount=maxStep(S.drawing.objects); S.selected=null; dirty(); render();
+}
+function selObj(){ return findObj(S.selected); }
+function rotSel(deg){ var o=selObj(); if(!o || o.kind==="path" || o.kind==="text") return; pushUndo(); o.rot=(((o.rot||0)+deg)%360+360)%360; dirty(); render(); }
+function scaleSel(m){
+  var o=selObj(); if(!o) return; pushUndo();
+  if(o.kind==="zone"){ o.w=f1(Math.max(20,Math.min(560,o.w*m))); o.h=f1(Math.max(20,Math.min(320,o.h*m))); }
+  else if(o.kind==="fig"){ o.scale=f1(Math.max(0.5,Math.min(3.2,(o.scale||1)*m))); }
+  dirty(); render();
+}
+function zoneSize(dim,m){ var o=selObj(); if(!o || o.kind!=="zone") return; pushUndo(); if(dim==="w") o.w=f1(Math.max(20,Math.min(580,o.w*m))); else o.h=f1(Math.max(20,Math.min(330,o.h*m))); dirty(); render(); }
+function setColor(hex){ var o=selObj(); if(!o) return; pushUndo(); if(hex) o.color=hex; else delete o.color; dirty(); render(); }
+function setText(v){ var o=selObj(); if(!o || o.kind!=="text") return; o.text=v; dirty(); renderCanvas(); }
+function textSize(m){ var o=selObj(); if(!o || o.kind!=="text") return; pushUndo(); o.size=Math.max(10,Math.min(40,Math.round((o.size||15)*m))); dirty(); render(); }
+function rescaleList(list,sx,sy){
+  list.forEach(function(o){
+    if(o.kind==="path") o.pts=o.pts.map(function(q){ return {x:f1(q.x*sx), y:f1(q.y*sy)}; });
+    else { o.x=f1(o.x*sx); o.y=f1(o.y*sy); if(o.kind==="zone"){ o.w=f1(o.w*sx); o.h=f1(o.h*sy); } }
+  });
+}
+function setRink(id){
+  if(S.zone!=null) S.zone=null;
+  if((S.drawing.rink||PACK.defaultRink)===id) return;
+  pushUndo();
+  var o=dimOf(S.drawing); S.drawing.rink=id; var n=dimOf(S.drawing);
+  if(o.w!==n.w || o.h!==n.h){                 // olika ytformat (t.ex. hel is → halv is): skala om så allt hamnar på ytan
+    var sx=n.w/o.w, sy=n.h/o.h;
+    rescaleList(S.drawing.objects,sx,sy); if(S.drawing.still) rescaleList(S.drawing.still.objects,sx,sy);
+  }
+  dirty(); render();
+}
 function toggleHideDone(){ S.hideDone=!S.hideDone; render(); }
 function setBreaks(br){ S.drawing.partBreaks=br.sort(function(a,b){ return a-b; }); delete S.drawing.stillLayout; render(); }
 function toggleBreak(sn){
@@ -1991,6 +2682,7 @@ function clearAll(){ pushUndo(); objsRef().length=0; S.selected=null; dirty(); r
 function customizeStill(){ pushUndo(); S.drawing.still={objects:cloneJ(S.drawing.objects)}; S.selected=null; render(); }
 function resetStill(){ pushUndo(); S.drawing.still=null; S.selected=null; render(); }
 function switchTab(t){
+  if(S.zone!=null) S.zone=null;
   if(S.tab===t) return;
   stopPlay(); S.T=0; S.tab=t; S.selected=null; S.draft=null; S.drag=null; render();
 }
@@ -2033,20 +2725,25 @@ function mount(){
   if($("xd-overlay")) return;
   var d=document.createElement("div");
   d.innerHTML=
-'<div class="xd-overlay" id="xd-overlay"><div class="xd-sheet">'+
+'<div class="xd-overlay" id="xd-overlay"><div class="xd-sheet" id="xd-sheet">'+
 ' <div class="xd-topbar"><button class="xd-x" onclick="XD.requestClose()" aria-label="Stäng">✕</button><div class="xd-title" id="xd-title"></div><button class="xd-btn small light" id="xd-modebtn" onclick="XD.toggleMode()"></button></div>'+
 ' <div class="xd-tabs"><button class="xd-tab" data-tab="anim" onclick="XD.switchTab(\'anim\')">▶ Animation</button><button class="xd-tab" data-tab="still" onclick="XD.switchTab(\'still\')">🖼 Stillbild</button></div>'+
-' <div class="xd-scroll">'+
+' <div class="xd-scroll" id="xd-scroll">'+
 '  <div class="xd-canvas-wrap" id="xd-canvaswrap"><svg id="xd-svg" viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg"></svg><div class="xd-steps" id="xd-steps"></div></div>'+
+'  <div class="xd-side" id="xd-side">'+
 '  <div class="xd-stillbar" id="xd-stillbar"></div>'+
 '  <div id="xd-parts" style="display:none"></div>'+
 '  <div id="xd-stillgrid" style="display:none"></div>'+
 '  <div class="xd-player" id="xd-player"><div class="xd-pl-row"><button class="xd-btn small" onclick="XD.stepJump(-1)" aria-label="Föregående steg">⏮</button><button class="xd-btn play" id="xd-play" onclick="XD.togglePlay()">▶</button><button class="xd-btn small" onclick="XD.stepJump(1)" aria-label="Nästa steg">⏭</button><input type="range" id="xd-slider" min="0" max="1000" value="0" oninput="XD.seek(this.value)"><button class="xd-btn small" id="xd-speed" onclick="XD.cycleSpeed()">1×</button></div><div class="xd-pl-row2"><div class="xd-steplabel" id="xd-steplabel"></div><button class="xd-btn small xd-tog" id="xd-hidedone" onclick="XD.toggleHideDone()">Dölj avklarade pilar</button></div></div>'+
 '  <div class="xd-empty" id="xd-hint-empty">Den här övningen har ingen ritning ännu. Tryck ✏️ Redigera för att rita.</div>'+
 '  <div id="xd-legend"></div>'+
-'  <div class="xd-edit" id="xd-edit"><div class="xd-toolbar" id="xd-toolbar"></div><div class="xd-toolhint" id="xd-toolhint"></div><div id="xd-sel"></div><div id="xd-tools"></div></div>'+
+'  <div class="xd-edit" id="xd-edit"><div class="xd-toolbar" id="xd-toolbar"></div><div class="xd-rinks" id="xd-rinks"></div><div class="xd-stations" id="xd-stations"></div><div class="xd-toolhint" id="xd-toolhint"></div><div id="xd-sel"></div><div id="xd-tools"></div></div>'+
+'  </div>'+
 ' </div>'+
 ' <div class="xd-foot" id="xd-foot"><button class="xd-btn ghost" onclick="XD.requestClose()">Avbryt</button><button class="xd-btn primary" onclick="XD.save()">Spara</button></div>'+
+' <div class="xd-picker" id="xd-edchoice"><div class="xd-picker-box"><div class="xd-picker-h" id="xd-edchoice-h">Innehållet är ändrat</div><div class="xd-note" id="xd-edchoice-t" style="margin-bottom:10px"></div><div style="display:flex;flex-direction:column;gap:8px"><button class="xd-btn" id="xd-edchoice-src" onclick="XD.edChoice(\'source\')">Uppdatera den ursprungliga övningen</button><button class="xd-btn" onclick="XD.edChoice(\'new\')">Spara som ny variant …</button><button class="xd-btn" onclick="XD.edChoice(\'keep\')">Behåll bara här</button><button class="xd-btn ghost" onclick="XD.edChoiceClose()">Avbryt</button></div></div></div>'+
+' <div class="xd-picker" id="xd-newex"><div class="xd-picker-box"><div class="xd-picker-h" id="xd-newex-h">Spara som ny övning</div><label>Namn på övningen<input type="text" id="xd-newex-name" maxlength="80" placeholder="t.ex. Slalom med skott"></label><label>Kategori<select id="xd-newex-cat"></select></label><label>Syfte (valfritt)<textarea id="xd-newex-syfte" rows="2" maxlength="300"></textarea></label><div class="xd-note">Övningen sparas i övningsbanken med din ritning och läggs in på stationen. Instruktion och coachingpunkter fyller du i under övningsbanken.</div><div style="text-align:right;margin-top:8px"><button class="xd-btn ghost" onclick="XD.newexClose()">Avbryt</button> <button class="xd-btn primary" onclick="XD.zoneSaveConfirm()">Spara övning</button></div></div></div>'+
+' <div class="xd-picker" id="xd-picker"><div class="xd-picker-box"><div class="xd-picker-h" id="xd-picker-h"></div><input type="search" id="xd-picker-q" placeholder="Sök övning …" oninput="XD.pickerRender()"><div class="xd-picker-list" id="xd-picker-list"></div><div style="text-align:right;margin-top:8px"><button class="xd-btn ghost" onclick="XD.pickerClose()">Avbryt</button></div></div></div>'+
 ' <div class="xd-confirm" id="xd-confirm"><div class="xd-confirm-box"><p>Du har osparade ändringar.</p><div><button class="xd-btn primary" onclick="XD.confirmSave()">Spara</button> <button class="xd-btn danger" onclick="XD.confirmDiscard()">Kasta</button> <button class="xd-btn ghost" onclick="XD.confirmStay()">Fortsätt redigera</button></div></div></div>'+
 '</div></div>';
   document.body.appendChild(d.firstChild);
@@ -2070,14 +2767,14 @@ function open(exId, mode){
   S.base=JSON.stringify(S.drawing);
   S.mode = mode==="edit" ? "edit" : "view"; S.tab="anim"; S.tool=null; S.selected=null; S.activeStep=1;
   S.undo=[]; S.T=0; S.playing=false; S.speed=1; S.draft=null; S.drag=null; S.sim=null; S.nid=computeNid(S.drawing);
-  S.stepCount=maxStep(S.drawing.objects); S.toolsBuilt=false; S.paletteOpen=true;
-  ["xd-sel","xd-steps","xd-legend","xd-stillbar","xd-stillgrid","xd-parts","xd-toolbar"].forEach(function(id){ $(id).__xd=undefined; });
+  S.stepCount=maxStep(S.drawing.objects); S.toolsBuilt=false; S.paletteOpen=true; S.stationsOpen=!!S.drawing.stations; S.pickerFor=null; S.zone=null; S.zoneSaved=null;
+  ["xd-sel","xd-steps","xd-legend","xd-stillbar","xd-stillgrid","xd-parts","xd-toolbar","xd-rinks","xd-stations"].forEach(function(id){ $(id).__xd=undefined; });
   $("xd-title").textContent = host.getTitle ? host.getTitle(exId) : "Övning";
   $("xd-overlay").classList.add("open");
   document.body.classList.add("xd-lock");
   render();
 }
-function close(){ stopPlay(); var ov=$("xd-overlay"); if(ov) ov.classList.remove("open"); document.body.classList.remove("xd-lock"); $("xd-confirm").classList.remove("open"); S.exId=null; if(host && host.onClosed) host.onClosed(); }
+function close(){ stopPlay(); var pk=$("xd-picker"); if(pk) pk.classList.remove("open"); var nx=$("xd-newex"); if(nx) nx.classList.remove("open"); var ec=$("xd-edchoice"); if(ec) ec.classList.remove("open"); S.zone=null; var ov=$("xd-overlay"); if(ov) ov.classList.remove("open"); document.body.classList.remove("xd-lock"); $("xd-confirm").classList.remove("open"); S.exId=null; if(host && host.onClosed) host.onClosed(); }
 function isDirty(){ return JSON.stringify(S.drawing)!==S.base; }
 function requestClose(){
   if(S.mode==="edit" && isDirty()){ $("xd-confirm").classList.add("open"); return; }
@@ -2107,7 +2804,7 @@ function init(h){ host=h; }
 return {init:init, open:open, close:close, requestClose:requestClose, toggleMode:toggleMode, save:save,
   switchTab:switchTab, togglePlay:togglePlay, stepJump:stepJump, seek:seek, cycleSpeed:cycleSpeed,
   pickTool:pickTool, togglePalette:togglePalette, setActiveStep:setActiveStep, newStep:newStep, bumpStep:bumpStep, setPathType:setPathType, setOwner:setOwner, setSmooth:setSmooth,
-  addBallAtStart:addBallAtStart, toggleHideDone:toggleHideDone, toggleBreak:toggleBreak, setParts:setParts, partsOf:partsOf, toggleHide:toggleHide, setHideAfter:setHideAfter, setLabel:setLabel, deleteSelected:deleteSelected, clearAll:clearAll, undo:undo, customizeStill:customizeStill, resetStill:resetStill,
+  addBallAtStart:addBallAtStart, toggleHideDone:toggleHideDone, rotSel:rotSel, scaleSel:scaleSel, zoneSize:zoneSize, setColor:setColor, setText:setText, textSize:textSize, setRink:setRink, stationsToggle:stationsToggle, zoneEnter:zoneEnter, stationRefresh:stationRefresh, stationFit:stationFit, stationLabelToggle:stationLabelToggle, edChoiceOpen:edChoiceOpen, edChoiceClose:edChoiceClose, edChoice:edChoice, hashDrawing:hashDrawing, hashStr:hashStr, zoneExit:zoneExit, zoneSaveDialog:zoneSaveDialog, zoneSaveConfirm:zoneSaveConfirm, newexClose:newexClose, stationsReset:stationsReset, compose:compose, syncStations:syncStations, setStationsN:setStationsN, setStationLayout:setStationLayout, stationInsert:stationInsert, stationClear:stationClear, pickerRender:pickerRender, pickerChoose:pickerChoose, pickerClose:pickerClose, stationGeom:stationGeom, rinkSVG:rinkOf, toggleBreak:toggleBreak, setParts:setParts, partsOf:partsOf, toggleHide:toggleHide, setHideAfter:setHideAfter, setLabel:setLabel, deleteSelected:deleteSelected, clearAll:clearAll, undo:undo, customizeStill:customizeStill, resetStill:resetStill,
   confirmSave:confirmSave, confirmDiscard:confirmDiscard, confirmStay:confirmStay,
   thumbSVG:thumbSVG, stillImages:stillImages, hasContent:hasContent, legendHTML:legendHTML, core:C, _S:S, _render:render};
 })(XD_CORE);
@@ -2555,7 +3252,7 @@ let DATA = {
   goalieHistory: {Träning:{}, Match:{}}, // per typ: playerId -> antal gånger som målvakt (samma räkneregler som pairHistory: bara genomförda pass)
   customExercises: [], // egna, lagspecifika övningar — samma form som EXERCISES-posterna, listas ihop med dem via allExercises()
   exerciseDiagrams: {}, // ÄLDRE enkla diagram per övnings-id — konverteras till ritningar vid visning: {"ex-id": [{type,x,y,x2,y2}, ...]}
-  exerciseDrawings: {}, // övningsritningar (animerade + stillbilder) per övnings-id: {"ex-id": {v:2, objects, still, partBreaks}}
+  exerciseDrawings: {}, // övningsritningar (animerade + stillbilder) per övnings-id: {"ex-id": {v:2, rink, objects, still, partBreaks}}
   icsCalendarUrl: "https://portalweb.sportadmin.se/webcal?id=f47a760a-18f4-4288-af70-d67577ab760a", // lagets kalenderflöde för "Hämta nya händelser"
   templates: [], // sparade träningsmallar: {id, name, blocks, yta, istid, savedAt}
   periods: [], // säsongens block/perioder: {id, label, weekStart, weekEnd, color, description, focus, goal, goalStatus, goalNotes}
@@ -4093,6 +4790,7 @@ function spelExtraRowHTML(s, b){
       <label style="font-size:10.5px;">Antal planer</label><input type="number" min="1" max="4" value="${numPlans}" style="font-size:12px;"
         onchange="updateSpelField('${s.id}','${b.id}','numPlans',this.value)">
     </div>
+    ${overviewRowHTML(s,b)}
     ${planConfigCards}
     <div style="font-size:10.5px;color:var(--muted);margin:8px 0 3px;">Vilka möts var — vem som börjar på respektive plan, och eventuella byten under blocket</div>
     <div style="overflow-x:auto;"><table style="border-collapse:collapse;">
@@ -4141,7 +4839,7 @@ function trainingSummaryHTML(s){
     let subHTML = "";
     if(isStationBlock(b)){
       const stations = b.stations||[];
-      subHTML = stations.map(st=>{
+      subHTML = ((b.overview && XD.hasContent(b.overview)) ? `<div style="max-width:340px;margin:6px 0;">${XD.thumbSVG(b.overview)}</div>` : "") + stations.map(st=>{
         const stCoach = st.coach ? coachById(st.coach) : null;
         const stEx = (st.exerciseIds||[]).map(id=>{ const e=exerciseById(id); return e?e.namn:null; }).filter(Boolean);
         return `<div style="margin:6px 0;padding:6px 9px;background:#F8F8F5;border-radius:6px;">
@@ -4161,7 +4859,7 @@ function trainingSummaryHTML(s){
       ensurePlanConfigs(b);
       const numPlans = Math.max(1, +b.numPlans || 1);
       const planLabels = Array.from({length:numPlans},(_,i)=>"Plan "+String.fromCharCode(65+i));
-      subHTML = planLabels.map((label,pi)=>{
+      subHTML = ((b.overview && XD.hasContent(b.overview)) ? `<div style="max-width:340px;margin:6px 0;">${XD.thumbSVG(b.overview)}</div>` : "") + planLabels.map((label,pi)=>{
         const cfg = b.plans[pi] || {};
         return `<div style="font-size:11.5px;margin:2px 0;"><b>${label}</b> ${cfg.yta||"—"} · ${cfg.maltyp||"—"} · ${cfg.malvakt||"—"}</div>`;
       }).join("");
@@ -4355,9 +5053,11 @@ function pdfStyle(){
   .pdfp .exhead .s2{font-size:14px; color:#4A4238; line-height:1.3;}
   .pdfp .extitle{font:700 27px/1.12 'Oswald',sans-serif; margin:0 0 8px; color:#1A1A1A;}
   .pdfp .cat{display:inline-block; color:#fff; font-size:12.5px; font-weight:600; padding:3px 11px; border-radius:11px; margin-bottom:10px;}
-  .pdfp .img{margin:10px 0 4px;} .pdfp .img .cap{font:700 13px 'Oswald',sans-serif; letter-spacing:.05em; color:#E8621A; margin-bottom:3px;}
+  .pdfp .img{margin:10px 0 4px; display:flex; flex-direction:column; align-items:center;} .pdfp .img .cap{align-self:flex-start; font:700 13px 'Oswald',sans-serif; letter-spacing:.05em; color:#E8621A; margin-bottom:3px;}
   .pdfp .img svg{display:block; border:1px solid #E3DED8; border-radius:10px; background:#fff;}
   .pdfp .animlink{display:block; margin:12px 0 2px; background:#E8621A; color:#fff; text-decoration:none; text-align:center; font:700 17px 'Oswald',sans-serif; letter-spacing:.03em; padding:13px 10px; border-radius:11px;}
+  .pdfp .stl{display:inline-block; background:#111; color:#fff; border-radius:6px; padding:0 7px; margin-right:7px; font-weight:800; font-size:15px;}
+  .pdfp .animlink.sm{font-size:14px; padding:9px 8px; margin:6px 0 4px;}
   .pdfp .animhint{font-size:12.5px; color:#8A8F86; text-align:center; margin-bottom:2px;}
   .pdfp .legend{font-size:12.5px; color:#6B5F54; margin-top:6px;}
   .pdfp ol{margin:2px 0 0; padding-left:22px;} .pdfp ol li{margin:0 0 6px; font-size:15.5px; line-height:1.42;}
@@ -4398,6 +5098,18 @@ function pdfPageOverview(D){
     </div>`;
   return {kind:"overview", html, hero:true};
 }
+function pdfOverviewHTML(D, b){                                     // översiktsbild för stationer/planer: alla på isen samtidigt
+  if(!XD.hasContent(b.overview)) return "";
+  const ov = b.overview, ovUrl = APP_PUBLIC_URL + "#oversikt=" + encodeURIComponent(D.s.id) + ":" + encodeURIComponent(b.id);
+  const ovAnim = (ov.objects||[]).some(o=>o.kind==="path");
+  const spel = isSpelBlock(b), rounds = spel ? (b.planRounds||[]) : (b.rounds||[]);
+  return XD.stillImages(ov).map(im=>{
+    const iw = Math.round(Math.min(PDF_W-32-28, 290*(im.w||600)/(im.h||340))), ih = Math.round(iw*(im.h||340)/(im.w||600));
+    const svg = im.svg.replace("<svg ", `<svg width="${iw}" height="${ih}" `);
+    const ridx = b.overviewRound==null ? 0 : b.overviewRound, cap = [ (ridx>=0 && rounds[ridx]) ? (spel ? (ridx===0 ? "Start" : `Byte ${ridx+1}`) : `Byte ${ridx+1}`) : "", im.label||"" ].filter(Boolean).join(" · ");
+    return `<div class="img"${ovAnim?` data-href="${ovUrl}"`:""}>${cap?`<div class="cap">${escapeHtml(cap)}</div>`:""}${svg}</div>`;
+  }).join("") + (ovAnim ? `<a class="animlink sm" data-href="${ovUrl}" href="${ovUrl}">▶ Se översikten animerad</a>` : "");
+}
 function pdfBlockCard(D, x){
   const b = x.b, color = themeColor(b.theme);
   const coach = b.coach ? coachById(b.coach) : null;
@@ -4410,10 +5122,13 @@ function pdfBlockCard(D, x){
   if(b.material) inner += `<div class="ins" style="font-style:normal"><b>Material:</b> ${escapeHtml(b.material)}</div>`;
   if(isStationBlock(b)){
     const stations = b.stations||[];
-    inner += stations.map(st=>{
-      const stCoach = st.coach ? coachById(st.coach) : null;
+    if(typeof applyAutoNames==="function") applyAutoNames(b);
+    if(b.overview && typeof syncOverview==="function") syncOverview(D.s.id, b.id);   // översikten följer blockets stationer
+    inner += pdfOverviewHTML(D, b);
+    inner += stations.map((st,si)=>{
+      const stCoach = st.coach ? coachById(st.coach) : null, stLetter = XD.hasContent(b.overview) ? `<span class="stl">${String.fromCharCode(65+si)}</span>` : "";
       const exs = x.exNums.filter(z=>z.st===st);
-      return `<div class="st"><b>${escapeHtml(st.name||"Station")}</b>${st.subtheme?` <span class="sub">· ${escapeHtml(st.subtheme)}</span>`:""}${stCoach?` <span class="sub">· ${escapeHtml(stCoach.name)}</span>`:""}
+      return `<div class="st">${stLetter}<b>${escapeHtml(st.name||"Station")}</b>${st.subtheme?` <span class="sub">· ${escapeHtml(st.subtheme)}</span>`:""}${stCoach?` <span class="sub">· ${escapeHtml(stCoach.name)}</span>`:""}
         ${exs.map(z=>`<div class="ex" style="font-size:14.5px"><span class="exn" style="flex:0 0 22px;height:22px;border-radius:11px;font-size:12px">${z.n}</span><span>${escapeHtml(D.exList[z.n-1].e.namn)}</span></div>`).join("")}</div>`;
     }).join("");
     if(stations.length && (b.rounds||[]).length){
@@ -4421,6 +5136,8 @@ function pdfBlockCard(D, x){
         b.rounds.map((r,ri)=>`<tr><td class="lb">Byte ${ri+1}</td>${stations.map(st=>`<td>${pdfGroupChip(r.assignments[st.id])}</td>`).join("")}</tr>`).join("")}</table>`;
     }
   } else if(isSpelBlock(b)){
+    if(b.overview && typeof syncOverview==="function") syncOverview(D.s.id, b.id);
+    inner += pdfOverviewHTML(D, b);
     ensurePlanConfigs(b);
     const numPlans = Math.max(1, +b.numPlans || 1);
     const labels = Array.from({length:numPlans},(_,i)=>"Plan "+String.fromCharCode(65+i));
@@ -4446,11 +5163,12 @@ function pdfExercisePage(D, i){
   const hasAnim = !!(drawing && drawing.objects && drawing.objects.some(o=>o.kind==="path"));
   const animUrl = APP_PUBLIC_URL + "#ovning=" + encodeURIComponent(e.id);
   const imgs = XD.stillImages(drawing).map(im=>{
-    const svg = im.svg.replace("<svg ", `<svg width="${PDF_W-32}" height="${Math.round((PDF_W-32)*340/600)}" `);
+    const iw = Math.round(Math.min(PDF_W-32, 300*(im.w||600)/(im.h||340))), ih = Math.round(iw*(im.h||340)/(im.w||600));
+    const svg = im.svg.replace("<svg ", `<svg width="${iw}" height="${ih}" `);
     return `<div class="img"${hasAnim?` data-href="${animUrl}"`:""}>${im.label?`<div class="cap">${escapeHtml(im.label)}</div>`:""}${svg}</div>`;
   }).join("") + (hasAnim ? `<a class="animlink" data-href="${animUrl}" href="${animUrl}">▶ Se animeringen i appen</a><div class="animhint">Öppnar appen i webbläsaren — logga in om den ber om lösenord</div>` : "");
   const legend = XD.hasContent(drawing) ? "" : "";
-  const steps = (e.steg||[]).map(t=>`<li>${escapeHtml(t)}</li>`).join("");
+  const steps = (e.steg||[]).filter(t=>typeof EX_PLACEHOLDER==="undefined" || t!==EX_PLACEHOLDER).map(t=>`<li>${escapeHtml(t)}</li>`).join("");
   const html = `<div class="body">
     <div class="exhead"><span class="exn">${i+1}</span><div><div class="s1">Övning ${i+1} av ${D.exList.length}</div><div class="s2">${item.uses.map(escapeHtml).join(" · ")}</div></div></div>
     <div class="extitle">${escapeHtml(e.namn)}</div>
@@ -5772,6 +6490,8 @@ function renderExercises(){
       <div class="ex-head" onclick="toggleEx('${e.id}')">
         <span class="ex-cat" style="background:${cat.color}">${cat.label}</span>
         ${isCustom ? `<span class="ex-cat" style="background:#8A6BAF;">Egen</span>` : ""}
+        ${e.edited ? `<span class="ex-cat" style="background:#6B5F54;">Ändrad</span>` : ""}
+        ${isIncompleteExercise(e) ? `<span class="ex-cat" style="background:#C24A3A;">Ofullständig</span>` : ""}
         <h4>${e.namn}</h4>
         <div class="ex-purpose">${e.syfte}</div>
         <div class="expand-hint" id="hint-${e.id}">Tryck för detaljer ▾</div>
@@ -5787,10 +6507,8 @@ function renderExercises(){
         </div>
         ${e.link ? `<a class="ex-link" href="${e.link}" target="_blank" rel="noopener">Se referens / video ↗</a>` : ""}
         ${exerciseDrawingHTML(e)}
-        ${isCustom ? `<div style="margin-top:10px;display:flex;gap:6px;">
-          <button class="btn ghost small" onclick="event.stopPropagation();openExerciseModal('${e.id}')">Redigera</button>
-          <button class="btn ghost small" onclick="event.stopPropagation();deleteCustomExercise('${e.id}')">Ta bort</button>
-        </div>` : ""}
+        ${exerciseUsageHTML(e)}
+        ${exerciseActionsHTML(e, isCustom)}
       </div>
     </div>`;
   }).join("");
@@ -5805,8 +6523,8 @@ function openExerciseModal(id){
   const catSel = document.getElementById("ex-cat");
   catSel.innerHTML = EX_CATS.map(c=>`<option value="${c.id}">${c.label}</option>`).join("");
   if(id){
-    const e = (DATA.customExercises||[]).find(x=>x.id===id);
-    if(!e){ alert("Bara egna övningar går att redigera."); return; }
+    const e = exerciseById(id);
+    if(!e) return;
     document.getElementById("exercise-modal-title").textContent = "Redigera övning";
     document.getElementById("ex-id").value = e.id;
     document.getElementById("ex-namn").value = e.namn;
@@ -5850,9 +6568,15 @@ async function saveCustomExercise(){
       svar: document.getElementById("ex-svar").value.trim() || "—",
       link: document.getElementById("ex-link").value.trim() || null,
     };
-    if(!DATA.customExercises) DATA.customExercises = [];
-    const idx = DATA.customExercises.findIndex(x=>x.id===id);
-    if(idx>=0) DATA.customExercises[idx] = entry; else DATA.customExercises.push(entry);
+    if(EXERCISES.some(x=>x.id===id)){                          // inbyggd övning: spara ändringarna ovanpå originalet
+      if(!DATA.exerciseOverrides) DATA.exerciseOverrides = {};
+      const fields = Object.assign({}, entry); delete fields.id; DATA.exerciseOverrides[id] = fields;
+    } else {
+      if(!DATA.customExercises) DATA.customExercises = [];
+      const idx = DATA.customExercises.findIndex(x=>x.id===id);
+      if(idx>=0) DATA.customExercises[idx] = entry; else DATA.customExercises.push(entry);
+    }
+    syncAllOverviews();
     renderExercises(); renderCategoryFilter(); closeModal("modal-exercise");
     await saveData();
   } finally { SAVE_BUSY = false; }
@@ -5895,68 +6619,6 @@ const RINK_BACKGROUND_SVG = `
   <path d="M508,286 h14 M515,279 v14" stroke="#8A8F86" stroke-width="1.5"></path>
   <path d="M293,66 h14 M293,274 h14" stroke="#8A8F86" stroke-width="1.5"></path>
 `;
-/* =========================================================================
-   ÖVNINGSRITARE — animerade övningar + stillbilder (modulen XD ligger i skriptet ovanför).
-   Ritningar lagras i DATA.exerciseDrawings. Äldre enkla diagram (DATA.exerciseDiagrams)
-   konverteras automatiskt vid visning och ersätts första gången ritningen sparas.
-   ========================================================================= */
-function legacyDiagramToDrawing(list){
-  const map = {player:"attack", opponent:"defense", cone:"cone", puck:"ball"};
-  let id = 1; const objects = [];
-  (list||[]).forEach(o=>{
-    if(o.type==="arrow") objects.push({id:id++, kind:"path", type:"fwd", pts:[{x:o.x,y:o.y},{x:o.x2,y:o.y2}], smooth:false, step:1, owner:null});
-    else if(map[o.type]) objects.push({id:id++, kind:"fig", type:map[o.type], x:o.x, y:o.y});
-  });
-  return {v:2, objects, still:null};
-}
-function getExerciseDrawing(id){
-  const d = (DATA.exerciseDrawings||{})[id];
-  if(d) return d;
-  const old = (DATA.exerciseDiagrams||{})[id];
-  return (old && old.length) ? legacyDiagramToDrawing(old) : null;
-}
-XD.init({
-  getDrawing: getExerciseDrawing,
-  saveDrawing: (id, d)=>{
-    if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {};
-    if(d){ DATA.exerciseDrawings[id] = d; }
-    else { delete DATA.exerciseDrawings[id]; if(DATA.exerciseDiagrams) delete DATA.exerciseDiagrams[id]; }
-    saveData();
-  },
-  getTitle: id=>{ const e = exerciseById(id); return e ? e.namn : "Övning"; },
-  canEdit: ()=>true,
-  onSaved: ()=>{ renderExercises(); },
-  onClosed: ()=>{ deepLinkClosed(); }
-});
-/* ---- Djuplänk: #ovning=<id> öppnar övningens animering. Används av länkarna under stillbilderna i träningens PDF. ---- */
-const APP_PUBLIC_URL = "https://johansandahl1984-hash.github.io/Innebandy-2015/";
-let APP_DATA_READY = false, DEEPLINK_OPEN = null;
-function deepLinkExerciseId(){ const m = /[#&]ovning=([^&]+)/.exec(location.hash||""); try{ return m ? decodeURIComponent(m[1]) : null; }catch(e){ return null; } }
-function handleDeepLink(){
-  if(!APP_DATA_READY) return;
-  const id = deepLinkExerciseId(); if(!id || DEEPLINK_OPEN===id) return;
-  const lock = document.getElementById("lock-screen");
-  if(lock && getComputedStyle(lock).display !== "none") return;      // väntar på lösenordet — körs igen när appen låsts upp
-  DEEPLINK_OPEN = id;
-  const tab = document.querySelector('nav.tabs button[data-view="ovningar"]'); if(tab) tab.click();
-  if(exerciseById(id)){ try{ toggleEx(id); }catch(e){} XD.open(id, "view"); }
-}
-function deepLinkClosed(){
-  if(deepLinkExerciseId()){ try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){ location.hash = ""; } }
-  DEEPLINK_OPEN = null;
-}
-window.addEventListener("hashchange", handleDeepLink);
-function exerciseDrawingHTML(e){
-  const d = getExerciseDrawing(e.id), has = XD.hasContent(d);
-  return `<div style="margin-top:10px;"><h5>Ritning</h5>
-    ${has ? `<div onclick="event.stopPropagation();XD.open('${e.id}','view')" style="cursor:pointer;">${XD.thumbSVG(d)}</div>` : ""}
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
-      ${has ? `<button class="btn small" onclick="event.stopPropagation();XD.open('${e.id}','view')">▶ Animera</button>` : ""}
-      <button class="btn ghost small" onclick="event.stopPropagation();XD.open('${e.id}','edit')">${has ? "✏️ Redigera ritning" : "🖊 Rita övning"}</button>
-    </div>
-  </div>`;
-}
-
 function escapeHtml(s){ return (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 /* =========================================================================
    PLAYBOOK — spelmoment med animerade lägen, för tränare och föräldrar
@@ -7534,6 +8196,681 @@ document.querySelectorAll(".overlay").forEach(o=>{
   if(o.id==="modal-confirm") return;
   o.addEventListener("click", e=>{ if(e.target===o) o.classList.remove("open"); });
 });
+
+/* =========================================================================
+   ÖVNINGSRITARE + STATIONSÖVERSIKT — gemensam värdkod (ishockey Team-18 och innebandy Höllviken IBF).
+   Modulen XD (ritaren) ligger i skriptet ovanför. Den här koden binder ihop den med appen:
+   ritningar per övning (DATA.exerciseDrawings), översiktsbild på Stationer-block (block.overview),
+   synk block ⇄ översikt, rotation, övningsbankens extrafunktioner och PDF-länkarna.
+   Funktioner här ligger sist i skriptet och ersätter därmed äldre versioner med samma namn.
+   ========================================================================= */
+/* Sportspecifikt (sätts av integrationsskriptet): appens webbadress, gamla diagramfigurer, ytor för översikterna, ordval */
+const HOST_CFG = {
+  appUrl: "https://johansandahl1984-hash.github.io/Innebandy-2015/",
+  legacyMap: {player:"attack", opponent:"defense", cone:"cone", puck:"ball"},
+  areaWord: "planen", on: "på planen",
+  stationRink: n => "court",
+  stationLayout: (n, rink) => undefined,
+  spelRink: (n, yta) => "court"
+};
+const MAX_STATIONS = 6;
+const EX_PLACEHOLDER = "Fyll i instruktion.";
+let NEW_EX_SEQ = 0, STATION_SEQ = 0;
+
+function escapeHtml(s){ return (s==null?"":String(s)).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function stLetter(i){ return String.fromCharCode(65+i); }
+function legacyDiagramToDrawing(list){
+  const map = HOST_CFG.legacyMap;
+  let id = 1; const objects = [];
+  (list||[]).forEach(o=>{
+    if(o.type==="arrow") objects.push({id:id++, kind:"path", type:"fwd", pts:[{x:o.x,y:o.y},{x:o.x2,y:o.y2}], smooth:false, step:1, owner:null});
+    else if(map[o.type]) objects.push({id:id++, kind:"fig", type:map[o.type], x:o.x, y:o.y});
+  });
+  const d = {v:2, objects, still:null}; if(HOST_CFG.legacyRink) d.rink = HOST_CFG.legacyRink;
+  return d;
+}
+function getExerciseDrawing(id){
+  const d = (DATA.exerciseDrawings||{})[id];
+  if(d) return d;
+  const old = (DATA.exerciseDiagrams||{})[id];
+  return (old && old.length) ? legacyDiagramToDrawing(old) : null;
+}
+function exHasDrawing(id){ return XD.hasContent(getExerciseDrawing(id)); }
+function isIncompleteExercise(e){ const st = e.steg||[]; return !st.length || (st.length===1 && st[0]===EX_PLACEHOLDER); }
+function subLabel(sub){ const cat = EX_CATS.find(c=>c.id===SUBTHEME_TO_CAT[sub]); return cat ? cat.label : (sub||""); }
+
+/* ---------- Övningsbanken: inbyggda övningar kan redigeras (sparas som ändringar ovanpå originalet) ---------- */
+function allExercises(){
+  const ov = DATA.exerciseOverrides||{};
+  return EXERCISES.map(e=> ov[e.id] ? Object.assign({}, e, ov[e.id], {edited:true}) : e).concat(DATA.customExercises||[]);
+}
+function exerciseOptionsHTML(selectedId){
+  let html = '<option value="">— ingen, bara fritext —</option>';
+  EX_CATS.forEach(cat=>{
+    const items = allExercises().filter(e=>e.cat===cat.id);
+    if(!items.length) return;
+    html += `<optgroup label="${cat.label}">` + items.map(e=>
+      `<option value="${e.id}" ${selectedId===e.id?'selected':''}>${exHasDrawing(e.id)?"✏ ":""}${escapeHtml(e.namn)}</option>`).join("") + `</optgroup>`;
+  });
+  return html;
+}
+
+/* ---------- Stationer: hjälpfunktioner ---------- */
+function findBlock(sid, bid){ const s = DATA.sessions.find(x=>x.id===sid); const b = s && (s.blocks||[]).find(x=>x.id===bid); return {s, b}; }
+function stationsOf(b){ if(!b.stations) b.stations = []; return b.stations; }
+function drawingExIds(st){ return (st.exerciseIds||[]).filter(exHasDrawing); }
+function shownExId(st){ const ids = drawingExIds(st); return (st.viewEx && ids.includes(st.viewEx)) ? st.viewEx : (ids[0]||null); }
+function applyAutoNames(b){
+  stationsOf(b).forEach((st,i)=>{
+    if(st.autoName===undefined) st.autoName = !st.name || /^Station\s*[A-Za-z0-9]{1,2}$/i.test(st.name);
+    if(st.autoName!==false) st.name = "Station "+stLetter(i);
+  });
+}
+function newBlankStation(b){
+  const st = { id:"st-"+Date.now()+"-"+(STATION_SEQ++), name:"", subtheme:STATION_SUBTHEMES[0], exerciseIds:[], coach:"", autoName:true };
+  stationsOf(b).push(st); applyAutoNames(b); return st;
+}
+function overviewLabelFor(st, exId){
+  const ex = exId ? exerciseById(exId) : null;
+  const base = ex ? ex.namn : (st.subtheme ? subLabel(st.subtheme) : st.name);
+  const more = Math.max(0, drawingExIds(st).length - (exId ? 1 : 0));
+  return base + (more>0 ? " (+"+more+")" : "");
+}
+function overviewBadge(b, st){
+  const idx = b.overviewRound==null ? 0 : b.overviewRound;
+  const r = idx>=0 ? (b.rounds||[])[idx] : null; if(!r) return null;
+  const g = DATA.groups.find(x=>x.id===(r.assignments||{})[st.id]);
+  return g ? {t:g.name, c:g.color} : null;
+}
+const SPEL_KEY = i=>"plan"+i;
+function spelPlans(b){ ensurePlanConfigs(b); return Math.min(MAX_STATIONS, Math.max(1, +b.numPlans || 1)); }
+function spelShownEx(b){ const ids = (b.exerciseIds||[]).filter(exHasDrawing); return ids[0] || null; }
+function roundsOf(b){ return isSpelBlock(b) ? (b.planRounds||[]) : (b.rounds||[]); }
+function roundLabel(b, ri){ return isSpelBlock(b) ? (ri===0 ? "Start" : "Byte "+(ri+1)) : "Byte "+(ri+1); }
+function spelRinkLayout(b, n){ return {rink: HOST_CFG.spelRink(n, (b.plans && b.plans[0] && b.plans[0].yta) || "")}; }
+function spelCells(b){
+  const n = spelPlans(b), exId = spelShownEx(b), d = exId ? getExerciseDrawing(exId) : null;
+  const more = Math.max(0, (b.exerciseIds||[]).filter(exHasDrawing).length - (exId ? 1 : 0));
+  const idx = b.overviewRound==null ? 0 : b.overviewRound, r = idx>=0 ? (b.planRounds||[])[idx] : null;
+  const gp = gid=>{ const g = DATA.groups.find(x=>x.id===gid); return g ? {t:g.name, c:g.color} : null; };
+  return Array.from({length:n}, (_,i)=>{
+    const cfg = (b.plans||[])[i] || {}, as = r && r.assignments ? r.assignments[i] : null;
+    const badges = as ? [gp(as.a), gp(as.b)].filter(Boolean) : [];
+    const label = ["Plan "+stLetter(i), cfg.yta, cfg.maltyp].filter(Boolean).join(" · ")+(more>0 ? " (+"+more+")" : "");
+    return {key:SPEL_KEY(i), exId, drawing:d, srcHash:d ? XD.hashDrawing(d) : "", label, badge:badges.length ? badges : null};
+  });
+}
+function overviewCells(b){
+  if(isSpelBlock(b)) return spelCells(b);
+  return stationsOf(b).slice(0,MAX_STATIONS).map(st=>{
+    const exId = shownExId(st), d = exId ? getExerciseDrawing(exId) : null;
+    return {key:st.id, exId, drawing:d, srcHash:d ? XD.hashDrawing(d) : "", label:overviewLabelFor(st, exId), badge:overviewBadge(b, st)};
+  });
+}
+
+/* ---------- Övningsritaren: värd ---------- */
+function ovParse(id){
+  const m = /^ov:([^:]+):(.+)$/.exec(id||""); if(!m) return null;
+  const s = DATA.sessions.find(x=>x.id===m[1]); const b = s && (s.blocks||[]).find(x=>x.id===m[2]);
+  return b ? {s, b} : null;
+}
+function overviewId(sid, bid){ return "ov:"+sid+":"+bid; }
+function refreshBlocksPanel(sid){ const p = document.getElementById("blocks-panel-"+sid); if(p && p.style.display!=="none") renderBlocksPanel(sid); }
+function refreshOverviewRow(sid, bid){
+  const {s, b} = findBlock(sid, bid); const el = document.getElementById("ovrow-"+bid);
+  if(s && b && el) el.outerHTML = overviewRowHTML(s, b);
+}
+function syncOverview(sid, bid){
+  const {b} = findBlock(sid, bid);
+  if(!b || !b.overview) return false;
+  const before = JSON.stringify(b.overview);
+  b.overview = XD.syncStations(b.overview, {cells: overviewCells(b)});
+  return JSON.stringify(b.overview) !== before;
+}
+function syncAllOverviews(){
+  let changed = false;
+  (DATA.sessions||[]).forEach(s=>(s.blocks||[]).forEach(b=>{ if(b.overview && syncOverview(s.id, b.id)) changed = true; }));
+  return changed;
+}
+/* Översikt → block: antal stationer och övningar per station följer med när översikten sparas. */
+function reconcileSpel(o, d){
+  const b = o.b, st = d.stations, n = Math.min(st.n, MAX_STATIONS), cur = spelPlans(b);
+  if(n>cur){ b.numPlans = n; ensurePlanConfigs(b); }
+  else if(n<cur){
+    if(confirm("Översikten har färre planer än blocket. Plan "+Array.from({length:cur-n},(_,k)=>stLetter(n+k)).join(", ")+" tas bort från blocket. Fortsätta?")){
+      b.numPlans = n; ensurePlanConfigs(b);
+      (b.planRounds||[]).forEach(r=>{ Object.keys(r.assignments||{}).forEach(k=>{ if(+k>=n) delete r.assignments[k]; }); });
+    }
+  }
+  const keys = Array.from({length:n}, (_,i)=>(st.ids && st.ids[i]) || String(i));
+  const exs = st.exs||{}, base = st.exsBase||{}, keyMap = {}, newExs = {}, newLbls = {};
+  let added = [], removed = [];
+  keys.forEach((k,i)=>{
+    const roster = exs[k]||[], was = base[k]||[];
+    roster.filter(x=>!was.includes(x)).forEach(x=>{ if(!added.includes(x)) added.push(x); });
+    was.filter(x=>!roster.includes(x)).forEach(x=>{ if(!removed.includes(x)) removed.push(x); });
+    keyMap[k] = SPEL_KEY(i); newExs[SPEL_KEY(i)] = roster.slice(); if((st.lbls||{})[k]!=null) newLbls[SPEL_KEY(i)] = st.lbls[k];
+  });
+  if(removed.length || added.length){                       // spelövningen är gemensam för alla planer
+    b.exerciseIds = (b.exerciseIds||[]).filter(x=>!removed.includes(x));
+    if(keys.some(k=>!(exs[k]||[]).length && (base[k]||[]).length)) b.exerciseIds = b.exerciseIds.filter(x=>!exHasDrawing(x));
+    added.forEach(x=>{ b.exerciseIds = [x].concat(b.exerciseIds.filter(y=>y!==x)); });
+  }
+  const remap = f=>{ if(!st[f]) return; const nw = {}; Object.keys(st[f]).forEach(k=>{ nw[keyMap[k]||k] = st[f][k]; }); st[f] = nw; };
+  ["shash","chash","stale","keep","lblOff","lblWanted"].forEach(remap);
+  (d.objects||[]).forEach(ob=>{ if(ob.st!=null && keyMap[ob.st]) ob.st = keyMap[ob.st]; });
+  st.ids = keys.map((_,i)=>SPEL_KEY(i)); st.exs = newExs; st.lbls = newLbls; st.exsBase = JSON.parse(JSON.stringify(newExs)); st.n = n;
+  b.overview = d;
+  syncOverview(o.s.id, b.id);
+}
+function reconcileOverview(o, d){
+  const b = o.b, st = d.stations;
+  if(!st || !st.n){ b.overview = d; return; }
+  if(isSpelBlock(b)){ reconcileSpel(o, d); return; }
+  const n = Math.min(st.n, MAX_STATIONS), sts = stationsOf(b);
+  const managed = Math.min(MAX_STATIONS, sts.length);                  // översikten hanterar bara de första sex stationerna
+  const oldKeys = Array.from({length:n}, (_,i)=> (st.ids && st.ids[i]) || String(i));
+  while(sts.length<n) newBlankStation(b);
+  if(managed>n){
+    const extra = sts.slice(n, managed);
+    const msg = "Översikten har färre stationer än blocket.\n"+extra.map(x=>x.name+((x.exerciseIds||[]).length?" (med övningar)":"")).join(", ")+" tas bort från blocket. Fortsätta?";
+    if(confirm(msg)){
+      const gone = extra.map(x=>x.id);
+      b.stations = sts.filter(x=>!gone.includes(x.id));
+      (b.rounds||[]).forEach(r=>{ gone.forEach(id=>{ delete r.assignments[id]; }); });
+    }
+  }
+  const cur = stationsOf(b), exs = st.exs||{}, base = st.exsBase||{}, lbls = st.lbls||{}, newExs = {}, newLbls = {}, keyMap = {};
+  cur.slice(0,n).forEach((sx,i)=>{
+    const key = oldKeys[i], roster = (exs[key]||[]).slice(), was = base[key]||[];
+    const added = roster.filter(x=>!was.includes(x)), removed = was.filter(x=>!roster.includes(x));
+    sx.exerciseIds = (sx.exerciseIds||[]).filter(x=>!removed.includes(x));
+    if(!roster.length && was.length) sx.exerciseIds = sx.exerciseIds.filter(x=>!exHasDrawing(x));       // tömd ruta = inga ritade övningar kvar på stationen
+    added.forEach(x=>{ sx.exerciseIds = [x].concat(sx.exerciseIds.filter(y=>y!==x)); if(sx.viewEx && sx.viewEx!==x) delete sx.viewEx; });
+    newExs[sx.id] = roster; if(lbls[key]!=null) newLbls[sx.id] = lbls[key]; keyMap[key] = sx.id;
+  });
+  const remap = f=>{ if(!st[f]) return; const nw = {}; Object.keys(st[f]).forEach(k=>{ nw[keyMap[k]||k] = st[f][k]; }); st[f] = nw; };
+  ["shash","chash","stale","keep","lblOff","lblWanted"].forEach(remap);
+  (d.objects||[]).forEach(ob=>{ if(ob.st!=null && keyMap[ob.st]) ob.st = keyMap[ob.st]; });
+  st.ids = cur.slice(0,n).map(x=>x.id); st.exs = newExs; st.lbls = newLbls; st.exsBase = JSON.parse(JSON.stringify(newExs)); st.n = Math.min(n, cur.length);
+  applyAutoNames(b);
+  b.overview = d;
+  syncOverview(o.s.id, b.id);                       // t.ex. om borttagning av stationer avböjdes
+}
+function buildOverview(sid, bid, silent){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  if(isSpelBlock(b)){
+    if(!silent && XD.hasContent(b.overview) && !confirm("Bygga om översikten från planerna? Din nuvarande översiktsbild ersätts.")) return;
+    if(b.overviewRound==null && (b.planRounds||[]).length) b.overviewRound = 0;
+    const cells = spelCells(b), n = cells.length, rl = spelRinkLayout(b, n);
+    b.overview = XD.compose({rink:rl.rink, n, cells});
+    saveData(); refreshBlocksPanel(sid); return;
+  }
+  const sts = stationsOf(b);
+  if(sts.length<1){ alert("Lägg till minst en station först — översikten delar "+HOST_CFG.areaWord+" mellan stationerna."); return; }
+  if(!silent && XD.hasContent(b.overview) && !confirm("Bygga om översikten från stationerna? Din nuvarande översiktsbild ersätts.")) return;
+  applyAutoNames(b);
+  if(b.overviewRound==null && (b.rounds||[]).length) b.overviewRound = 0;
+  const cells = overviewCells(b), n = cells.length, rink = HOST_CFG.stationRink(n);
+  b.overview = XD.compose({rink, n, layout:HOST_CFG.stationLayout(n, rink), cells});
+  saveData(); refreshBlocksPanel(sid);
+}
+function removeOverview(sid, bid){
+  const {b} = findBlock(sid, bid); if(!b || !b.overview) return;
+  if(!confirm("Ta bort översiktsbilden?")) return;
+  delete b.overview; saveData(); refreshBlocksPanel(sid);
+}
+function setOverviewRound(sid, bid, idx){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  b.overviewRound = idx; syncOverview(sid, bid); saveData(); refreshOverviewRow(sid, bid);
+}
+function stationsWithoutDrawing(b){
+  const out = [];
+  if(isSpelBlock(b)){
+    if(!(b.exerciseIds||[]).filter(exHasDrawing).length) (b.exerciseIds||[]).forEach(id=>{ const e = exerciseById(id); if(e) out.push({letter:"Spel", id, namn:e.namn}); });
+    return out;
+  }
+  stationsOf(b).slice(0,MAX_STATIONS).forEach((st,i)=>{
+    if(drawingExIds(st).length) return;
+    (st.exerciseIds||[]).forEach(id=>{ const e = exerciseById(id); if(e) out.push({letter:stLetter(i), id, namn:e.namn}); });
+  });
+  return out;
+}
+function overviewRowHTML(s, b){
+  syncOverview(s.id, b.id);
+  const spel = isSpelBlock(b), ov = b.overview, has = XD.hasContent(ov), id = overviewId(s.id, b.id), rounds = roundsOf(b);
+  const idx = b.overviewRound==null ? 0 : b.overviewRound;
+  const missing = stationsWithoutDrawing(b);
+  const roundChips = rounds.length ? `<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:10.5px;color:var(--muted);">Lag i bilden:
+      <button class="btn ${idx===-1?'':'ghost'} small" style="padding:2px 8px;" onclick="setOverviewRound('${s.id}','${b.id}',-1)">Inga</button>
+      ${rounds.map((r,ri)=>`<button class="btn ${idx===ri?'':'ghost'} small" style="padding:2px 8px;" onclick="setOverviewRound('${s.id}','${b.id}',${ri})">${roundLabel(b,ri)}</button>`).join("")}</div>` : "";
+  const missHTML = missing.length ? `<div style="font-size:10.5px;color:#9A4A0C;margin-top:6px;">⚠ Saknar ritning i översikten: ${missing.map(m=>`<b>${m.letter}</b> ${escapeHtml(m.namn)} <a href="#" onclick="event.preventDefault();XD.open('${m.id}','edit')" style="color:#9A4A0C;">✏️ Rita</a>`).join(" · ")}</div>` : "";
+  return `<div id="ovrow-${b.id}" style="margin:6px 0 8px;padding:7px 9px;background:#fff;border:1px solid var(--line);border-radius:8px;">
+    <div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;"><b style="font-size:11.5px;color:var(--pine);">🗺 Översiktsbild</b><span style="font-size:10.5px;color:var(--muted);">${spel ? "alla planer "+HOST_CFG.on+" samtidigt · följer planerna nedan (och tvärtom)" : "alla stationer "+HOST_CFG.on+" samtidigt · följer stationerna nedan (och tvärtom)"} · kommer med i PDF:en</span></div>
+    ${has ? `<div onclick="XD.open('${id}','view')" style="cursor:pointer;margin:6px 0;max-width:340px;">${XD.thumbSVG(ov)}</div>` : ""}
+    ${roundChips}${missHTML}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+      <button class="btn small" onclick="buildOverview('${s.id}','${b.id}')">${has ? (spel ? "↻ Bygg om från planerna" : "↻ Bygg om från stationerna") : (spel ? "✨ Skapa från planerna" : "✨ Skapa från stationerna")}</button>
+      ${has ? `<button class="btn ghost small" onclick="XD.open('${id}','view')">▶ Animera</button>
+      <button class="btn ghost small" onclick="XD.open('${id}','edit')">✏️ Redigera</button>
+      <button class="btn ghost small" onclick="removeOverview('${s.id}','${b.id}')" title="Ta bort">🗑</button>` : `<button class="btn ghost small" onclick="XD.open('${id}','edit')">🖊 Rita själv</button>`}
+    </div></div>`;
+}
+
+XD.init({
+  getDrawing: id=>{ const o = ovParse(id); if(o){ syncOverview(o.s.id, o.b.id); return o.b.overview||null; } return getExerciseDrawing(id); },
+  saveDrawing: (id, d)=>{
+    const o = ovParse(id);
+    if(o){ if(d) reconcileOverview(o, d); else delete o.b.overview; saveData(); return; }
+    if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {};
+    if(d){ DATA.exerciseDrawings[id] = d; }
+    else { delete DATA.exerciseDrawings[id]; if(DATA.exerciseDiagrams) delete DATA.exerciseDiagrams[id]; }
+    syncAllOverviews();                                  // översikter som använder övningen uppdateras
+    saveData();
+  },
+  getTitle: id=>{ const o = ovParse(id); if(o) return (isSpelBlock(o.b) ? "Spelöversikt · " : "Stationsöversikt · ")+(o.b.theme||"")+" "+(o.s.date||""); const e = exerciseById(id); return e ? e.namn : "Övning"; },
+  exerciseTitle: id=>{ const e = exerciseById(id); return e ? e.namn : ""; },
+  canEdit: ()=>true,
+  onSaved: id=>{ const o = ovParse(id); if(o){ refreshBlocksPanel(o.s.id); return; } renderExercises(); DATA.sessions.forEach(s=>refreshBlocksPanel(s.id)); },
+  onClosed: ()=>{ deepLinkClosed(); },
+  newExercise: spec=>{                                    // "Spara som ny övning" från en zon i stationsöversikten
+    const id = "custom-"+Date.now()+"-"+(NEW_EX_SEQ++);
+    const entry = { id, cat: spec.cat||"spel", namn: spec.title, syfte: spec.syfte||"", material: "", steg: [EX_PLACEHOLDER], coaching: "", latt: "—", svar: "—", link: null };
+    if(!DATA.customExercises) DATA.customExercises = [];
+    DATA.customExercises.push(entry);
+    if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {};
+    DATA.exerciseDrawings[id] = spec.drawing;
+    renderExercises(); renderCategoryFilter(); saveData();
+    return id;
+  },
+  exerciseCats: ()=>EX_CATS.map(c=>({id:c.id, label:c.label})),
+  exerciseCatFor: key=>{
+    for(const s of DATA.sessions){ for(const b of (s.blocks||[])){ const st = (b.stations||[]).find(x=>x.id===key); if(st) return SUBTHEME_TO_CAT[st.subtheme] || "spel"; } }
+    return "spel";
+  },
+  listDrawings: excl=>allExercises().filter(e=>e.id!==excl && exHasDrawing(e.id)).map(e=>({id:e.id, title:e.namn, cat:(EX_CATS.find(c=>c.id===e.cat)||{}).label||""}))
+});
+
+/* ---------- Stationer i Bygg pass ---------- */
+function stationCount(b){ return stationsOf(b).length; }
+async function addStation(sid, bid){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  if(stationCount(b)>=MAX_STATIONS){ alert("Ett block kan ha högst "+MAX_STATIONS+" stationer."); return; }
+  newBlankStation(b); syncOverview(sid, bid);
+  renderBlocksPanel(sid); saveData();
+}
+async function removeStation(sid, bid, stId){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  const st = stationsOf(b).find(x=>x.id===stId); if(!st) return;
+  const n = (st.exerciseIds||[]).length, inRounds = (b.rounds||[]).some(r=>r.assignments && r.assignments[stId]);
+  const yes = await confirmDialog(`Ta bort ${st.name||"stationen"}${n?` med ${n} övning${n>1?"ar":""}`:""}?${inRounds?" Den tas också bort ur byteslistan.":""}`, "Ta bort station");
+  if(!yes) return;
+  b.stations = stationsOf(b).filter(x=>x.id!==stId);
+  (b.rounds||[]).forEach(r=>{ delete r.assignments[stId]; });
+  applyAutoNames(b); syncOverview(sid, bid);
+  renderBlocksPanel(sid); saveData();
+}
+function moveStation(sid, bid, stId, dir){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  const a = stationsOf(b), i = a.findIndex(x=>x.id===stId), j = i+dir; if(i<0 || j<0 || j>=a.length) return;
+  [a[i], a[j]] = [a[j], a[i]];
+  applyAutoNames(b); syncOverview(sid, bid);
+  renderBlocksPanel(sid); saveData();
+}
+function updateStationField(sid, bid, stId, field, value){
+  const {b} = findBlock(sid, bid); const st = b && stationsOf(b).find(x=>x.id===stId); if(!st) return;
+  if(field==="name"){
+    const i = stationsOf(b).indexOf(st); st.name = value.trim(); st.autoName = (st.name==="Station "+stLetter(i)) ? true : false;
+    if(!st.name){ st.autoName = true; applyAutoNames(b); }
+  } else st[field] = value;
+  if(field==="subtheme" || field==="name") syncOverview(sid, bid);
+  if(field==="subtheme"){ renderBlocksPanel(sid); scheduleBlockSave(sid, false); }
+  else { scheduleBlockSave(sid, false); if(field==="name"){ refreshOverviewRow(sid, bid); } }
+}
+function addStationExercise(sid, bid, stId, exId){
+  if(!exId) return;
+  const {b} = findBlock(sid, bid); const st = b && stationsOf(b).find(x=>x.id===stId); if(!st) return;
+  if(!st.exerciseIds) st.exerciseIds = [];
+  if(!st.exerciseIds.includes(exId)) st.exerciseIds.push(exId);
+  syncOverview(sid, bid);
+  scheduleBlockSave(sid); renderBlocksPanel(sid);
+}
+function removeStationExercise(sid, bid, stId, exId){
+  const {b} = findBlock(sid, bid); const st = b && stationsOf(b).find(x=>x.id===stId); if(!st) return;
+  st.exerciseIds = (st.exerciseIds||[]).filter(x=>x!==exId); if(st.viewEx===exId) delete st.viewEx;
+  syncOverview(sid, bid);
+  scheduleBlockSave(sid); renderBlocksPanel(sid);
+}
+function setStationView(sid, bid, stId, exId){
+  const {b} = findBlock(sid, bid); const st = b && stationsOf(b).find(x=>x.id===stId); if(!st) return;
+  st.viewEx = exId; syncOverview(sid, bid); scheduleBlockSave(sid); renderBlocksPanel(sid);
+}
+
+/* ---------- Spel-block: planer och lagmöten synkas mot översikten ---------- */
+function updateSpelField(sid, bid, field, value){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  b[field] = value;
+  if(field==="numPlans"){
+    ensurePlanConfigs(b);
+    const n = Math.max(1, +value || 1);
+    (b.planRounds||[]).forEach(r=>{ Object.keys(r.assignments||{}).forEach(k=>{ if(+k>=n) delete r.assignments[k]; }); });
+    syncOverview(sid, bid); renderBlocksPanel(sid); scheduleBlockSave(sid, false);
+  } else scheduleBlockSave(sid, false);
+}
+function updatePlanConfigField(sid, bid, planIdx, field, value){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  ensurePlanConfigs(b); b.plans[planIdx][field] = value;
+  syncOverview(sid, bid); refreshOverviewRow(sid, bid); scheduleBlockSave(sid, false);
+}
+async function addPlanRound(sid, bid){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  if(!b.planRounds) b.planRounds = [];
+  b.planRounds.push({ id:"pr-"+Date.now(), assignments:{} });
+  renderBlocksPanel(sid); saveData();
+}
+async function removePlanRound(sid, bid, rId){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  b.planRounds = (b.planRounds||[]).filter(r=>r.id!==rId);
+  if(b.overviewRound!=null && b.overviewRound>=b.planRounds.length) b.overviewRound = b.planRounds.length ? 0 : null;
+  syncOverview(sid, bid); renderBlocksPanel(sid); saveData();
+}
+function updatePlanMatchup(sid, bid, rId, planIdx, side, groupId){
+  const {b} = findBlock(sid, bid); const r = b && (b.planRounds||[]).find(x=>x.id===rId); if(!r) return;
+  if(!r.assignments[planIdx]) r.assignments[planIdx] = {a:"", b:""};
+  r.assignments[planIdx][side] = groupId;
+  syncOverview(sid, bid); refreshOverviewRow(sid, bid); scheduleBlockSave(sid, false);
+}
+function addBlockExercise(sid, bid, exId){
+  if(!exId) return;
+  const {b} = findBlock(sid, bid); if(!b) return;
+  if(!b.exerciseIds) b.exerciseIds = [];
+  if(!b.exerciseIds.includes(exId)) b.exerciseIds.push(exId);
+  if(b.overview) syncOverview(sid, bid);
+  scheduleBlockSave(sid); renderBlocksPanel(sid);
+}
+function removeBlockExercise(sid, bid, exId){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  b.exerciseIds = (b.exerciseIds||[]).filter(x=>x!==exId);
+  if(b.overview) syncOverview(sid, bid);
+  scheduleBlockSave(sid); renderBlocksPanel(sid);
+}
+
+/* ---------- Rotation ---------- */
+function rotationGroups(sid){ return stationGroupOptions(sid).filter(g=>!/^mv$/i.test((g.name||"").trim())); }
+function autoRotation(sid, bid){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  const sts = stationsOf(b), groups = rotationGroups(sid), k = sts.length, m = groups.length;
+  if(k<1){ alert("Lägg till stationer först."); return; }
+  if(m<1){ alert("Inga lag att rotera. Välj lag på träningen först."); return; }
+  const hasAny = (b.rounds||[]).some(r=>Object.values(r.assignments||{}).some(Boolean));
+  if(hasAny && !confirm("Skapa ny rotation? Nuvarande byten ersätts.")) return;
+  const R = Math.max(k, m), rounds = [];
+  for(let r=0; r<R; r++){
+    const assignments = {};
+    sts.forEach((st,si)=>{ const gi = (si+r)%R; if(gi<m) assignments[st.id] = groups[gi].id; });
+    rounds.push({id:"rd-"+Date.now()+"-"+r, assignments});
+  }
+  b.rounds = rounds; if(b.overviewRound==null || b.overviewRound>=rounds.length) b.overviewRound = 0;
+  syncOverview(sid, bid); saveData(); renderBlocksPanel(sid);
+}
+function rotationIssues(sid, b){
+  const rounds = b.rounds||[], sts = stationsOf(b), out = [];
+  if(!rounds.length || !sts.length) return out;
+  const gname = id=>{ const g = DATA.groups.find(x=>x.id===id); return g ? g.name : "?"; };
+  const seen = {};
+  rounds.forEach((r,ri)=>{
+    const count = {};
+    sts.forEach(st=>{ const g = (r.assignments||{})[st.id]; if(!g){ out.push(`Byte ${ri+1}: ${st.name} saknar lag`); return; } count[g] = (count[g]||0)+1; (seen[g] = seen[g]||new Set()).add(st.id); });
+    Object.keys(count).forEach(g=>{ if(count[g]>1) out.push(`Byte ${ri+1}: ${gname(g)} står på ${count[g]} stationer`); });
+  });
+  Object.keys(seen).forEach(g=>{ const miss = sts.filter(st=>!seen[g].has(st.id)); if(miss.length) out.push(`${gname(g)} besöker inte ${miss.map(x=>x.name).join(", ")}`); });
+  return out;
+}
+function rotationInfoHTML(sid, b){
+  const rounds = b.rounds||[], dur = +b.duration || 0, issues = rotationIssues(sid, b);
+  const time = rounds.length && dur ? `<div style="font-size:10.5px;color:var(--muted);margin-top:4px;">⏱ ${dur} min ÷ ${rounds.length} byten ≈ <b>${(dur/rounds.length).toFixed(1).replace(".",",")} min</b> per byte (inklusive bytet)</div>` : "";
+  const warn = issues.length ? `<div style="font-size:10.5px;color:#9A4A0C;margin-top:4px;">${issues.slice(0,8).map(t=>"⚠ "+escapeHtml(t)).join("<br>")}${issues.length>8?"<br>…":""}</div>` : (rounds.length ? `<div style="font-size:10.5px;color:#2E6C3E;margin-top:4px;">✓ Alla lag besöker alla stationer, inga krockar.</div>` : "");
+  return `<div id="rotinfo-${b.id}">${time}${warn}</div>`;
+}
+function refreshRotationInfo(sid, bid){ const {b} = findBlock(sid, bid); const el = document.getElementById("rotinfo-"+bid); if(b && el) el.outerHTML = rotationInfoHTML(sid, b); }
+async function addRound(sid, bid){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  if(!b.rounds) b.rounds = [];
+  b.rounds.push({ id:"rd-"+Date.now(), assignments:{} });
+  renderBlocksPanel(sid); saveData();
+}
+async function removeRound(sid, bid, rId){
+  const {b} = findBlock(sid, bid); if(!b) return;
+  b.rounds = (b.rounds||[]).filter(r=>r.id!==rId);
+  if(b.overviewRound!=null && b.overviewRound>=b.rounds.length) b.overviewRound = b.rounds.length ? 0 : null;
+  syncOverview(sid, bid); renderBlocksPanel(sid); saveData();
+}
+function updateRoundAssignment(sid, bid, rId, stId, groupId){
+  const {b} = findBlock(sid, bid); const r = b && (b.rounds||[]).find(x=>x.id===rId); if(!r) return;
+  r.assignments[stId] = groupId;
+  syncOverview(sid, bid); refreshRotationInfo(sid, bid); refreshOverviewRow(sid, bid);
+  scheduleBlockSave(sid, false);
+}
+
+/* ---------- Stationsraden i Bygg pass ---------- */
+function exerciseCellHTMLForStation(sid, bid, st, suggestCat){
+  const ids = st.exerciseIds || [], drawIds = drawingExIds(st), shown = shownExId(st);
+  const chips = ids.map(id=>{
+    const e = exerciseById(id); if(!e) return "";
+    const c = EX_CATS.find(x=>x.id===e.cat) || {color:"#8A8F86"}, has = exHasDrawing(id);
+    const eye = (has && drawIds.length>1) ? `<span title="${id===shown?'Visas i översikten':'Visa i översikten'}" style="cursor:pointer;margin-left:4px;${id===shown?'':'opacity:.45;'}" onclick="setStationView('${sid}','${bid}','${st.id}','${id}')">${id===shown?'👁':'○'}</span>` : "";
+    const draw = has ? `<span title="Visa animering" style="cursor:pointer;margin-left:4px;" onclick="XD.open('${id}','view')">▶</span>` : `<span title="Övningen saknar ritning — rita den nu" style="cursor:pointer;margin-left:4px;color:#9A4A0C;" onclick="XD.open('${id}','edit')">✏️ Rita</span>`;
+    return `<span class="chip" style="background:${c.color}22;color:${c.color};margin:1px 3px 1px 0;font-size:10px;padding:1px 5px;">📋 ${escapeHtml(e.namn)}${draw}${eye}
+      <span style="cursor:pointer;margin-left:4px;" onclick="removeStationExercise('${sid}','${bid}','${st.id}','${id}')">✕</span></span>`;
+  }).join("");
+  const label = e=>(exHasDrawing(e.id)?"✏ ":"")+escapeHtml(e.namn);
+  let opts = '<option value="">+ lägg till övning… (✏ = har ritning)</option>';
+  if(suggestCat){
+    const cat = EX_CATS.find(c=>c.id===suggestCat);
+    const suggested = allExercises().filter(e=>e.cat===suggestCat && !ids.includes(e.id));
+    if(suggested.length) opts += `<optgroup label="Föreslaget: ${cat.label}">` + suggested.map(e=>`<option value="${e.id}">${label(e)}</option>`).join("") + `</optgroup>`;
+  }
+  EX_CATS.forEach(c=>{
+    const items = allExercises().filter(e=>e.cat===c.id && !ids.includes(e.id) && !(suggestCat===c.id));
+    if(!items.length) return;
+    opts += `<optgroup label="${c.label}">` + items.map(e=>`<option value="${e.id}">${label(e)}</option>`).join("") + `</optgroup>`;
+  });
+  return `<div>${chips}</div><select style="font-size:10.5px;margin-top:2px;" onchange="addStationExercise('${sid}','${bid}','${st.id}',this.value);this.value=''">${opts}</select>`;
+}
+function stationExtraRowHTML(s, b){
+  applyAutoNames(b);
+  const stations = stationsOf(b), n = stations.length;
+  const groups = stationGroupOptions(s.id);
+  const groupOpts = gid => '<option value="">—</option>' + groups.map(g=>`<option value="${g.id}" ${gid===g.id?'selected':''}>${g.name}</option>`).join("");
+  const stationCards = stations.map((st,si)=>{
+    const subOpts = STATION_SUBTHEMES.map(t=>`<option value="${t}" ${st.subtheme===t?'selected':''}>${escapeHtml(subLabel(t))}</option>`).join("");
+    const subCat = SUBTHEME_TO_CAT[st.subtheme];
+    const arrows = `<button class="btn ghost small" style="padding:2px 6px;flex-shrink:0;" title="Flytta upp" ${si===0?'disabled':''} onclick="moveStation('${s.id}','${b.id}','${st.id}',-1)">↑</button>
+        <button class="btn ghost small" style="padding:2px 6px;flex-shrink:0;" title="Flytta ner" ${si===n-1?'disabled':''} onclick="moveStation('${s.id}','${b.id}','${st.id}',1)">↓</button>`;
+    return `<div style="padding:5px 8px;margin:3px 0;background:#fff;border:1px solid var(--line);border-radius:8px;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;">
+        <span title="Bokstav i översiktsbilden" style="flex:0 0 auto;background:#111;color:#fff;border-radius:6px;padding:1px 7px;font-weight:800;font-size:12px;">${stLetter(si)}</span>
+        <input type="text" value="${escapeHtml(st.name)}" style="font-size:12px;min-width:80px;flex:1;" title="Namn (lämna tomt för automatiskt namn)"
+          onchange="updateStationField('${s.id}','${b.id}','${st.id}','name',this.value)">
+        <select style="font-size:11px;min-width:110px;flex:1;" title="Undertema"
+          onchange="updateStationField('${s.id}','${b.id}','${st.id}','subtheme',this.value)">${subOpts}</select>
+        <select style="font-size:11px;min-width:100px;flex:1;" title="Ansvarig"
+          onchange="updateStationField('${s.id}','${b.id}','${st.id}','coach',this.value)">
+          <option value="">Ansvarig —</option>${DATA.coaches.map(c=>`<option value="${c.id}" ${st.coach===c.id?'selected':''}>${c.name}</option>`).join("")}</select>
+        ${arrows}
+        <button class="btn ghost small" style="padding:3px 7px;flex-shrink:0;" title="Ta bort station" onclick="removeStation('${s.id}','${b.id}','${st.id}')">🗑</button>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin:4px 0 2px;">Övningar (förslag: ${subCat?EX_CATS.find(c=>c.id===subCat).label:"—"})</div>
+      ${exerciseCellHTMLForStation(s.id, b.id, st, subCat)}
+    </div>`;
+  }).join("");
+  const rotHead = stations.map(st=>`<th style="border:1px solid var(--line);padding:4px 6px;font-size:10.5px;">${escapeHtml(st.name)}</th>`).join("");
+  const rotRows = (b.rounds||[]).map((r,ri)=>{
+    const cells = stations.map(st=>`<td style="border:1px solid var(--line);padding:3px;">
+      <select style="font-size:11px;" onchange="updateRoundAssignment('${s.id}','${b.id}','${r.id}','${st.id}',this.value)">${groupOpts(r.assignments[st.id])}</select></td>`).join("");
+    return `<tr><td style="border:1px solid var(--line);padding:4px 6px;font-size:10.5px;color:var(--muted);">Byte ${ri+1} <span style="cursor:pointer;color:var(--red);" onclick="removeRound('${s.id}','${b.id}','${r.id}')">✕</span></td>${cells}</tr>`;
+  }).join("");
+  const rotTable = n ? `<div style="font-size:10.5px;color:var(--muted);margin:6px 0 3px;">Rotation — vem är var, byte för byte</div>
+    <div style="overflow-x:auto;"><table style="border-collapse:collapse;width:100%;"><tr><td style="border:1px solid var(--line);"></td>${rotHead}</tr>${rotRows}</table></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;">
+      <button class="btn ghost small" onclick="addRound('${s.id}','${b.id}')">+ Byte</button>
+      <button class="btn ghost small" onclick="autoRotation('${s.id}','${b.id}')" title="Alla lag besöker alla stationer">🔄 Skapa rotation automatiskt</button></div>
+    ${rotationInfoHTML(s.id, b)}` : "";
+  return `<tr><td></td><td colspan="5" style="padding:6px 8px 12px;background:#FAFAF7;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <b style="font-size:11.5px;color:var(--pine);">Stationer (${n}/${MAX_STATIONS})</b>
+      <button class="btn ghost small" ${n>=MAX_STATIONS?'disabled title="Högst 6 stationer"':''} onclick="addStation('${s.id}','${b.id}')">+ Station</button>
+    </div>
+    ${overviewRowHTML(s,b)}
+    ${stationCards || '<p class="hint" style="font-size:11.5px;">Inga stationer ännu.</p>'}
+    ${rotTable}
+  </td></tr>`;
+}
+
+/* ---------- Övningsbanken: användning, borttagning, redigering, "lägg till i pass" ---------- */
+function exerciseUsage(id){
+  const out = [];
+  (DATA.sessions||[]).forEach(s=>(s.blocks||[]).forEach(b=>{
+    const dateLbl = s.date ? new Date(s.date+"T00:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}) : "";
+    if((b.exerciseIds||[]).includes(id)) out.push({sid:s.id, bid:b.id, label:`${dateLbl} ${b.theme||"block"}`.trim()});
+    (b.stations||[]).forEach((st,i)=>{ if((st.exerciseIds||[]).includes(id)) out.push({sid:s.id, bid:b.id, label:`${dateLbl} ${b.theme||"Stationer"} · ${st.name||stLetter(i)}`.trim()}); });
+  }));
+  return out;
+}
+function exerciseUsageHTML(e){
+  const u = exerciseUsage(e.id);
+  return `<div style="font-size:11px;color:var(--muted);margin-top:8px;"><b>Används i:</b> ${u.length ? u.slice(0,6).map(x=>escapeHtml(x.label)).join(" · ")+(u.length>6?` · +${u.length-6}`:"") : "inga pass ännu"}</div>`;
+}
+function exerciseActionsHTML(e, isCustom){
+  return `<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="btn small" onclick="event.stopPropagation();openAddToPlan('${e.id}')">➕ Lägg till i pass</button>
+    <button class="btn ghost small" onclick="event.stopPropagation();openExerciseModal('${e.id}')">Redigera</button>
+    <button class="btn ghost small" onclick="event.stopPropagation();duplicateExercise('${e.id}')">Duplicera</button>
+    ${e.edited ? `<button class="btn ghost small" onclick="event.stopPropagation();resetExerciseOverride('${e.id}')">Återställ original</button>` : ""}
+    ${isCustom ? `<button class="btn ghost small" onclick="event.stopPropagation();deleteCustomExercise('${e.id}')">Ta bort</button>` : ""}
+  </div>`;
+}
+async function deleteCustomExercise(id){
+  const e = (DATA.customExercises||[]).find(x=>x.id===id);
+  const uses = exerciseUsage(id);
+  const yes = await confirmDialog(`Ta bort övningen "${e?e.namn:''}"?`+(uses.length ? ` Den används i ${uses.length} block/stationer (${uses.slice(0,3).map(u=>u.label).join(", ")}${uses.length>3?" …":""}) — kopplingen tas bort där.` : ""), "Ta bort övning");
+  if(!yes) return;
+  await guard(async ()=>{
+    DATA.customExercises = (DATA.customExercises||[]).filter(x=>x.id!==id);
+    DATA.sessions.forEach(s=>{
+      (s.blocks||[]).forEach(b=>{
+        if(b.exerciseIds) b.exerciseIds = b.exerciseIds.filter(x=>x!==id);
+        (b.stations||[]).forEach(st=>{ if(st.exerciseIds) st.exerciseIds = st.exerciseIds.filter(x=>x!==id); if(st.viewEx===id) delete st.viewEx; });
+      });
+    });
+    if(DATA.exerciseDrawings) delete DATA.exerciseDrawings[id];             // ritningen följer med
+    if(DATA.exerciseDiagrams) delete DATA.exerciseDiagrams[id];
+    syncAllOverviews();
+    renderExercises(); renderCategoryFilter(); renderSessions();
+    await saveData();
+  });
+}
+function duplicateExercise(id){
+  const e = exerciseById(id); if(!e) return;
+  const nid = "custom-"+Date.now()+"-"+(NEW_EX_SEQ++);
+  const copy = { id:nid, cat:e.cat, namn:e.namn+" (kopia)", syfte:e.syfte||"", material:e.material||"", steg:(e.steg||[]).slice(), coaching:e.coaching||"", latt:e.latt||"—", svar:e.svar||"—", link:e.link||null };
+  if(!DATA.customExercises) DATA.customExercises = [];
+  DATA.customExercises.push(copy);
+  const d = getExerciseDrawing(id); if(d){ if(!DATA.exerciseDrawings) DATA.exerciseDrawings = {}; DATA.exerciseDrawings[nid] = JSON.parse(JSON.stringify(d)); }
+  renderExercises(); renderCategoryFilter(); saveData();
+  openExerciseModal(nid);
+}
+async function resetExerciseOverride(id){
+  const yes = await confirmDialog("Återställa den här övningen till originaltexten? Dina ändringar i texten försvinner (ritningen påverkas inte).", "Återställ");
+  if(!yes) return;
+  if(DATA.exerciseOverrides) delete DATA.exerciseOverrides[id];
+  renderExercises(); await saveData();
+}
+function ensureAddToPlanModal(){
+  if(document.getElementById("modal-addtoplan")) return;
+  const d = document.createElement("div");
+  d.innerHTML = `<div class="overlay" id="modal-addtoplan"><div class="modal" style="max-width:460px;">
+    <button class="close-x" onclick="closeModal('modal-addtoplan')">✕</button>
+    <h3 id="atp-title">Lägg till i pass</h3><input type="hidden" id="atp-ex">
+    <div class="field"><label>Träning</label><select id="atp-session" onchange="atpFillTargets()"></select></div>
+    <div class="field"><label>Var i passet?</label><select id="atp-target"></select></div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal('modal-addtoplan')">Avbryt</button><button class="btn" onclick="atpConfirm()">Lägg till</button></div>
+  </div></div>`;
+  document.body.appendChild(d.firstChild);
+}
+function openAddToPlan(exId){
+  ensureAddToPlanModal();
+  const e = exerciseById(exId); if(!e) return;
+  document.getElementById("atp-title").textContent = "Lägg till «"+e.namn+"» i pass";
+  document.getElementById("atp-ex").value = exId;
+  const today = new Date().toISOString().slice(0,10);
+  const list = DATA.sessions.filter(x=>x.type!=="Match").slice().sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const upcoming = list.filter(x=>(x.date||"")>=today), past = list.filter(x=>(x.date||"")<today).slice(-5);
+  const opt = x=>`<option value="${x.id}">${x.date||"?"} · ${x.start||""} ${x.type||""} (${(x.blocks||[]).length} block)</option>`;
+  document.getElementById("atp-session").innerHTML = (upcoming.concat(past)).map(opt).join("") || '<option value="">Inga träningar</option>';
+  atpFillTargets(); openModal("modal-addtoplan");
+}
+function atpFillTargets(){
+  const s = DATA.sessions.find(x=>x.id===document.getElementById("atp-session").value), sel = document.getElementById("atp-target");
+  if(!s || !(s.blocks||[]).length){ sel.innerHTML = '<option value="">Inga block — skapa block i Bygg pass först</option>'; return; }
+  let h = "";
+  s.blocks.forEach((b,i)=>{
+    if(isStationBlock(b)){
+      const sts = b.stations||[];
+      if(!sts.length) h += `<option disabled>${i+1}. ${b.theme} — inga stationer ännu</option>`;
+      sts.forEach((st,si)=>{ h += `<option value="s:${b.id}:${st.id}">${i+1}. ${b.theme} › ${escapeHtml(st.name||("Station "+stLetter(si)))} (${escapeHtml(subLabel(st.subtheme))})</option>`; });
+    } else h += `<option value="b:${b.id}">${i+1}. ${b.theme}${b.duration?` · ${b.duration} min`:""}</option>`;
+  });
+  sel.innerHTML = h;
+}
+function atpConfirm(){
+  const exId = document.getElementById("atp-ex").value, sid = document.getElementById("atp-session").value, t = document.getElementById("atp-target").value;
+  if(!exId || !sid || !t) return;
+  const p = t.split(":");
+  if(p[0]==="b") addBlockExercise(sid, p[1], exId); else addStationExercise(sid, p[1], p.slice(2).join(":"), exId);
+  closeModal("modal-addtoplan");
+}
+
+/* ---------- Djuplänk: #ovning=<id> öppnar övningens animering, #oversikt=<pass>:<block> öppnar stationsöversikten ---------- */
+const APP_PUBLIC_URL = HOST_CFG.appUrl;
+let APP_DATA_READY = false, DEEPLINK_OPEN = null;
+function deepLinkExerciseId(){
+  const h = location.hash||"";
+  try{
+    let m = /[#&]ovning=([^&]+)/.exec(h); if(m) return decodeURIComponent(m[1]);
+    m = /[#&]oversikt=([^&]+)/.exec(h); if(m){ const p = decodeURIComponent(m[1]).split(":"); return "ov:"+p[0]+":"+p.slice(1).join(":"); }
+  }catch(e){}
+  return null;
+}
+function handleDeepLink(){
+  if(!APP_DATA_READY) return;
+  const id = deepLinkExerciseId(); if(!id || DEEPLINK_OPEN===id) return;
+  const lock = document.getElementById("lock-screen");
+  if(lock && getComputedStyle(lock).display !== "none") return;      // väntar på lösenordet — körs igen när appen låsts upp
+  DEEPLINK_OPEN = id;
+  if(id.indexOf("ov:")===0){
+    const kt = document.querySelector('nav.tabs button[data-view="kalender"]'); if(kt) kt.click();
+    if(ovParse(id)) XD.open(id, "view");
+    return;
+  }
+  const tab = document.querySelector('nav.tabs button[data-view="ovningar"]'); if(tab) tab.click();
+  if(exerciseById(id)){ try{ toggleEx(id); }catch(e){} XD.open(id, "view"); }
+}
+function deepLinkClosed(){
+  if(deepLinkExerciseId()){ try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){ location.hash = ""; } }
+  DEEPLINK_OPEN = null;
+}
+window.addEventListener("hashchange", handleDeepLink);
+function exerciseDrawingHTML(e){
+  const d = getExerciseDrawing(e.id), has = XD.hasContent(d);
+  return `<div style="margin-top:10px;"><h5>Ritning</h5>
+    ${has ? `<div onclick="event.stopPropagation();XD.open('${e.id}','view')" style="cursor:pointer;">${XD.thumbSVG(d)}</div>` : ""}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+      ${has ? `<button class="btn small" onclick="event.stopPropagation();XD.open('${e.id}','view')">▶ Animera</button>` : ""}
+      <button class="btn ghost small" onclick="event.stopPropagation();XD.open('${e.id}','edit')">${has ? "✏️ Redigera ritning" : "🖊 Rita övning"}</button>
+    </div>
+  </div>`;
+}
 
 loadData().then(()=>{ APP_DATA_READY = true; handleDeepLink(); });
 </script>
