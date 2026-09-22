@@ -297,6 +297,9 @@
   .pos-slot .pos-slot-label{font-size:9px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); display:block; margin-bottom:3px;}
   .pos-slot .pos-slot-empty{font-size:11px; color:var(--muted);}
   .pos-slot .lineup-chip{display:inline-block; font-size:11.5px; padding:3px 8px;}
+  .pos-block{display:block; width:100%;}
+  .femma-cards{display:grid; grid-template-columns:1fr; gap:0;}
+  @media(min-width:640px){ .femma-cards{grid-template-columns:1fr 1fr; gap:0 12px; align-items:start;} .femma-cards .femma-card{margin-top:0;} }
   .fpicker{grid-column:1/-1; border:1.5px solid var(--pine); border-radius:10px; padding:10px; margin:4px 0 10px; background:#FFF9F0;}
   .cup-match-card{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--ice);}
   .lineup-chip:active{cursor:grabbing;}
@@ -6346,13 +6349,13 @@ function groupPositionsHTML(g, lu){
       <span class="pos-slot-label">${FORMATION_SLOT_LABELS[pos]}</span>${inner}
     </div>`;
   };
-  const femmaCards = formations.map((f,fi)=>`
+  const femmaCards = '<div class="femma-cards">' + formations.map((f,fi)=>`
     <div class="femma-card" onclick="event.stopPropagation()">
       <h5>Femma ${fi+1}<span style="cursor:pointer;color:var(--muted);font-weight:400;" onclick="removeGroupFemma('${g.id}',${fi})" title="Ta bort femma">🗑</span></h5>
       <div class="femma-row">${slotHTML(fi,"back1")}${slotHTML(fi,"back2")}</div>
       <div class="femma-row">${slotHTML(fi,"center")}</div>
       <div class="femma-row">${slotHTML(fi,"fwd1")}${slotHTML(fi,"fwd2")}</div>
-    </div>`).join("");
+    </div>`).join("") + '</div>';
   const addBtn = formations.length<2
     ? `<button type="button" class="btn ghost small" onclick="event.stopPropagation();addGroupFemma('${g.id}')">+ Lägg till femma ${formations.length+1}</button>` : "";
   const unplacedHTML = `<div style="margin-top:6px;" onclick="event.stopPropagation()">
@@ -6426,7 +6429,7 @@ function renderLineupBoard(){
         <input type="time" value="${lu.gathering||''}" style="font-size:11px;padding:2px 4px;width:90px;" onchange="setZoneGathering('${g.id}',this.value)">
       </div>
       <div class="checkchips" style="margin-bottom:6px;" onclick="event.stopPropagation()">${coachChips}</div>
-      <div class="checkchips">${chips}</div>
+      <div class="${usePositions ? 'pos-block' : 'checkchips'}">${chips}</div>
     </div>`;
   }).join("");
 }
