@@ -283,6 +283,20 @@
   .fgoalie-row{display:flex; justify-content:center; gap:14px; margin-bottom:16px;}
   .fgoalie-row .fslot{width:130px;}
   .formation-pool{border:1.5px dashed var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px; background:var(--ice); min-height:44px;}
+  .positions-toggle{display:flex; align-items:center; gap:8px; margin:2px 0 10px; flex-wrap:wrap;}
+  .positions-toggle .switch{position:relative; width:38px; height:22px; border-radius:11px; background:var(--line); cursor:pointer; flex:0 0 auto; transition:background .15s;}
+  .positions-toggle .switch.on{background:var(--pine);}
+  .positions-toggle .switch i{position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:left .15s; box-shadow:0 1px 2px rgba(0,0,0,.25);}
+  .positions-toggle .switch.on i{left:18px;}
+  .femma-card{border:1px dashed var(--line); border-radius:10px; padding:8px 8px 6px; margin:8px 0; background:#FBFBF8;}
+  .femma-card h5{margin:0 0 7px; font-family:'Oswald'; font-size:11px; letter-spacing:.02em; color:var(--pine-dark); display:flex; justify-content:space-between; align-items:center;}
+  .femma-row{display:flex; justify-content:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
+  .pos-slot{flex:0 1 96px; min-width:80px; min-height:48px; border:1.5px dashed var(--line); border-radius:10px; padding:5px 6px; text-align:center; background:var(--ice); transition:background .15s;}
+  .pos-slot.filled{border-style:solid; background:#fff;}
+  .pos-slot.dragover{background:#E4F1E8; border-color:var(--pine-light);}
+  .pos-slot .pos-slot-label{font-size:9px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); display:block; margin-bottom:3px;}
+  .pos-slot .pos-slot-empty{font-size:11px; color:var(--muted);}
+  .pos-slot .lineup-chip{display:inline-block; font-size:11.5px; padding:3px 8px;}
   .fpicker{grid-column:1/-1; border:1.5px solid var(--pine); border-radius:10px; padding:10px; margin:4px 0 10px; background:#FFF9F0;}
   .cup-match-card{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--ice);}
   .lineup-chip:active{cursor:grabbing;}
@@ -811,6 +825,7 @@ body.xd-lock{overflow:hidden;}
       <div class="lineup-pool" id="lineup-pool" onclick="onZoneClick(null)">
         <div class="checkchips" id="lineup-pool-chips"></div>
       </div>
+      <div class="positions-toggle" id="lineup-pos-toggle"><span class="switch" onclick="toggleLineupPositionsMode()"><i></i></span><span style="font-size:12px;">🎯 Positioner (backar/forwards, upp till två femmor per färg)</span></div>
       <div class="lineup-board" id="lineup-board"></div>
     </div>
 
@@ -4235,9 +4250,18 @@ function lineupTableHTML(s){
     const gp = lu.goalie ? DATA.players.find(p=>p.id===lu.goalie) : null;
     const names = (lu.players||[]).map(pid=>{ const p=DATA.players.find(x=>x.id===pid); return p?p.name:null; }).filter(Boolean).sort((a,b)=>a.localeCompare(b,"sv"));
     const coaches = lineupCoaches(lu).map(cid=>coachById(cid)).filter(Boolean);
-    const playerRows = names.length
+    const formations = (s.positionsMode && !g.isGoalieGroup) ? (lu.formations||[]).filter(f=>Object.values(f).some(Boolean)) : [];
+    const posOrder = positionOrderFor(5);
+    const placedIds = new Set(formations.flatMap(f=>Object.values(f)).filter(Boolean));
+    const playerRows = formations.length ? (
+        formations.map((f,fi)=>{
+          const rows = posOrder.map(pos=>{ const p = f[pos] ? DATA.players.find(x=>x.id===f[pos]) : null; return p ? `<div style="font-size:11.5px;padding:2px 0;"><span style="color:#999;">${FORMATION_SLOT_LABELS[pos]}</span> ${p.name}</div>` : ""; }).join("");
+          return `<div style="font-size:11px;font-weight:700;color:#777;margin:5px 0 1px;">Femma ${fi+1}</div>${rows}`;
+        }).join("") +
+        (lu.players.some(pid=>!placedIds.has(pid)) ? `<div style="font-size:11px;font-weight:700;color:#777;margin:5px 0 1px;">Ej positionerad</div>${lu.players.filter(pid=>!placedIds.has(pid)).map(pid=>{const p=DATA.players.find(x=>x.id===pid);return p?`<div style=\"font-size:12.5px;padding:2px 0;\">${p.name}</div>`:"";}).join("")}` : "")
+      ) : (names.length
       ? names.map(n=>`<div style="font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">${n}</div>`).join("")
-      : `<div style="font-size:12.5px;padding:4px 0;color:#999;">—</div>`;
+      : `<div style="font-size:12.5px;padding:4px 0;color:#999;">—</div>`);
     return `<div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff;">
       <div style="background:${g.color};color:#fff;padding:6px 10px;font-family:'Oswald';font-weight:700;font-size:13.5px;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
         <span>${g.name}</span>
@@ -5559,6 +5583,7 @@ function inlineLineupShellHTML(s){
       <div class="lineup-pool" id="il-pool-${sid}" onclick="onZoneClick(null)">
         <div class="checkchips" id="il-pool-chips-${sid}"></div>
       </div>
+      <div class="positions-toggle" id="il-pos-toggle-${sid}"><span class="switch" onclick="toggleLineupPositionsMode()"><i></i></span><span style="font-size:12px;">🎯 Positioner (backar/forwards, upp till två femmor per färg)</span></div>
       <div class="lineup-board" id="il-board-${sid}"></div>
     </div>
     <div class="modal-actions" style="margin-top:10px;">
@@ -5595,7 +5620,7 @@ function openInlineLineup(sid){
     : hadAnyPlayers ? [...new Set(Object.values(lineup).flatMap(g=>g.players||[]))]
     : DATA.players.filter(p=>p.active!==false).map(p=>p.id); // förvalt: alla AKTIVA är med
   activeGroups.forEach(gid=>{ if(!lineup[gid]) lineup[gid] = {coaches:[], players:[], goalie:"", gathering:""}; });
-  sessionDraft = { attendance, activeGroups, lineup };
+  sessionDraft = { attendance, activeGroups, lineup, positionsMode: !!s.positionsMode };
   const container = document.getElementById("inline-lineup-container-"+sid);
   container.innerHTML = inlineLineupShellHTML(s);
   renderActiveGroupsPicker(); renderLineupBoard();
@@ -6065,6 +6090,7 @@ async function saveInlineLineup(sid){
   s.attendance = sessionDraft.attendance.slice();
   s.activeGroups = sessionDraft.activeGroups.slice();
   s.lineup = JSON.parse(JSON.stringify(sessionDraft.lineup));
+  s.positionsMode = !!sessionDraft.positionsMode;
   syncPairHistoryCounting(oldLineup, oldType, oldCounted, s);
   // Riktade uppdateringar istället för att bygga om hela kortet/redigeraren — sessionDraft är redan
   // exakt det som just sparades, så vi behöver bara uppdatera sammanfattningen och delningstabellen.
@@ -6098,9 +6124,9 @@ let lineupSelectedPlayer = null; // för tryck-och-tryck-läge på mobil
 let lineupScope = null; // null = redigera-händelse-modalen, annars ett session-id = inline på kortet
 
 function scopedId(base){
-  const modalIds = { groups:"sess-active-groups", poolChips:"lineup-pool-chips", board:"lineup-board" };
+  const modalIds = { groups:"sess-active-groups", poolChips:"lineup-pool-chips", board:"lineup-board", posToggle:"lineup-pos-toggle" };
   if(!lineupScope) return modalIds[base];
-  const inlineIds = { groups:`il-groups-${lineupScope}`, poolChips:`il-pool-chips-${lineupScope}`, board:`il-board-${lineupScope}` };
+  const inlineIds = { groups:`il-groups-${lineupScope}`, poolChips:`il-pool-chips-${lineupScope}`, board:`il-board-${lineupScope}`, posToggle:`il-pos-toggle-${lineupScope}` };
   return inlineIds[base];
 }
 
@@ -6177,6 +6203,7 @@ function toggleAttendance(pid){
       g.players = g.players.filter(x=>x!==pid);
       if(g.goalie===pid) g.goalie = "";
     });
+    clearFromFormationSlots(pid);
   } else {
     sessionDraft.attendance.push(pid);
   }
@@ -6195,7 +6222,7 @@ function toggleActiveGroup(gid){
   if(sessionDraft.activeGroups.includes(gid)){
     sessionDraft.activeGroups = sessionDraft.activeGroups.filter(x=>x!==gid);
     // spelare i en grupp som stängs av släpps tillbaka till poolen
-    if(sessionDraft.lineup[gid]) sessionDraft.lineup[gid].players = [];
+    if(sessionDraft.lineup[gid]){ sessionDraft.lineup[gid].players = []; sessionDraft.lineup[gid].formations = []; }
   } else {
     sessionDraft.activeGroups.push(gid);
     if(!sessionDraft.lineup[gid]) sessionDraft.lineup[gid] = {coaches:[], players:[], goalie:"", gathering:""};
@@ -6210,7 +6237,14 @@ function assignedElsewhere(pid){
   }
   return null;
 }
+function clearFromFormationSlots(pid){
+  Object.values(sessionDraft.lineup).forEach(lu=>{
+    if(!lu.formations) return;
+    lu.formations.forEach(f=>{ Object.keys(f).forEach(k=>{ if(f[k]===pid) f[k]=""; }); });
+  });
+}
 function movePlayerToGroup(pid, targetGid){
+  clearFromFormationSlots(pid);
   const from = assignedElsewhere(pid);
   if(from){
     sessionDraft.lineup[from].players = sessionDraft.lineup[from].players.filter(x=>x!==pid);
@@ -6234,6 +6268,7 @@ function toggleZoneCoach(gid, coachId){
 function setZoneGoalie(gid, pid){
   if(!sessionDraft.lineup[gid]) sessionDraft.lineup[gid] = {coaches:[], players:[], goalie:"", gathering:""};
   if(pid){
+    clearFromFormationSlots(pid);
     // en spelare kan inte samtidigt vara utespelare någonstans eller målvakt för ett annat lag
     const from = assignedElsewhere(pid);
     if(from) sessionDraft.lineup[from].players = sessionDraft.lineup[from].players.filter(x=>x!==pid);
@@ -6249,6 +6284,87 @@ function setZoneGathering(gid, value){
   // kunna tappa fokus mitt i inmatningen, samma typ av problem vi löste för Bygg-pass tidigare.
 }
 
+/* ---------- Positioner inom en färg: upp till två femmor (back/back/center/forward/forward)
+   per grupp, avstängt som standard (samma flata lista som förut). Återanvänder samma
+   positionsnamn och slotstruktur som formationsuppställningen (Serie 5mot5), men skalad per
+   grupp/färg i stället för för hela laget, och sparas i lineup[gid].formations. ---------- */
+function toggleLineupPositionsMode(){
+  sessionDraft.positionsMode = !sessionDraft.positionsMode;
+  renderLineupBoard();
+}
+function addGroupFemma(gid){
+  const lu = sessionDraft.lineup[gid]; if(!lu) return;
+  if(!lu.formations) lu.formations = [];
+  if(lu.formations.length>=2) return;
+  lu.formations.push(emptyFormation(5));
+  renderLineupBoard();
+}
+async function removeGroupFemma(gid, index){
+  const lu = sessionDraft.lineup[gid]; if(!lu || !lu.formations || !lu.formations[index]) return;
+  const f = lu.formations[index], g = DATA.groups.find(x=>x.id===gid);
+  const hasPlayers = Object.values(f).some(Boolean);
+  if(hasPlayers){
+    const yes = await confirmDialog(`Ta bort den här femman? Spelarna stannar i ${g?g.name:"gruppen"} men blir opositionerade.`, "Ta bort femma");
+    if(!yes) return;
+  }
+  lu.formations.splice(index,1);
+  renderLineupBoard();
+}
+function assignGroupFormationSlot(pid, gid, slotKey){
+  movePlayerToGroup(pid, gid);         // säkerställ gruppmedlemskap i den här färgen (nollställer också en ev. tidigare position, i denna eller en annan grupp)
+  const lu = sessionDraft.lineup[gid];
+  if(!lu.formations) lu.formations = [];
+  const dash = slotKey.indexOf("-"), fi = +slotKey.slice(0,dash), pos = slotKey.slice(dash+1);
+  while(lu.formations.length<=fi) lu.formations.push(emptyFormation(5));
+  lu.formations[fi][pos] = pid;
+  lineupSelectedPlayer = null;
+  renderLineupBoard();
+}
+function unpositionPlayer(gid, slotKey){
+  const lu = sessionDraft.lineup[gid]; if(!lu || !lu.formations) return;
+  const dash = slotKey.indexOf("-"), fi = +slotKey.slice(0,dash), pos = slotKey.slice(dash+1);
+  if(lu.formations[fi]) lu.formations[fi][pos] = "";
+  renderLineupBoard();
+}
+function onPosSlotClick(ev, gid, slotKey){
+  const el = ev.currentTarget;
+  if(el && el.dataset.dragHandled){ delete el.dataset.dragHandled; return; } // ett drag avslutades just nu på denna ruta, inte ett nytt tryck
+  if(lineupSelectedPlayer) assignGroupFormationSlot(lineupSelectedPlayer, gid, slotKey);
+}
+function groupPositionsHTML(g, lu){
+  const posOrder = positionOrderFor(5); // ["back1","back2","center","fwd1","fwd2"] — samma ordning/etiketter som formationsuppställningen
+  const formations = lu.formations || [];
+  const placedIds = new Set(formations.flatMap(f=>Object.values(f)).filter(Boolean));
+  const unplaced = (lu.players||[]).filter(pid=>!placedIds.has(pid));
+  const slotHTML = (fi,pos)=>{
+    const f = formations[fi] || {}, pid = f[pos], p = pid ? DATA.players.find(x=>x.id===pid) : null;
+    const key = fi+"-"+pos;
+    const inner = p
+      ? `<span class="checkchip lineup-chip" data-pid="${p.id}" onpointerdown="onChipPointerDown(event,'${p.id}')" onclick="onChipClick(event,'${p.id}')">${p.name}<span class="chip-remove" onclick="event.stopPropagation();unpositionPlayer('${g.id}','${key}')" title="Ta bort position">×</span></span>`
+      : `<span class="pos-slot-empty">—</span>`;
+    return `<div class="pos-slot ${p?'filled':''}" data-slot="${key}" data-gid="${g.id}" onclick="onPosSlotClick(event,'${g.id}','${key}')">
+      <span class="pos-slot-label">${FORMATION_SLOT_LABELS[pos]}</span>${inner}
+    </div>`;
+  };
+  const femmaCards = formations.map((f,fi)=>`
+    <div class="femma-card" onclick="event.stopPropagation()">
+      <h5>Femma ${fi+1}<span style="cursor:pointer;color:var(--muted);font-weight:400;" onclick="removeGroupFemma('${g.id}',${fi})" title="Ta bort femma">🗑</span></h5>
+      <div class="femma-row">${slotHTML(fi,"back1")}${slotHTML(fi,"back2")}</div>
+      <div class="femma-row">${slotHTML(fi,"center")}</div>
+      <div class="femma-row">${slotHTML(fi,"fwd1")}${slotHTML(fi,"fwd2")}</div>
+    </div>`).join("");
+  const addBtn = formations.length<2
+    ? `<button type="button" class="btn ghost small" onclick="event.stopPropagation();addGroupFemma('${g.id}')">+ Lägg till femma ${formations.length+1}</button>` : "";
+  const unplacedHTML = `<div style="margin-top:6px;" onclick="event.stopPropagation()">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em;">Ej positionerad${unplaced.length?"":" — inga"}</div>
+      <div class="checkchips">${unplaced.map(pid=>{
+        const p = DATA.players.find(x=>x.id===pid); if(!p) return "";
+        const sel = lineupSelectedPlayer===pid ? "selected" : "";
+        return `<span class="checkchip lineup-chip ${sel}" data-pid="${pid}" onpointerdown="onChipPointerDown(event,'${pid}')" onclick="onChipClick(event,'${pid}')">${p.name}</span>`;
+      }).join("") || (formations.length ? '<span style="font-size:11px;color:var(--muted);">Alla i gruppen är positionerade</span>' : '<span style="font-size:11px;color:var(--muted);">Dra hit spelare, eller tryck på spelaren och sedan på en position</span>')}</div>
+    </div>`;
+  return `${femmaCards}${addBtn}${unplacedHTML}`;
+}
 function renderLineupBoard(){
   const poolEl = document.getElementById(scopedId("poolChips")); if(!poolEl) return;
   const sortedPlayers = [...DATA.players]
@@ -6271,6 +6387,8 @@ function renderLineupBoard(){
           onpointerdown="onChipPointerDown(event,'${pid}')" onclick="onChipClick(event,'${pid}')">${p.name}<span class="chip-remove" onclick="event.stopPropagation();toggleAttendance('${pid}')" title="Inte med idag">×</span></span>`;
       }).join("");
 
+  const toggleEl = document.getElementById(scopedId("posToggle"));
+  if(toggleEl){ const sw = toggleEl.querySelector(".switch"); if(sw) sw.classList.toggle("on", !!sessionDraft.positionsMode); }
   const board = document.getElementById(scopedId("board")); if(!board) return;
   const activeGroups = sortGroupsGoalieLast(DATA.groups.filter(g=>sessionDraft.activeGroups.includes(g.id)));
   if(activeGroups.length===0){ board.innerHTML = '<p style="font-size:12.5px;color:var(--muted);">Välj minst en aktiv grupp ovan.</p>'; return; }
@@ -6290,12 +6408,13 @@ function renderLineupBoard(){
     // peka ut en målvakt bland målvakterna. Den zonen visar bara medlemmarna direkt.
     const goalieSelectHTML = g.isGoalieGroup ? "" :
       `<select style="font-size:11px;max-width:120px;" onclick="event.stopPropagation()" onchange="event.stopPropagation();setZoneGoalie('${g.id}',this.value)">${goalieOpts}</select>`;
-    const chips = lu.players.map(pid=>{
+    const usePositions = sessionDraft.positionsMode && !g.isGoalieGroup;
+    const chips = usePositions ? groupPositionsHTML(g, lu) : (lu.players.map(pid=>{
       const p = DATA.players.find(x=>x.id===pid); if(!p) return "";
       const sel = lineupSelectedPlayer===pid ? "selected" : "";
       return `<span class="checkchip lineup-chip ${sel}" data-pid="${pid}"
         onpointerdown="onChipPointerDown(event,'${pid}')" onclick="onChipClick(event,'${pid}')">${p.name}</span>`;
-    }).join("") || '<span style="font-size:11.5px;color:var(--muted);">Tomt — dra hit spelare</span>';
+    }).join("") || '<span style="font-size:11.5px;color:var(--muted);">Tomt — dra hit spelare</span>');
     return `<div class="lineup-zone" data-gid="${g.id}" style="--lz-color:${g.color};--lz-color22:${g.color}22;"
         onclick="onZoneClick('${g.id}')">
       <div class="lineup-zone-head">
@@ -6517,7 +6636,7 @@ function editSession(id){
     : hadAnyPlayers ? [...new Set(Object.values(lineup).flatMap(g=>g.players||[]))]
     : []; // ingen gissning här — "alla med" sätts bara i Ny händelse / laguppställnings-editorn, inte tyst vid en vanlig redigering
   activeGroups.forEach(gid=>{ if(!lineup[gid]) lineup[gid] = {coaches:[], players:[], goalie:"", gathering:""}; });
-  sessionDraft = { attendance, activeGroups, lineup };
+  sessionDraft = { attendance, activeGroups, lineup, positionsMode: !!s.positionsMode };
   lineupScope = null;
   renderActiveGroupsPicker(); renderLineupBoard();
   document.getElementById("sess-delete-btn").style.display = "inline-block";
@@ -6539,7 +6658,7 @@ async function saveSession(){
     gathering: document.getElementById("sess-gathering").value,
     pass: oldSession ? (oldSession.pass||"") : "",
     yta: document.getElementById("sess-yta").value, istid: document.getElementById("sess-istid").value,
-    coaches, attendance: sessionDraft.attendance, activeGroups: sessionDraft.activeGroups, lineup: sessionDraft.lineup,
+    coaches, attendance: sessionDraft.attendance, activeGroups: sessionDraft.activeGroups, lineup: sessionDraft.lineup, positionsMode: !!sessionDraft.positionsMode,
     notes: document.getElementById("sess-notes").value,
     archiveOverride: pendingArchiveOverride!==null ? pendingArchiveOverride : (oldSession ? (oldSession.archiveOverride ?? null) : null),
   };
@@ -9217,6 +9336,8 @@ function lineupDockShow(st){
 function lineupTargetAt(x, y){
   const under = document.elementFromPoint(x, y); if(!under) return null;
   const pill = under.closest(".lineup-dock-pill"); if(pill) return {el:pill, pool:pill.dataset.pool==="1", gid:pill.dataset.gid||null};
+  const slot = under.closest(".pos-slot[data-slot]");                          // innebandy: positioner inom en färg (femma-rutor) — kollas före den allmänna zonträffen, eftersom en ruta ligger inuti sin zon
+  if(slot) return {el:slot, slot:true, gid:slot.dataset.gid, slotKey:slot.dataset.slot};
   const zone = under.closest(".lineup-zone, .lineup-pool"); if(!zone) return null;
   const pool = zone.classList.contains("lineup-pool");
   return {el:zone, pool, gid:pool ? null : zone.dataset.gid};
@@ -9224,6 +9345,7 @@ function lineupTargetAt(x, y){
 function onLineupDragPointerCancel(ev){ if(lineupDragState && (ev.pointerId===undefined || ev.pointerId===lineupDragState.pointerId)) lineupDragCleanup(); }
 function onChipPointerDown(ev, pid){
   if(ev.pointerType==="mouse" && ev.button!==0) return;             // bara vänsterklick med mus
+  if(ev.target && ev.target.closest && ev.target.closest(".chip-remove")) return;   // en "×" inuti chippet sköter sitt eget klick — pointer capture skulle annars kapa det klicket till chippet
   lineupDragCleanup();                                              // ett tidigare drag som aldrig avslutades lämnar inget kvar
   const chip = ev.currentTarget, r = chip.getBoundingClientRect();
   const st = { pid, pointerId:ev.pointerId, startX:ev.clientX, startY:ev.clientY, moved:false, ghostEl:null,
@@ -9254,7 +9376,7 @@ function onLineupDragPointerMove(ev){
   }
   const st = lineupDragState, ghost = st.ghostEl;
   ghost.style.transform = `translate(${ev.clientX - st.grabDX + st.corrX}px,${ev.clientY - st.grabDY + st.corrY}px) scale(1.05)`;
-  document.querySelectorAll(".lineup-zone.dragover, .lineup-pool.dragover, .lineup-dock-pill.dragover").forEach(z=>z.classList.remove("dragover"));
+  document.querySelectorAll(".lineup-zone.dragover, .lineup-pool.dragover, .lineup-dock-pill.dragover, .pos-slot.dragover").forEach(z=>z.classList.remove("dragover"));
   ghost.style.display = "none"; const tgt = lineupTargetAt(ev.clientX, ev.clientY); ghost.style.display = "";
   if(tgt) tgt.el.classList.add("dragover");
 }
@@ -9264,6 +9386,7 @@ function onLineupDragPointerUp(ev){
   const target = st0.moved ? lineupTargetAt(ev.clientX, ev.clientY) : null;      // avgörs innan dockan städas bort
   const state = lineupDragCleanup();                                // ghost, opacitet, lyssnare, docka och markeringar städas alltid
   if(!state || !state.moved) return;                                // bara ett tryck utan rörelse — click-eventet sköter tryck-välj
+  if(target && target.slot){ if(typeof assignGroupFormationSlot==="function") assignGroupFormationSlot(state.pid, target.gid, target.slotKey); return; }   // innebandy: släppt på en positionsruta (finns bara när "Positioner" är på)
   const chip = state.origChipEl;
   if(chip){ chip.dataset.dragHandled = "1"; setTimeout(()=>{ if(chip.dataset) delete chip.dataset.dragHandled; }, 400); }   // gammal flagga får inte svälja nästa tryck
   if(!target) return;                                               // släppt utanför en giltig zon — spelaren ligger kvar
