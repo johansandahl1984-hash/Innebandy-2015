@@ -4256,12 +4256,15 @@ function lineupTableHTML(s){
     const formations = (s.positionsMode && !g.isGoalieGroup) ? (lu.formations||[]).filter(f=>Object.values(f).some(Boolean)) : [];
     const posOrder = positionOrderFor(5);
     const placedIds = new Set(formations.flatMap(f=>Object.values(f)).filter(Boolean));
+    const posRow = (label,name)=>`<div style="display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #eee;font-size:12.5px;">
+        <span style="flex:0 0 60px;color:#999;font-size:10.5px;text-transform:uppercase;letter-spacing:.02em;padding-top:2px;">${label}</span><span>${name}</span></div>`;
+    const femmaHead = (label)=>`<div style="font:700 10.5px 'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase;color:#8A8F86;margin:8px 0 1px;">${label}</div>`;
     const playerRows = formations.length ? (
         formations.map((f,fi)=>{
-          const rows = posOrder.map(pos=>{ const p = f[pos] ? DATA.players.find(x=>x.id===f[pos]) : null; return p ? `<div style="font-size:11.5px;padding:2px 0;"><span style="color:#999;">${FORMATION_SLOT_LABELS[pos]}</span> ${p.name}</div>` : ""; }).join("");
-          return `<div style="font-size:11px;font-weight:700;color:#777;margin:5px 0 1px;">Femma ${fi+1}</div>${rows}`;
+          const rows = posOrder.map(pos=>{ const p = f[pos] ? DATA.players.find(x=>x.id===f[pos]) : null; return p ? posRow(FORMATION_SLOT_LABELS[pos], p.name) : ""; }).join("");
+          return femmaHead(`Femma ${fi+1}`)+rows;
         }).join("") +
-        (lu.players.some(pid=>!placedIds.has(pid)) ? `<div style="font-size:11px;font-weight:700;color:#777;margin:5px 0 1px;">Ej positionerad</div>${lu.players.filter(pid=>!placedIds.has(pid)).map(pid=>{const p=DATA.players.find(x=>x.id===pid);return p?`<div style=\"font-size:12.5px;padding:2px 0;\">${p.name}</div>`:"";}).join("")}` : "")
+        (lu.players.some(pid=>!placedIds.has(pid)) ? femmaHead("Ej positionerad")+lu.players.filter(pid=>!placedIds.has(pid)).map(pid=>{const p=DATA.players.find(x=>x.id===pid);return p?posRow("",p.name):"";}).join("") : "")
       ) : (names.length
       ? names.map(n=>`<div style="font-size:12.5px;padding:4px 0;border-bottom:1px solid #eee;">${n}</div>`).join("")
       : `<div style="font-size:12.5px;padding:4px 0;color:#999;">—</div>`);
@@ -4277,7 +4280,9 @@ function lineupTableHTML(s){
       </div>
     </div>`;
   }).join("");
-  return `<div style="margin-top:10px;">${matchInfoRow}<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;">${groupCards}</div></div>`;
+  const posMode = groupsUsed.some(g=>s.positionsMode && !g.isGoalieGroup && s.lineup[g.id] && (s.lineup[g.id].formations||[]).some(f=>Object.values(f).some(Boolean)));
+  const teamCols = posMode ? "repeat(auto-fit,minmax(260px,1fr))" : "1fr 1fr";     // positionsrader (etikett + namn) behöver mer bredd per kort än en ren namnlista
+  return `<div style="margin-top:10px;">${matchInfoRow}<div style="display:grid;grid-template-columns:${teamCols};gap:14px 10px;">${groupCards}</div></div>`;
 }
 // Delningsvy för en formationsuppställning (Serie 5mot5 ELLER en enskild cupmatch) — samma
 // "läsbar, skärmdumpsvänlig"-princip som lineupTableHTML(), men anpassad till positions-
@@ -5034,7 +5039,13 @@ function pdfSessionData(s){
     const gp = lu.goalie ? DATA.players.find(p=>p.id===lu.goalie) : null;
     const names = (lu.players||[]).map(pid=>{ const p = DATA.players.find(x=>x.id===pid); return p ? p.name : null; }).filter(Boolean).sort((a,b)=>a.localeCompare(b,"sv"));
     const coaches = lineupCoaches(lu).map(cid=>coachById(cid)).filter(Boolean).map(c=>c.name);
-    return {g, goalie: gp ? gp.name : "", names, coaches, gathering: lu.gathering||""};
+    const posOrder = ["back1","back2","center","fwd1","fwd2"], posLabel = {back1:"Back",back2:"Back",center:"Center",fwd1:"Forward",fwd2:"Forward"};
+    const formations = (s.positionsMode && !g.isGoalieGroup) ? (lu.formations||[]).filter(f=>Object.values(f).some(Boolean)).map(f=>
+        posOrder.map(pos=>{ const p = f[pos] ? DATA.players.find(x=>x.id===f[pos]) : null; return p ? {pos:posLabel[pos], name:p.name} : null; }).filter(Boolean))
+      : [];
+    const placedNames = new Set(formations.flat().map(r=>r.name));
+    const unplaced = formations.length ? names.filter(n=>!placedNames.has(n)) : [];
+    return {g, goalie: gp ? gp.name : "", names, coaches, gathering: lu.gathering||"", formations, unplaced};
   });
   const coaches = (s.coaches||[]).map(cid=>coachById(cid)).filter(Boolean).map(c=>c.name);
   const total = blocks.reduce((n,x)=>n+x.dur, 0);
@@ -5102,6 +5113,10 @@ function pdfStyle(){
   .pdfp .names div{font-size:16.5px; padding:4px 0; border-bottom:1px solid #F0ECE6; break-inside:avoid;}
   .pdfp .names.one{column-count:1;}
   .pdfp .mv{font-size:15px; padding:2px 0 6px; border-bottom:2px solid #F0ECE6; margin-bottom:2px;}
+  .pdfp .femma-h{font:700 11.5px 'Oswald',sans-serif; letter-spacing:.02em; text-transform:uppercase; color:#8A8F86; margin:9px 0 2px; break-after:avoid;}
+  .pdfp .femma-h:first-child{margin-top:2px;}
+  .pdfp .posrow{font-size:15.5px; padding:3px 0; border-bottom:1px solid #F0ECE6; display:flex; gap:8px; break-inside:avoid;}
+  .pdfp .posl{flex:0 0 62px; color:#8A8F86; font-size:12px; text-transform:uppercase; letter-spacing:.02em; padding-top:2px;}
   .pdfp .tr{font-size:14px; color:#4A4238; margin-top:8px;}
   .pdfp .exhead{display:flex; align-items:center; gap:11px; margin-bottom:10px;}
   .pdfp .exhead .exn{flex:0 0 40px; height:40px; border-radius:20px; font-size:19px;}
@@ -5165,6 +5180,8 @@ function pdfStyle(){
   .pdfp.c .names, .pdfp.c .names.one{column-count:1; margin:2px 0 0;}
   .pdfp.c .names div{font-size:13px; padding:2px 0; line-height:1.25;}
   .pdfp.c .mv{font-size:12.5px; padding:1px 0 4px;}
+  .pdfp.c .femma-h{font-size:10px; margin:6px 0 1px;}
+  .pdfp.c .posrow{font-size:13px; padding:2px 0;} .pdfp.c .posl{flex-basis:52px; font-size:10.5px;}
   .pdfp.c .tr{font-size:11.5px; margin-top:5px;}
   `;
   document.head.appendChild(st);
@@ -5267,9 +5284,13 @@ function pdfBlockCard(D, x, compact){
 }
 function pdfTeamCard(x){
   const many = x.names.length > 6;
+  const playersHTML = x.formations.length
+    ? x.formations.map((f,fi)=>`<div class="femma-h">Femma ${fi+1}</div>${f.map(r=>`<div class="posrow"><span class="posl">${r.pos}</span>${escapeHtml(r.name)}</div>`).join("")}`).join("")
+      + (x.unplaced.length ? `<div class="femma-h">Ej positionerad</div>${x.unplaced.map(n=>`<div class="posrow"><span class="posl"></span>${escapeHtml(n)}</div>`).join("")}` : "")
+    : `<div class="names${many?"":" one"}">${x.names.map(n=>`<div>${escapeHtml(n)}</div>`).join("") || '<div style="color:#999">—</div>'}</div>`;
   return `<div class="team"><div class="team-h" style="background:${x.g.color}"><b>${escapeHtml(x.g.name)}</b><span>${x.gathering?"Samling "+escapeHtml(x.gathering):x.names.length+" spelare"}</span></div>
     <div class="team-b">${x.goalie?`<div class="mv"><b>Målvakt:</b> ${escapeHtml(x.goalie)}</div>`:""}
-      <div class="names${many?"":" one"}">${x.names.map(n=>`<div>${escapeHtml(n)}</div>`).join("") || '<div style="color:#999">—</div>'}</div>
+      ${playersHTML}
       ${x.coaches.length?`<div class="tr"><b>Tränare:</b> ${x.coaches.map(escapeHtml).join(", ")}</div>`:""}</div></div>`;
 }
 function pdfExercisePage(D, i){
