@@ -706,6 +706,13 @@ body.xd-lock{overflow:hidden;}
     <div class="card" id="goalie-history"></div>
 
     <div class="section-title" style="margin-top:30px;">
+      <h2>Spelarkontakt</h2>
+      <span class="hint">Vilka spelare varje ledare pratat med på träningarna — så att ingen glöms bort</span>
+    </div>
+    <div class="toolbar" id="contact-summary-filter" style="flex-wrap:wrap;"></div>
+    <div class="card" id="contact-summary"></div>
+
+    <div class="section-title" style="margin-top:30px;">
       <h2>Tränarstab</h2>
       <span class="hint">Redigera roll/initialer om mappningen ovan är fel</span>
     </div>
@@ -3961,7 +3968,7 @@ function renderAll(){
   renderGroups();
   renderPlayers();
   renderPlaybook();
-  renderMixHistory(); renderGoalieHistory();
+  renderMixHistory(); renderGoalieHistory(); renderContactSummary();
   renderCoaches();
 }
 
@@ -4213,7 +4220,7 @@ function toggleArchiveFromCard(id){
   const oldCounted = s.pairHistoryCounted;
   s.archiveOverride = isArchived(s) ? false : true;
   syncPairHistoryCounting(s.lineup, s.type, oldCounted, s);
-  renderSessions(); renderToPlanCallout(); renderMixHistory(); renderGoalieHistory();
+  renderSessions(); renderToPlanCallout(); renderMixHistory(); renderGoalieHistory(); renderContactSummary();
   saveData();
 }
 let pendingArchiveOverride = null;
@@ -4381,12 +4388,14 @@ function renderSessions(){
           ${s.type!=="Match" ? `<button class="btn ghost small" onclick="toggleBlocksPanel('${s.id}')" id="blk-toggle-${s.id}">${(s.blocks&&s.blocks.length)?`Bygg pass (${s.blocks.length})`:'Bygg pass'}</button>` : ""}
           ${(s.type!=="Match" && s.blocks && s.blocks.length>0) ? `<button class="btn ghost small" onclick="toggleTrainingSummary('${s.id}')" id="ts-toggle-${s.id}">📋 Träningsöversikt</button>` : ""}
           ${(s.type!=="Match" && ((s.blocks && s.blocks.length>0) || groupsUsed.length>0)) ? `<button class="btn ghost small" onclick="openPdfDialog('${s.id}')">📄 PDF</button>` : ""}
+          ${s.type!=="Match" ? `<button class="btn ghost small" onclick="toggleContactPanel('${s.id}')" id="contact-toggle-${s.id}">💬 ${contactCountForSession(s)?`Spelarkontakt (${contactCountForSession(s)})`:'Spelarkontakt'}</button>` : ""}
           <button class="btn ghost small" onclick="editSession('${s.id}')">Redigera</button>
           <button class="btn ghost small" onclick="toggleArchiveFromCard('${s.id}')">${archived?'↩ Kommande':'✓ Genomförd'}</button>
         </div>
       </div>
       ${s.type!=="Match" ? `<div id="blocks-panel-${s.id}" style="display:none;overflow-x:hidden;max-width:100%;"></div>` : ""}
       <div id="training-summary-container-${s.id}" style="display:none;"></div>
+      <div id="contact-container-${s.id}" style="display:none;"></div>
       <div id="inline-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="formation-lineup-container-${s.id}" style="overflow-x:auto;"></div>
       <div id="fl-shared-table-${s.id}">${(s.matchFormat==="serie5mot5" && s.matchLineup) ? formationTableHTML(s) : ""}</div>
@@ -6121,7 +6130,7 @@ async function saveInlineLineup(sid){
   refreshSessionCardSummary(sid);
   const tableEl = document.getElementById("il-shared-table-"+sid);
   if(tableEl) tableEl.innerHTML = lineupTableHTML(s);
-  renderGroups(); renderMixHistory(); renderGoalieHistory(); renderToPlanCallout();
+  renderGroups(); renderMixHistory(); renderGoalieHistory(); renderContactSummary(); renderToPlanCallout();
   saveData(); // sparas i bakgrunden
 }
 
@@ -6699,7 +6708,7 @@ async function saveSession(){
   const idx = DATA.sessions.findIndex(x=>x.id===id);
   if(idx>=0) DATA.sessions[idx] = obj; else DATA.sessions.push(obj);
   syncPairHistoryCounting(oldSession?oldSession.lineup:{}, oldSession?oldSession.type:obj.type, oldSession?oldSession.pairHistoryCounted:false, obj);
-  const ok = await saveData(); renderSessions(); renderMixHistory(); renderGoalieHistory(); renderGroups(); renderToPlanCallout(); if(ok) closeModal("modal-session");
+  const ok = await saveData(); renderSessions(); renderMixHistory(); renderGoalieHistory(); renderContactSummary(); renderGroups(); renderToPlanCallout(); if(ok) closeModal("modal-session");
   } finally { SAVE_BUSY = false; }
 }
 async function deleteSession(){
@@ -6711,7 +6720,7 @@ async function deleteSession(){
   await guard(async ()=>{
     if(s && s.pairHistoryCounted) adjustLineupStats(s.lineup, -1, s.type);
     DATA.sessions = DATA.sessions.filter(x=>x.id!==id);
-    const ok = await saveData(); renderSessions(); renderMixHistory(); renderGoalieHistory(); renderGroups(); renderToPlanCallout(); if(ok) closeModal("modal-session");
+    const ok = await saveData(); renderSessions(); renderMixHistory(); renderGoalieHistory(); renderContactSummary(); renderGroups(); renderToPlanCallout(); if(ok) closeModal("modal-session");
   });
 }
 
@@ -8086,7 +8095,7 @@ async function deletePlayer(){
     });
     DATA.players = DATA.players.filter(x=>x.id!==id);
     const ok = await saveData();
-    renderPlayers(); renderGroups(); renderMixHistory(); renderGoalieHistory(); renderSessions();
+    renderPlayers(); renderGroups(); renderMixHistory(); renderGoalieHistory(); renderContactSummary(); renderSessions();
     if(ok) closeModal("modal-player");
   });
 }
@@ -8125,7 +8134,7 @@ async function recomputeMixHistory(){
       }
     });
     const ok = await saveData();
-    renderMixHistory(); renderGoalieHistory(); renderPlayers();
+    renderMixHistory(); renderGoalieHistory(); renderContactSummary(); renderPlayers();
     if(ok) alert("Mixhistorik och målvaktsstatistik är omräknade.");
   });
 }
@@ -8165,6 +8174,135 @@ function goalieHistorySectionHTML(bucket, playerMap){
     return {name: p ? p.name : null, count:v};
   }).filter(x=>x.name).sort((a,b)=>b.count-a.count);
   return `<ul class="event-list">${named.map(m=>`<li><span>${m.name}</span><span class="mono" style="margin-left:auto;color:var(--muted);">${m.count}×</span></li>`).join("")}</ul>`;
+}
+
+/* =========================================================================
+   SPELARKONTAKT — vilka spelare har varje ledare haft ett riktigt samtal med
+   på en given träning. Ett kryss räcker (ja/nej per spelare och träning),
+   sparas på själva träningen (s.playerContacts = {coachId:[pid,...]}) och
+   summeras sedan live (inte en separat räknare att hålla i synk) — både för
+   hela truppen och per ledare, i Laget-fliken.
+   ========================================================================= */
+let contactActiveCoach = {};                 // sid -> coachId, vilken ledares kryssruta som visas just nu i den öppna panelen
+let contactSaveTimer = null, pendingContactSids = new Set();
+let contactSummaryFilter = "all";             // "all" eller ett coachId
+function contactCountForSession(s){
+  const pc = s.playerContacts || {}; let n = 0;
+  Object.values(pc).forEach(list=>{ if(list && list.length) n++; });
+  return n; // antal ledare som kryssat i minst en spelare den här träningen
+}
+function toggleContactPanel(sid){
+  const el = document.getElementById("contact-container-"+sid);
+  const btn = document.getElementById("contact-toggle-"+sid);
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s || !el) return;
+  const open = el.style.display !== "none";
+  if(open){
+    el.style.display = "none"; el.innerHTML = "";
+    if(btn) btn.textContent = "💬 " + (contactCountForSession(s) ? `Spelarkontakt (${contactCountForSession(s)})` : "Spelarkontakt");
+  } else {
+    el.innerHTML = contactPanelHTML(s); el.style.display = "block";
+    if(btn) btn.textContent = "💬 Dölj spelarkontakt";
+  }
+}
+function contactPanelHTML(s){
+  const sid = s.id;
+  const coachIds = (s.coaches && s.coaches.length) ? s.coaches : DATA.coaches.map(c=>c.id);
+  const coachChips = coachIds.map(cid=>{
+    const c = coachById(cid); if(!c) return "";
+    const n = ((s.playerContacts||{})[cid]||[]).length;
+    const active = contactActiveCoach[sid]===cid;
+    return `<span class="checkchip ${active?'on':''}" onclick="selectContactCoach('${sid}','${cid}')">${escapeHtml(c.name)}${n?` (${n})`:""}</span>`;
+  }).join("");
+  const activeCid = contactActiveCoach[sid];
+  let body = `<p class="hint" style="margin:8px 0 0;">Tryck på ditt namn ovan, kryssa sedan i vilka spelare du pratat med.</p>`;
+  if(activeCid){
+    const pool = (s.attendance && s.attendance.length) ? s.attendance : DATA.players.filter(p=>p.active!==false).map(p=>p.id);
+    const players = pool.map(pid=>DATA.players.find(p=>p.id===pid)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name,"sv"));
+    const talked = new Set((s.playerContacts||{})[activeCid]||[]);
+    const rows = players.map(p=>`<span class="checkchip ${talked.has(p.id)?'on':''}" onclick="togglePlayerContact('${sid}','${activeCid}','${p.id}')">${talked.has(p.id)?'✓ ':''}${escapeHtml(p.name)}</span>`).join("");
+    body = `<p class="hint" style="margin:8px 0 4px;"><b>${escapeHtml((coachById(activeCid)||{}).name||"")}</b> har pratat med ${talked.size} av ${players.length}</p>
+      <div class="checkchips">${rows || '<span class="hint">Ingen närvarolista satt för träningen ännu.</span>'}</div>`;
+  }
+  return `<div class="card" style="margin-top:8px;">
+    <b style="font-size:12.5px;color:var(--pine-dark);">💬 Spelarkontakt</b>
+    <div class="checkchips" style="margin-top:6px;">${coachChips || '<span class="hint">Inga tränare kopplade till träningen ännu.</span>'}</div>
+    ${body}
+  </div>`;
+}
+function selectContactCoach(sid, cid){
+  contactActiveCoach[sid] = (contactActiveCoach[sid]===cid) ? null : cid;
+  const el = document.getElementById("contact-container-"+sid); if(el) el.innerHTML = contactPanelHTML(DATA.sessions.find(x=>x.id===sid));
+}
+function togglePlayerContact(sid, cid, pid){
+  const s = DATA.sessions.find(x=>x.id===sid); if(!s) return;
+  if(!s.playerContacts) s.playerContacts = {};
+  if(!s.playerContacts[cid]) s.playerContacts[cid] = [];
+  const list = s.playerContacts[cid], i = list.indexOf(pid);
+  if(i>=0) list.splice(i,1); else list.push(pid);
+  const el = document.getElementById("contact-container-"+sid); if(el) el.innerHTML = contactPanelHTML(s);
+  const btn = document.getElementById("contact-toggle-"+sid); if(btn && document.getElementById("contact-container-"+sid).style.display==="none"){/* stängd, uppdateras vid nästa öppning */}
+  scheduleContactSave(sid);
+}
+function scheduleContactSave(sid){
+  pendingContactSids.add(sid);
+  clearTimeout(contactSaveTimer);
+  contactSaveTimer = setTimeout(async ()=>{
+    const sids = new Set(pendingContactSids); pendingContactSids = new Set();
+    await saveData();
+    sids.forEach(id=>{
+      const btn = document.getElementById("contact-toggle-"+id); const s = DATA.sessions.find(x=>x.id===id);
+      if(btn && s) btn.textContent = "💬 " + (contactCountForSession(s) ? `Spelarkontakt (${contactCountForSession(s)})` : "Spelarkontakt");
+    });
+    renderContactSummary();
+  }, 500);
+}
+/* ---- Sammanställning (Laget-fliken): live beräknad ur alla träningars playerContacts,
+   inte en separat räknare — så en rättelse i en gammal träning slår igenom direkt. ---- */
+function computePlayerContactStats(){
+  const stats = {};
+  DATA.players.forEach(p=>{ stats[p.id] = {total:0, last:null, byCoach:{}}; });
+  const sessions = DATA.sessions.filter(s=>s.type==="Träning" && s.playerContacts && Object.keys(s.playerContacts).length).slice().sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  sessions.forEach(s=>{
+    const seenThisSession = new Set();
+    Object.entries(s.playerContacts).forEach(([cid,pids])=>{
+      (pids||[]).forEach(pid=>{
+        if(!stats[pid]) stats[pid] = {total:0, last:null, byCoach:{}};
+        if(!stats[pid].byCoach[cid]) stats[pid].byCoach[cid] = {count:0, last:null};
+        stats[pid].byCoach[cid].count++; stats[pid].byCoach[cid].last = s.date;
+        seenThisSession.add(pid);
+      });
+    });
+    seenThisSession.forEach(pid=>{ stats[pid].total++; stats[pid].last = s.date; });
+  });
+  return stats;
+}
+function setContactSummaryFilter(v){ contactSummaryFilter = v; renderContactSummary(); }
+function renderContactSummary(){
+  const filterEl = document.getElementById("contact-summary-filter"), el = document.getElementById("contact-summary");
+  if(!filterEl || !el) return;
+  filterEl.innerHTML = `<span class="checkchip ${contactSummaryFilter==='all'?'on':''}" onclick="setContactSummaryFilter('all')">Hela truppen</span>` +
+    DATA.coaches.map(c=>`<span class="checkchip ${contactSummaryFilter===c.id?'on':''}" onclick="setContactSummaryFilter('${c.id}')">${escapeHtml(c.name)}</span>`).join("");
+  const stats = computePlayerContactStats();
+  const activePlayers = DATA.players.filter(p=>p.active!==false);
+  if(activePlayers.length===0){ el.innerHTML = '<p class="empty" style="padding:6px 0;">Inga spelare ännu.</p>'; return; }
+  const rows = activePlayers.map(p=>{
+    const st = stats[p.id] || {total:0,last:null,byCoach:{}};
+    const perCoach = (contactSummaryFilter!=="all") ? (st.byCoach[contactSummaryFilter]||{count:0,last:null}) : null;
+    const count = perCoach ? perCoach.count : st.total;
+    const last = perCoach ? perCoach.last : st.last;
+    return {name:p.name, count, last};
+  }).sort((a,b)=> a.count-b.count || (a.last||"").localeCompare(b.last||"") || a.name.localeCompare(b.name,"sv"));
+  const today = new Date();
+  el.innerHTML = `<ul class="event-list">${rows.map(r=>{
+    const lastLabel = r.last ? new Date(r.last+"T00:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}) : "Aldrig";
+    const daysSince = r.last ? Math.round((today - new Date(r.last+"T00:00:00")) / 86400000) : null;
+    const stale = r.count===0 || (daysSince!==null && daysSince>21);
+    const warn = r.count===0 ? '<span class="mono" style="color:#C24A3A;font-weight:700;">Aldrig pratat med</span>' :
+      (stale ? `<span class="mono" style="color:#B57A3F;">${daysSince} dagar sedan</span>` : "");
+    return `<li><span>${escapeHtml(r.name)}</span>${warn}
+      <span class="mono" style="margin-left:auto;color:var(--muted);">${r.count}× · ${lastLabel}</span></li>`;
+  }).join("")}</ul>
+  <p class="hint" style="margin:8px 0 0;">Sorterat så att den som blivit pratad med minst (eller längst sedan) ligger överst.</p>`;
 }
 
 /* ---- Laget: tränare ---- */
