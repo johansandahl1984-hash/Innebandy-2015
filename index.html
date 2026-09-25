@@ -8586,8 +8586,19 @@ document.querySelectorAll(".overlay").forEach(o=>{
   // The confirm dialog must be answered via its buttons (which resolve the promise),
   // so it is intentionally excluded from click-outside-to-dismiss.
   if(o.id==="modal-confirm") return;
-  o.addEventListener("click", e=>{ if(e.target===o) o.classList.remove("open"); });
+  o.addEventListener("click", e=>{
+    if(e.target!==o) return;
+    // BUGG (hittad i skärmtidsanalys, se konversation med Claude): tap utanför playbook-rutan
+    // stängde bara rutan visuellt utan att stoppa en pågående spelmomentsanimation — rAF-loopen
+    // (pbPlayRAF) fortsatte gå i bakgrunden tills fliken laddades om. Måste därför gå via
+    // closePlaybookEditor(), som anropar pbStopPlay() innan rutan döljs.
+    if(o.id==="modal-playbook"){ closePlaybookEditor(); return; }
+    o.classList.remove("open");
+  });
 });
+// Skyddsnät: om en spelmomentsanimation ändå skulle lämnas igång (t.ex. en väg vi missat ovan)
+// stoppas den så fort fliken göms — en bakgrundsflik ska aldrig fortsätta rita bilder.
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden && typeof pbPlaying!=="undefined" && pbPlaying) pbStopPlay(); });
 
 /* =========================================================================
    ÖVNINGSRITARE + STATIONSÖVERSIKT — gemensam värdkod (ishockey Team-18 och innebandy Höllviken IBF).
